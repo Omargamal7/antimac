@@ -1,0 +1,4 @@
+type = scripted
+command = /usr/bin/sh -c "/usr/bin/mountpoint -q /tmp || /bin/mount -t tmpfs tmpfs /tmp"
+restart = false
+waits-for = pseudofs

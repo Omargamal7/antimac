@@ -1,0 +1,27 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Set hostname on /etc/hostname file"
+Depends = ( mount-rw )
+User = ( root )
+StdOut = s6log:%%livedir%%/log/local-sethostname
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp local-sethostname -1 /dev/console setup hostname }
+    if -nt {
+
+        execl-envfile ${ConfFile}
+        execl-cmdline -s {
+            redirfd -w 1 ${HostnameFile}
+            66-echo -- ${HOSTNAME}
+        }
+
+    }
+    66-yeller -fcdp local-sethostname -1 /dev/console crashed!
+)
+
+[Environment]
+ConfFile=!%%bootconf%%
+HostnameFile=!/etc/hostname

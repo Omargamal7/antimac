@@ -1,0 +1,50 @@
+#!/bin/sh
+set -eu
+
+# We are at pre-inst, this directory may not exist yet. See #927442.
+mkdir -p /etc/runit/runsvdir
+if [ ! -e /etc/runit/runsvdir/current ]; then
+	#rm any broken/old symlink, just to be sure
+	rm -f /etc/runit/runsvdir/current
+	echo 'runit: setting up for runsvchdir'
+	#now current symlink does not exists, we can safely create it
+	ln -s /etc/runit/runsvdir/default /etc/runit/runsvdir/current
+	echo 'runit: current symlink succesfully created'
+fi
+
+if [ ! -e /etc/service ]; then #new install
+	ln -s /etc/runit/runsvdir/current /etc/service
+elif [ -h /etc/service ]; then
+	servlink=$(readlink /etc/service) # should be /etc/runit/runsvdir/current
+	if [ "$servlink" != '/etc/runit/runsvdir/current' ]; then
+		# transition to enable runsvchdir, started in 2.1.2-28, to be removed in future:
+		# we are running in the default rundir, proceed with the switch
+		# note that ln is not safe to use here as it does an unlink before
+		# creating the new link; using mv instead
+		printf "runit: switching /etc/service to current... "
+		ln -s /etc/runit/runsvdir/current /etc/service-new
+		mv -T /etc/service-new /etc/service
+		printf "done\n"
+	fi
+fi
+
+# link to atomically upgrade service dirs
+mkdir -p /usr/share/runit/sv
+mkdir -p /usr/share/runit/sv.now
+#2.1.2-55(experimental): sv.current pointed to the wrong dir, must be fixed
+if [ "$1" = upgrade ] && dpkg --compare-versions "$2" eq 2.1.2-55; then
+	echo "removing wrong symlink" #debug code
+	unlink /usr/share/runit/sv.current || true
+fi
+if [ ! -e /usr/share/runit/sv.current ]; then
+		ln -s /usr/share/runit/sv.now   /usr/share/runit/sv.current
+fi
+if [ ! -e /usr/share/runit/sv.src ]; then
+		ln -s /usr/share/runit/sv   /usr/share/runit/sv.src
+fi
+
+# Automatically added by dh_installdeb/13.11.4
+dpkg-maintscript-helper rm_conffile /etc/sv/default-syslog/finish 2.1.2-60\~ -- "$@"
+dpkg-maintscript-helper rm_conffile /etc/default/runit 2.1.2-60\~ -- "$@"
+# End automatically added section
+

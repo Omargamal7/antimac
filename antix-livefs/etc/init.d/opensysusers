@@ -1,0 +1,43 @@
+#!/usr/bin/env /lib/init/init-d-script
+#
+### BEGIN INIT INFO
+# Provides:          opensysusers
+# Required-Start:    $local_fs
+# Required-Stop:     
+# Default-Start:     S
+# Default-Stop:      0 6
+# X-Start-Before:    opentmpfiles-setup
+# Short-Description: Create System Users
+### END INIT INFO
+#
+NAME='opensysusers'
+DESC='standalone sysusers service'
+DAEMON=/usr/bin/opensysusers-sysusers
+
+do_start_cmd_override () {
+    install -d /run/opensysusers
+    $DAEMON
+    if [ "$?" = 0 ]; then
+        touch /run/opensysusers/ok
+        log_success_msg "Opensysusers: system users successfully created"
+    else
+        log_failure_msg "Opensysusers: system users creation failed"
+    fi
+}
+
+do_stop_cmd_override () {
+    log_success_msg "Opensysusers: nothing to do at shutdown"
+}
+
+do_restart_override () {
+    #No-Op
+    log_success_msg "Opensysusers: nothing to do"
+}
+
+do_status_override () {
+    if [ -e /run/opensysusers/ok ]; then
+	log_success_msg "Opensysusers: system users creation complete"
+    else
+        log_failure_msg "Opensysusers: system users creation failed"
+    fi
+}

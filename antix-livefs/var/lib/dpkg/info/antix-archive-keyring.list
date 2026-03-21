@@ -1,0 +1,13 @@
+/.
+/etc
+/etc/apt
+/etc/apt/keyrings
+/etc/apt/keyrings/antix-archive-keyring.gpg
+/etc/apt/trusted.gpg.d
+/etc/apt/trusted.gpg.d/antix-archive-keyring.gpg
+/usr
+/usr/share
+/usr/share/doc
+/usr/share/doc/antix-archive-keyring
+/usr/share/doc/antix-archive-keyring/changelog.gz
+/usr/share/doc/antix-archive-keyring/copyright

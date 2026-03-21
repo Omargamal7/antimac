@@ -1,0 +1,34 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount /dev/pts directory"
+User = ( root )
+Depends =( mount-dev )
+StdOut = s6log:%%livedir%%/log/mount-pts
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp mount-pts -1 /dev/console setup pts }
+    if -nt {
+
+        execl-cmdline -s { execl-toc -X -m /dev/pts ${Args} }
+
+    }
+    66-yeller -fcdp mount-pts -1 /dev/console crashed!
+)
+
+[Stop]
+Execute=
+(
+    if { 66-yeller -cdp mount-pts -1 /dev/console stops... }
+    if -nt {
+
+        execl-toc -tD -m /dev/pts umount -lR /dev/pts
+
+    }
+    66-yeller -fcdp mount-pts -1 /dev/console crashed!
+)
+
+[Environment]
+Args=!-o mode=0620,gid=5,nosuid,noexec -t devpts -d devpts

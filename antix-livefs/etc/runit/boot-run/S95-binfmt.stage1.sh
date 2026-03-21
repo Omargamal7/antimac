@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/binfmt.stage1.sh

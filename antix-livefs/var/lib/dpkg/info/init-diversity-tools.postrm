@@ -1,0 +1,43 @@
+#!/bin/bash
+
+
+
+# postrm script for grub-init-diversity
+
+set -e
+
+case "$1" in
+  purge|remove) \
+    
+    ## Removing diversions
+	for F in \
+        /etc/init.d/rc    \
+        /etc/init.d/rcS
+    do
+    	if [ -e "$F.dpkg-dist" ]; then
+    		rm $F
+    	fi
+        dpkg-divert --quiet --package init-diversity-tools --rename \
+                    --divert /usr/share/init-diversity-tools/diversions$F --remove $F || :
+    done
+    
+    for G in \
+        /usr/sbin/shutdown    \
+        /usr/sbin/reboot    \
+        /usr/sbin/poweroff    \
+        /usr/sbin/runlevel
+    do
+    	if [ -e "$G.dpkg-dist" ]; then
+    		rm $G
+    	fi
+        dpkg-divert --quiet --package init-diversity-tools --rename \
+                    --divert /usr/share/init-diversity-tools/diversions$G --remove $G || :
+    done
+  ;;
+  
+  *) :
+  ;;
+
+esac
+
+exit 0

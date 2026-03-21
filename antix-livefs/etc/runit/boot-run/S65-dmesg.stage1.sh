@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/dmesg.stage1.sh

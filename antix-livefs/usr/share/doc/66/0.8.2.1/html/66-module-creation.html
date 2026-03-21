@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: module service creation</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="module-service-creation">Module service creation</h1>
+<p>A module is an <a href="66-instantiated-service.html">instantiated</a> service. It works the same way as a service frontend file but allows the user&#47;admin to configure a set of different kind of services before executing the parse process. Also, the set of services can be configured with the conjunction of a script called <em>configure</em> which can be made in any language.</p>
+<p>This allows one to pre-configure a set of parameters or other services for special tasks without knowing the exact target of the module. The best example is the module for booting a machine. Each machine is different and the set of services need to be adaptable as much as possible for different kinds of machines during boot; e.g booting a container.</p>
+<p>Additionally, a service of type &#8216;module&#8217; can be likened to a sandbox. Services within a module are isolated from those outside it, and vice versa. For example, you cannot have a service within a module depending on a service outside the module, and vice versa. The isolation ensures that there is no interdependency between services inside and outside the module.</p>
+<p>A module is defined with two elements:</p>
+<ul>
+<li><p>a directory located in the same directory as any other service <a href="66-frontend.html#the-frontend-service-file">frontend</a> file.</p></li>
+<li><p>An <a href="66-instantiated-service.html">instantiated frontend service</a> file located at the root of that directory.</p></li>
+</ul>
+<h2 id="frontend-file">Frontend file</h2>
+<p>The <a href="66-instantiated-service.html">instantiated frontend service</a> is written as any other instantiated service with its own specification—see the section <a href="66-frontend.html#section-regex">[Regex]</a>.</p>
+<h2 id="module-directory">Module directory</h2>
+<p>The module directory have the following structure:</p>
+<pre><code>.
+├── activated
+│   ├── depends
+│   └── requiredby
+├── configure
+│   └── configure
+├── frontend
+└── module_frontend_file
+</code></pre>
+<ul>
+<li><p><em>activated</em>: This directory contains empty files named after the services you want to activate for the module. Usually, this directory is populated through the configuration file, but if you manually create empty files named after the service you want to activate, the service will be activated at every configuration of the module regardless of user requests. This directory <strong>is not</strong> mandatory and created at parse process of the module if its doesn&#8217;t exist yet.</p></li>
+<li><p><em>activated&#47;depends</em> and <em>activated&#47;requiredby</em>: These directories function similarly to their parent directory, with the exception that they pertain to the dependencies and required-by relationships of the module. Hence, these directories allow you to define dependencies or required-by relationships either through the <code>configure</code> script or by manually creating empty files, similar to what can be done in the <em>activated</em> directory. These directory <strong>are not</strong> mandatory and created at parse process of the module if they doesn&#8217;t exist yet.</p></li>
+<li><p><em>configure</em>: This directory may contain an <strong>executable</strong> file script named configure. For example, <code>/usr/share/66/service&#47;foo&#47;configure&#47;configure</code>. The sub-directory <strong>must</strong> be named <em>configure</em> and the file script <strong>must</strong> be named <em>configure</em>. This file <strong>is not</strong> mandatory. The parser will detect if the file exists and it runs it if it&#8217;s the case. It&#8217;s up to you to write the <em>configure</em> script file with the language of your choice as long as you define a correct <em>shebang</em>.</p>
+<p>Also, this directory can contain any files or directories that you need to configure your module. It&#8217;s the responsability of the module creator to properly use or dispatch files or directories found inside the <em>configure</em> directory with the help of the <em>configure</em> script or during the module installation phase. The parser will not handle any other file than the <em>configure</em> script for you.</p>
+<p><strong>Note</strong>: The <em>configure</em> script is launched after the parsing of the frontend file, meaning all regex operations on directories and files are already made.</p></li>
+<li><p><em>frontend</em>: This directory can contain any frontend files for any kind of services. Also, this directory can contain sub-directories containing another frontend service files. This can be done recursively. Frontend file used by the module <strong>must</strong> be present on that directory. You cannot call a frontend file through the <code>configure</code> script from outside this directory. Also, do not make a copy of a existing frontend file on your inside this directory. If you want to use an existing frontend file, you <strong>must</strong> rename it differently that the one coming from your system. This directory <strong>is not</strong> mandatory and created at parse process of the module if its doesn&#8217;t exist yet.</p></li>
+</ul>
+<p>The frontend file of the module itself <strong>must</strong> be present at the root of the module directory.</p>
+<p>Any services that you need <strong>must</strong> be present <strong>inside</strong> the frontend directory. The parser only deals with these directories. If a service <code>fooA</code> has <code>fooB</code> as dependency, <code>fooA</code> <strong><em>and</em></strong> <code>fooB</code> <strong>must</strong> exist in the e.g. <code>/usr/share/66/service&#47;&#60;module_name&#62;&#47;frontend</code> directory.</p>
+<h2 id="a-word-about-the-main-section-with-the-module-type">A word about the <a href="66-frontend.html#section-main">[Main]</a> section with the module type</h2>
+<p>The valid fields in section <a href="66-frontend.html#section-main">[Main]</a> are:</p>
+<ul>
+<li>Type</li>
+<li>Description</li>
+<li>Version</li>
+<li>User</li>
+<li>Depends</li>
+<li>RequiredBy</li>
+<li>OptsDepends</li>
+<li>CopyFrom</li>
+</ul>
+<p>All other fields from <a href="66-frontend.html#section-main">[Main]</a> section are not allowed.</p>
+<h2 id="module-process-creation">Module process creation</h2>
+<p>The name <code>foo@</code> will be used in this explanation as a module name.</p>
+<p>When you do e.g. <code>66 parse foo@system</code>:</p>
+<ul>
+<li><p>It searches for the corresponding <code>/usr/share/66/service&#47;foo&#47;foo@</code> frontend service file.</p></li>
+<li><p>It reads, parses, and replaces <a href="66-identifier.html">identifier</a>.</p></li>
+<li><p>It checks if the <code>/usr/share/66/service&#47;foo&#47;configure</code>, <code>/usr/share/66/service&#47;foo&#47;frontend</code> and <code>/usr/share/66/service&#47;foo&#47;activated&#47;{depends,requiredby}</code> directories exist and create it if it is not the case.</p></li>
+<li><p>It verbatim copies the <code>/usr/share/66/service&#47;foo</code> directory to <code>/usr/share/66/service&#47;foo@system</code>.</p></li>
+<li><p>It applies the regex defined with <code>InFiles</code> field to <code>/usr/share/66/service&#47;foo@system&#47;frontend</code> files.</p></li>
+<li><p>It applies the regex defined with <code>Directories</code> field to <code>/usr/share/66/service&#47;foo@system&#47;frontend</code> directories, if any.</p></li>
+<li><p>It applies the regex defined with <code>Files</code> field to <code>/usr/share/66/service&#47;foo@system&#47;frontend</code> files.</p></li>
+<li><p>It runs the <code>/usr/share/66/service&#47;foo@system&#47;configure</code> script if it exists.</p></li>
+<li><p>It reads and parses all frontend services files found at <code>/usr/share/66/service&#47;foo@system&#47;activated</code> and its <code>depends</code> and <code>requiredby</code> subdirectories.</p></li>
+</ul>
+<h3 id="environment-variable-passed-to-the-script-">Environment variable passed to the script <code>configure</code></h3>
+<p>At launch of the script <code>configure</code>, the parser passes the following variables to the environment:</p>
+<ul>
+<li><code>MOD_NAME</code>: name of the module.</li>
+<li><code>MOD_BASE</code>: <code>%%system_dir%%&#47;system</code> for root, <code>$HOME&#47;.66&#47;system</code> for regular user.</li>
+<li><code>MOD_LIVE</code>: <code>/run/66</code>.</li>
+<li><code>MOD_TREE</code>: <code>%%system_dir%%&#47;system&#47;&#60;treename&#62;</code> for root, <code>$HOME&#47;.66&#47;system&#47;&#60;treename&#62;</code> for regular user.</li>
+<li><code>MOD_SCANDIR</code>: <code>/run/66&#47;scandir&#47;0</code> for root, <code>/run/66&#47;scandir&#47;&#60;owner_uid&#62;</code> for regular user.</li>
+<li><code>MOD_TREENAME</code>: name of the tree.</li>
+<li><code>MOD_OWNER</code>: numerical UID value of the owner of the process.</li>
+<li><code>MOD_VERBOSITY</code>: verbosity level passed to parser.</li>
+<li><code>MOD_COLOR</code>: color state passed to the parser. <code>MOD_COLOR=0</code> means color disabled where <code>MOD_COLOR=1</code> means color enabled.</li>
+<li><code>MOD_MODULE_DIR</code>: path of the module directory.</li>
+<li><code>MOD_SKEL_DIR</code>: <code>/etc/66</code></li>
+<li><code>MOD_SERVICE_SYSDIR</code>: <code>/usr/share/66/service</code></li>
+<li><code>MOD_ENVIRONMENT_ADMDIR</code>: <code>/etc/66/environment</code></li>
+<li><code>MOD_SERVICE_ADMDIR</code>: <code>/etc/66/service</code></li>
+<li><code>MOD_SERVICE_ADMCONFDIR</code>: <code>/etc/66/conf</code></li>
+<li><code>MOD_SCRIPT_SYSDIR</code>: <code>/usr/share/66/script</code></li>
+<li><code>MOD_USER_DIR</code>: <code>.66</code></li>
+<li><code>MOD_SERVICE_USERDIR</code>: <code>.66/service</code></li>
+<li><code>MOD_SERVICE_USERCONFDIR</code>: <code>.66/conf</code></li>
+<li><code>MOD_SCRIPT_USERDIR</code>: <code>.66/script</code></li>
+<li><code>MOD_ENVIRONMENT_USERDIR</code>: <code>.66/environment</code></li>
+</ul>
+</body>
+</html>

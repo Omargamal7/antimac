@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component>
+  <id>org.kernel.drivers.firmware-b43legacy-installer</id>
+  <metadata_license>MIT</metadata_license>
+  <name>firmware-b43legacy-installer</name>
+  <summary>Firmware installer for the b43legacy driver</summary>
+  <description>
+    <p>This package downloads and installs the firmware needed by the
+    b43legacy kernel driver for some Broadcom 43xx wireless network
+    cards.</p>
+    <p>Supported chipsets:</p>
+    <ul>
+      <li>BCM4301;</li>
+      <li>BCM4306/2;</li>
+      <li>BCM4306.</li>
+    </ul>
+  </description>
+  <url type="homepage">https://wireless.wiki.kernel.org/en/users/drivers/b43</url>
+  <provides>
+    <modalias>pci:v000014E4d00004301sv*</modalias>
+    <modalias>pci:v000014E4d00004306sv*</modalias>
+    <modalias>pci:v000014E4d00004320sv*</modalias>
+    <modalias>pci:v000014E4d00004324sv*</modalias>
+    <modalias>pci:v000014E4d00004325sv*</modalias>
+  </provides>
+</component>

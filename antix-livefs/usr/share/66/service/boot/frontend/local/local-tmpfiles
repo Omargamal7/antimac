@@ -1,0 +1,24 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Create temporary files"
+Depends = ( mount-rw )
+User = ( root )
+StdOut = s6log:%%livedir%%/log/local-tmpfiles
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp local-tmpfiles -1 /dev/console setup volatile temporary files }
+    if -nt {
+
+        execl-cmdline -s { ${Args} }
+
+    }
+    66-yeller -Fcdp local-tmpfiles -1 /dev/console something went wrong!
+)
+
+[Environment]
+Args=!%%tmpfiles%%/opentmpfiles.sh ${ArgsScript}
+ArgsScript=!--create --verbose --boot
+

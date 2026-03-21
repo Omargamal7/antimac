@@ -1,0 +1,498 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: recode
+Upstream-Contact: Reuben Thomas <rrt@sc3d.org>
+Source: https://github.com/rrthomas/recode/
+
+Files: *
+Copyright: 1990-2025 Free Software Foundation, Inc.
+License: GPL-3+
+
+Files: INSTALL
+Copyright: 1994-2022, Free Software Foundation, Inc
+License: FSFAP
+
+Files: COPYING
+Copyright: 2007, Free Software Foundation, Inc. <http://fsf.org/>
+License: GPL-3+
+
+Files: COPYING-LIB
+Copyright: 2007, Free Software Foundation, Inc. <http://fsf.org/>
+License: LGPL-3+
+
+Files: aclocal.m4
+Copyright: 1992-2023, Free Software Foundation, Inc
+License: FSFULLR
+
+Files: configure
+Copyright: 1992-2021, Free Software Foundation, Inc
+License: FSFUL
+ This configure script is free software; the Free Software Foundation
+ gives unlimited permission to copy, distribute and modify it.
+
+Files: tables.py
+Copyright: 1990-2023, Free Software Foundation, Inc
+License: GPL-3+
+
+Files: Makefile.am
+       contrib/Makefile.am
+       doc/Makefile.am
+       src/Makefile.am
+       tests/Makefile.am
+Copyright: 1991-2023, Free Software Foundation, Inc
+License: GPL-3+
+
+Files: build-aux/bootstrap.in
+       build-aux/extract-trace
+       build-aux/funclib.sh
+       build-aux/inline-source
+       build-aux/options-parser
+Copyright: 2004-2019, Bootstrap Authors
+License: MIT or GPL-2+
+ This file is dual licensed under the terms of the MIT license
+ <https://opensource.org/licenses/MIT>, and GPL version 2 or later
+ <http://www.gnu.org/licenses/gpl-2.0.html>.  You must apply one of
+ these licenses when using or redistributing this software or any of
+ the files within it.  See the URLs above, or the file `LICENSE`
+ included in the Bootstrap distribution for the full license texts.
+
+Files: build-aux/config.rpath
+Copyright: 1992-2023, Free Software Foundation, Inc
+License: FSFULLR
+
+Files: build-aux/install-sh
+Copyright: 1994, X Consortium
+License: Expat
+
+Files: build-aux/compile
+       build-aux/depcomp
+       build-aux/mdate-sh
+       build-aux/missing
+Copyright: 1995-2023, Free Software Foundation, Inc
+License: GPL-2+ with Autoconf exception
+
+Files: build-aux/config.guess
+       build-aux/config.sub
+Copyright: 1992-2022, Free Software Foundation, Inc
+License: GPL-3+ with Autoconf exception
+
+Files: build-aux/ltmain.sh
+Copyright: 1996-2015, Free Software Foundation, Inc
+License: GPL-2+ with Libtool exception
+
+Files: build-aux/texinfo.tex
+Copyright: 1985-2023, Free Software Foundation, Inc
+License: GPL-3+ with texinfo exception
+ This texinfo.tex file is free software: you can redistribute it and/or
+ modify it under the terms of the GNU General Public License as
+ published by the Free Software Foundation, either version 3 of the
+ License, or (at your option) any later version.
+ .
+ This texinfo.tex file is distributed in the hope that it will be
+ useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ .
+ As a special exception, when this file is read by TeX when processing
+ a Texinfo source document, you may use the result without
+ restriction. This Exception is an additional permission under section 7
+ of the GNU General Public License, version 3 ("GPLv3").
+Comment:
+ On Debian systems, the full text of the GNU General Public
+ License version 3 can be found in the file
+ `/usr/share/common-licenses/GPL-3'.
+
+Files: contrib/recode.el
+Copyright: 1995-2018, Progiciels Bourbeau-Pinard inc
+License: GPL-3+
+
+Files: doc/recode.texi
+Copyright: 1990-2023, Free Software Foundation, Inc
+License: recode-manual-license
+ Permission is granted to make and distribute verbatim copies of
+ this manual provided the copyright notice and this permission notice
+ are preserved on all copies.
+ .
+ Permission is granted to process this file through TeX and print the
+ results, provided the printed document carries copying permission
+ notice identical to this one except for the removal of this paragraph
+ (this paragraph not being relevant to the printed manual).
+ .
+ Permission is granted to copy and distribute modified versions of this
+ manual under the conditions for verbatim copying, provided that the entire
+ resulting derived work is distributed under the terms of a permission
+ notice identical to this one.
+ .
+ Permission is granted to copy and distribute translations of this manual
+ into another language, under the above conditions for modified versions,
+ except that this permission notice may be stated in a translation approved
+ by the Foundation.
+
+Files: keld/*
+Copyright: 1992, K. Simonsen
+License: keld-license
+ Distribution of this memo is unlimited.
+Comment: The *.def files are derived from the RFC.
+
+Files: keld/NomsSeulsfinal.lst
+Copyright: 2008, François Pinard
+License: LGPL-3+
+
+Files: lib/*
+Copyright: 1990-2023, Free Software Foundation, Inc
+License: LGPL-2.1+
+
+Files: lib/Makefile.am
+Copyright: 1990-2023, Free Software Foundation, Inc
+License: GPL-3+ with Autoconf exception
+
+Files: lib/argmatch.c
+       lib/argmatch.h
+       lib/basename.c
+       lib/dirname.c
+       lib/quote.h
+       lib/quotearg.c
+       lib/quotearg.h
+       lib/xalloc-die.c
+       lib/xalloc.h
+       lib/xmalloc.c
+Copyright: 1990-2023, Free Software Foundation, Inc
+License: GPL-3+
+
+Files: lib/utime.c
+       lib/vfprintf.c
+       lib/vprintf.c
+       lib/xbinary-io.c
+       lib/xbinary-io.h
+Copyright: 1990-2023, Free Software Foundation, Inc
+License: LGPL-3+
+
+Files: lib/_Noreturn.h
+       lib/arg-nonnull.h
+       lib/c++defs.h
+       lib/warn-on-use.h
+Copyright: 2009-2023, Free Software Foundation, Inc
+License: LGPL-2+
+
+Files: m4/*
+Copyright: 1992-2023, Free Software Foundation, Inc
+License: FSFULLR
+
+Files: m4/gnulib-cache.m4
+       m4/gnulib-comp.m4
+Copyright: 1990-2023, Free Software Foundation, Inc
+License: GPL-3+
+
+Files: po/Makefile.in.in
+Copyright: 1995-2010, Ulrich Drepper <drepper@gnu.ai.mit.edu>
+License: gettext-Makefile-license
+ This file can be copied and used freely without restrictions.  It can
+ be used in projects which are not available under the GNU General Public
+ License but which still want to provide support for the GNU gettext
+ functionality.
+
+Files: po/*.po
+Copyright: 1996-2023, Free Software Foundation, Inc
+License: LGPL-3+
+Comment: See individual files for more information.
+
+Files: src/african.c
+       src/afrtran.c
+       src/ascilat1.l
+       src/atarist.c
+       src/bangbang.c
+       src/base64.c
+       src/base64.h
+       src/btexlat1.l
+       src/cdcnos.c
+       src/charname.c
+       src/charname.h
+       src/cleaner.h
+       src/combine.c
+       src/common.h
+       src/dump.c
+       src/ebcdic.c
+       src/endline.c
+       src/flat.c
+       src/fr-charname.c
+       src/fr-charname.h
+       src/html.c
+       src/ibmpc.c
+       src/iconqnx.c
+       src/iconv.c
+       src/iconvdecl.h
+       src/java.c
+       src/lat1asci.c
+       src/lat1btex.c
+       src/lat1ltex.c
+       src/lat1txte.c
+       src/ltexlat1.l
+       src/mule.c
+       src/names.c
+       src/outer.c
+       src/permut.c
+       src/quoted.c
+       src/recode.c
+       src/recode.h
+       src/recodext.h
+       src/request.c
+       src/rfc1345.c
+       src/rfc1345.h
+       src/strip-data.c
+       src/strip-pool.c
+       src/task.c
+       src/testdump.c
+       src/texinfo.c
+       src/txtelat1.l
+       src/ucs.c
+       src/utf16.c
+       src/utf7.c
+       src/utf8.c
+       src/varia.c
+Copyright: 1990-2023, Free Software Foundation, Inc
+License: LGPL-3+
+
+Files: src/mergelex.py
+       src/main.c
+       src/mixed.c
+Copyright: 1990-2023, Free Software Foundation, Inc
+License: GPL-3+
+
+Files: src/lat1ansel.c
+       src/lat1iso5426.c
+Copyright: 1990-2018, Free Software Foundation, Inc
+           Konrad Zuse Zentrum für Informationstechnik Berlin
+           1998, Wolfram Schneider <wosch@freebsd.org>
+License: GPL-3+
+
+Files: src/ansellat1.l
+       src/iso5426lat1.l
+Copyright: Konrad Zuse Zentrum für Informationstechnik Berlin
+           1998, Wolfram Schneider <wosch@freebsd.org>
+License: BSD-2-clause
+
+Files: src/vn.c
+Copyright: 1999-2018, Progiciels Bourbeau-Pinard, Inc
+License: LGPL-3+
+
+Files: tests/Recode.pyx
+Copyright: 1990-2023, Free Software Foundation, Inc
+License: GPL-3+
+
+Files: tests/pytest
+       tests/t90_bigauto.py
+Copyright: 1995-2018, Progiciels Bourbeau-Pinard, Inc
+License: GPL-3+
+
+Files: debian/*
+Copyright: 2024 Santiago Vila
+License: public-domain
+ I believe that none of these files contain any creative
+ expression eligible for copyright.
+
+License: BSD-2-clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ 1. Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ SUCH DAMAGE.
+
+License: Expat
+ Permission is hereby granted, free of charge, to any person obtaining a
+ copy of this software and associated documentation files (the "Software"),
+ to deal in the Software without restriction, including without limitation
+ the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ and/or sell copies of the Software, and to permit persons to whom the
+ Software is furnished to do so, subject to the following conditions:
+ .
+ The above copyright notice and this permission notice shall be included
+ in all copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+ OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ OTHER DEALINGS IN THE SOFTWARE.
+
+License: FSFAP
+ Copying and distribution of this file, with or without modification,
+ are permitted in any medium without royalty provided the copyright
+ notice and this notice are preserved.  This file is offered as-is,
+ without warranty of any kind.
+
+License: FSFULLR
+ This file is free software; the Free Software Foundation
+ gives unlimited permission to copy and/or distribute it,
+ with or without modifications, as long as this notice is preserved.
+
+License: GPL-2+ with Libtool exception
+ As a special exception to the GNU General Public License,
+ if you distribute this file as part of a program or library that
+ is built using GNU Libtool, you may include this file under the
+ same distribution terms that you use for the rest of that program.
+Comment:
+ See the “GPL-2+” license for the main license text; the Libtool exception
+ is given above.
+
+License: GPL-2+
+ This program is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public
+ License as published by the Free Software Foundation;
+ version 2 of the License, or (at your option) any later
+ version.
+ .
+ This program is distributed in the hope that it will be
+ useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the GNU General Public License for more
+ details.
+ .
+ You should have received a copy of the GNU General Public
+ License along with this package; if not, see
+ <https://www.gnu.org/licenses/>.
+Comment:
+ On Debian systems, the full text of the GNU General Public
+ License version 2 can be found in the file
+ `/usr/share/common-licenses/GPL-2'.
+
+License: GPL-2+ with Autoconf exception
+ As a special exception to the GNU General Public License, if you
+ distribute this file as part of a program that contains a
+ configuration script generated by Autoconf, you may include it under
+ the same distribution terms that you use for the rest of that program.
+Comment:
+ See the “GPL-2+” license for the main license text; the AutoConf exception
+ is given above.
+
+License: GPL-3+
+ This program is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public
+ License as published by the Free Software Foundation;
+ version 3 of the License, or (at your option) any later
+ version.
+ .
+ This program is distributed in the hope that it will be
+ useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the GNU General Public License for more
+ details.
+ .
+ You should have received a copy of the GNU General Public
+ License along with this package; if not, see
+ <https://www.gnu.org/licenses/>.
+Comment:
+ On Debian systems, the full text of the GNU General Public
+ License version 3 can be found in the file
+ `/usr/share/common-licenses/GPL-3'.
+
+License: GPL-3+ with AutoConf exception
+ As a special exception to the GNU General Public License, if you
+ distribute this file as part of a program that contains a
+ configuration script generated by Autoconf, you may include it under
+ the same distribution terms that you use for the rest of that
+ program.  This Exception is an additional permission under section 7
+ of the GNU General Public License, version 3 ("GPLv3").
+Comment:
+ See the “GPL-3+” license for the main license text; the AutoConf exception
+ is given above.
+
+License: LGPL-2+
+ This program is free software; you can redistribute it
+ and/or modify it under the terms of the GNU Lesser General
+ Public License as published by the Free Software Foundation;
+ either version 2 of the License, or (at your option) any later
+ version.
+ .
+ This program is distributed in the hope that it will be
+ useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the GNU General Public License for more
+ details.
+ .
+ You should have received a copy of the GNU Lesser General
+ Public License along with this package; if not, see
+ <https://www.gnu.org/licenses/>.
+Comment:
+ On Debian systems, the full text of the GNU Lesser General
+ Public License version 2 can be found in the file
+ `/usr/share/common-licenses/LGPL-2'.
+
+License: LGPL-2.1+
+ This program is free software; you can redistribute it
+ and/or modify it under the terms of the GNU Lesser General
+ Public License as published by the Free Software Foundation;
+ either version 2.1 of the License, or (at your option) any later
+ version.
+ .
+ This program is distributed in the hope that it will be
+ useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the GNU General Public License for more
+ details.
+ .
+ You should have received a copy of the GNU Lesser General
+ Public License along with this package; if not, see
+ <https://www.gnu.org/licenses/>.
+Comment:
+ On Debian systems, the full text of the GNU Lesser General
+ Public License version 2.1 can be found in the file
+ `/usr/share/common-licenses/LGPL-2.1'.
+
+License: LGPL-3+
+ This program is free software; you can redistribute it
+ and/or modify it under the terms of the GNU Lesser General
+ Public License as published by the Free Software Foundation;
+ either version 3 of the License, or (at your option) any later
+ version.
+ .
+ This program is distributed in the hope that it will be
+ useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the GNU General Public License for more
+ details.
+ .
+ You should have received a copy of the GNU Lesser General
+ Public License along with this package; if not, see
+ <https://www.gnu.org/licenses/>.
+Comment:
+ On Debian systems, the full text of the GNU Lesser General
+ Public License version 3 can be found in the file
+ `/usr/share/common-licenses/LGPL-3'.
+
+License: MIT
+ Permission is hereby granted, free of charge, to any person obtaining a
+ copy of this software and associated documentation files (the "Software"),
+ to deal in the Software without restriction, including without limitation
+ the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ and/or sell copies of the Software, and to permit persons to whom the
+ Software is furnished to do so, subject to the following conditions:
+ .
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ DEALINGS IN THE SOFTWARE.

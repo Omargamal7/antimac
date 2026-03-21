@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# use this script to force a shutdown order of certain services
+# before the 'sv force-stop /etc/service/*' invocaion in stage 3
+# this scriopt is disabled by default, to enable it do
+# 'chmod + x /etc/runit/rc.shutdown' .
+# This is only needed in some corner case, like https://github.com/void-linux/void-runit/issues/16
+# Also, if you are running a GUI it might help to 'sv d <your display manager>' here
+
+echo "runit rc.shutdown..."
+#sv d slim
+#sv d elogind
+#umount -a -r -t nfs,nfs4,cifs
+
+##START-AUTOSV-LIST
+# a list of service may be automatically generated/updated here in future
+# do not edit between placeholders
+##END-AUTOSV-LIST
+echo "done"

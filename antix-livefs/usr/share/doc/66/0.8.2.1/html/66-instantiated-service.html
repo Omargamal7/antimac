@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: instantiatied service</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="instantiated-service-file-creation">Instantiated service file creation</h1>
+<p>An <em>instantiated</em> service file is of the same syntax as decribed in the <a href="66-frontend.html">frontend</a> document for any other service. It can be any <em>type</em> of service. However some differences exist :</p>
+<ul>
+<li>the name of the file needs to be appended with an <code>@</code> (commercial at) character.</li>
+<li>every value replaced in an instance file needs to be written with a valid <a href="66-identifier.html">identifier</a>.</li>
+</ul>
+<p>Example</p>
+<pre><code>    File name : tty@
+
+    Contents :
+
+    [Main]
+    Type = classic
+    Version = 0.0.1
+    Description = "Launch @I"
+    User = ( root )
+
+    [Start]
+    Execute = ( agetty -J 38400 @I )
+</code></pre>
+<p>By using <a href="66-parse.html">66 parse tty@tty1</a> or any other <code>66</code> command, the resulting file will then be:</p>
+<pre><code>    [Main]
+    Type = classic
+    Version = 0.0.1
+    Description = "Launch tty1"
+    User = ( root )
+
+    [Start]
+    Execute = ( agetty -J 38400 tty1 )
+</code></pre>
+</body>
+</html>

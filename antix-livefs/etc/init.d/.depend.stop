@@ -1,0 +1,11 @@
+TARGETS = umountnfs-alternative.sh dhcpcd seatd rc.local urandom alsa-utils hwclock.sh brightness opensysusers ufw sendsigs umountnfs.sh networking umountfs cryptdisks cryptdisks-early udev umountroot halt reboot
+sendsigs: alsa-utils dhcpcd seatd
+umountnfs.sh: sendsigs alsa-utils dhcpcd seatd
+networking: umountnfs.sh umountnfs-alternative.sh
+umountfs: networking umountnfs.sh alsa-utils hwclock.sh urandom brightness dhcpcd seatd umountnfs-alternative.sh
+cryptdisks: umountfs
+cryptdisks-early: cryptdisks umountfs
+udev: cryptdisks-early
+umountroot: udev cryptdisks-early cryptdisks umountfs
+halt: umountroot
+reboot: umountroot

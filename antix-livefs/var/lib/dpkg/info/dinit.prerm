@@ -1,0 +1,24 @@
+#! /bin/sh
+#
+# dinit-init-diversity prerm
+#
+
+set -e
+
+case "$1" in
+		remove|purge)
+			# Exit with error code if dinit is detected as PID 1
+			if [ $(ps -p1 | grep -ic "dinit") -eq 1 ] || [ $(cat /proc/cmdline | grep -ic "init=/") -eq 0 ] && [ $(/sbin/init --version | grep -ic "Dinit") -eq 1 ]; then
+				echo "Dinit has been detected as the running init - stopping here"
+				exit 1
+			fi
+		;;	
+		
+		*) : 
+		;;
+esac
+
+
+
+
+exit 0

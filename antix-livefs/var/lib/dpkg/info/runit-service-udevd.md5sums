@@ -1,0 +1,5 @@
+9a95af8061331db41f59031a892213a8  usr/share/doc/runit-service-udevd/changelog.gz
+8b92f1a9bc3cfba785bbd0a84605146a  usr/share/doc/runit-service-udevd/copyright
+32c1d7a14268c15c0e113a4862676a2f  usr/share/runit/sv/udevd/check
+a102c29c42bb863d6369600fa7be32bb  usr/share/runit/sv/udevd/finish
+5152e5b505465a8eb46038162353a3f8  usr/share/runit/sv/udevd/run

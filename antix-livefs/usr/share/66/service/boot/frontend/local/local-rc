@@ -1,0 +1,33 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Run rc.local script"
+User = ( root )
+Depends = (
+    mount-rw
+    local-iptables
+    local-ip6tables
+    local-nftables
+    local-ebtables
+    local-arptables
+    local-loop
+    local-time
+    local-authfiles
+    local-tmpfiles )
+StdOut = s6log:%%livedir%%/log/local-rc
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp local-rc -1 /dev/console launch rc.local script }
+    if -nt {
+
+        ${ScriptFile}
+
+    }
+    66-yeller -fcdp local-rc -1 /dev/console crashed!
+)
+
+[Environment]
+ScriptFile=!%%skeldir%%/rc.local
+

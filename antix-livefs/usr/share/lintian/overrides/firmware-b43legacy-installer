@@ -1,0 +1,2 @@
+# The only reference is in a warning about possible full /tmp/
+firmware-b43legacy-installer: possibly-insecure-handling-of-tmp-files-in-maintainer-script /tmp [postinst:57]

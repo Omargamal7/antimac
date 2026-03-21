@@ -1,0 +1,10 @@
+#!/usr/bin/execlineb -P
+
+backtick -n USER { whoami }
+importas -S USER
+backtick -n HOME { homeof ${USER} }
+importas -S HOME
+foreground { sh ${HOME}/.s6-rc/rc.local }
+elglob -0 scripts ${HOME}/.s6-rc/scripts/rc-local/*.start
+forx -E script { ${scripts} }
+sh -c "${script}"

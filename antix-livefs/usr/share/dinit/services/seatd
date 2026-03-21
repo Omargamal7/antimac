@@ -1,0 +1,5 @@
+type = process
+command = /usr/sbin/seatd -g video
+logfile	= /tmp/seatd.log
+
+depends-on = loginready

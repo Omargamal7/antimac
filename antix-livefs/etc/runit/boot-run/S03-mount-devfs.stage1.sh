@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/mount-devfs.stage1.sh

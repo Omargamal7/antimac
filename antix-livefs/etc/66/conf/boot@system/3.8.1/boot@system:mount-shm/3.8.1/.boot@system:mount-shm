@@ -1,0 +1,7 @@
+## [STARTWARN]
+## DO NOT MODIFY THIS FILE, IT OVERWRITTEN AT UPGRADE TIME.
+## Uses '66 configure boot@system:mount-shm' command instead.
+## Or make a copy of this file at /etc/66/conf/boot@system/version/boot@system:mount-shm/3.8.1/boot@system:mount-shm and modify it.
+## [ENDWARN]
+Args=!-o mode=1777,nosuid,nodev -t tmpfs -d shm
+

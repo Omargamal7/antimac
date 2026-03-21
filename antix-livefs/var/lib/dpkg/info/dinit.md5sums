@@ -1,0 +1,12 @@
+c9f2afdeabe95c714056fac750b4dacf  usr/lib/dinit/dinit
+ae847775656b81cff6125063e82c1a2b  usr/lib/dinit/dinit-check
+5d0798590a58ee5e6fe48eb86592a1b0  usr/lib/dinit/dinit-monitor
+798a1fad666044a87318c08cc3ec314a  usr/lib/dinit/dinitctl
+77623a8a48fa4138a26a889bae837f83  usr/lib/dinit/shutdown
+9fe18e9239003a2d3930404ec0f0cc64  usr/share/doc/dinit/changelog.Debian.gz
+c08033b7ab17b562765874f808f30114  usr/share/doc/dinit/copyright
+f4128d63882b5838d3fe8240d61605f2  usr/share/man/man5/dinit-service.5.gz
+3e015dd822d4b79b0f67db347d98a083  usr/share/man/man8/dinit-check.8.gz
+dcd5f629374b2ef2f0610c6949a4384f  usr/share/man/man8/dinit-monitor.8.gz
+7bbe8b87a02a56e28b4c6b2d433d23d5  usr/share/man/man8/dinit.8.gz
+d7fb7a8962d5378955f99ee321694931  usr/share/man/man8/dinitctl.8.gz

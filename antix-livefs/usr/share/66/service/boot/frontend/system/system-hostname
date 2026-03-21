@@ -1,0 +1,22 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Set hostname"
+User = ( root )
+StdOut = s6log:%%livedir%%/log/system-hostname
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp system-hostname -1 /dev/console set hostname }
+    if -nt {
+
+        execl-envfile ${ConfFile}
+        s6-hostname ${HOSTNAME}
+
+    }
+    66-yeller -fcdp system-hostname -1 /dev/console crashed!
+)
+
+[Environment]
+ConfFile=!%%bootconf%%

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66-tools Suite: execl-toc</title>
+</head>
+<body>
+<p><a href="index.html">66-tools</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="execl-toc">execl-toc</h1>
+<p>Tests an element and creates it, if it does not exist yet, with the default or specified options, then executes a program by default. </p>
+<h2 id="interface">Interface</h2>
+<pre><code>    execl-toc [ -h ] [ -v verbosity ] [ -n ] [ -t ] [ -D ] [ -X ] [ -d|p|S|m|L|e|b|c|k|n|g|r|s|t|u|w|x|f|z|O|U|N|V|E element ] [ -o opts ] [ -t type ] [ -d device ] [ -g gid ] [ -u uid ] [ -m mode ] [ -M mode ] [ -s|D|B ] [ -b backlog ] prog...
+</code></pre>
+<p><em>Execl-toc</em> (Test Or Create) tests an <em>element</em> and creates it, if it does not exist yet, where an <em>element</em> can be a directory, a fifo, a socket, a mountpoint or a symlink, for testing and creation, and additionally a file and a string for testing only. Then it execs into the rest of its command line.
+The options are separated in three parts: </p>
+<ul>
+<li><p>(1) main_options</p></li>
+<li><p>(2) test_options</p></li>
+<li><p>(3) create_options</p></li>
+</ul>
+<p>and must be ordered at the command line in that sequence.</p>
+<p>The creation of an <em>element</em> can be controlled with the help of <code>create_options</code> options. Some of these <code>create_options</code> are specific for a particular <em>element</em>, where others are general. </p>
+<h2 id="exit-codes">Exit codes</h2>
+<ul>
+<li><em>0</em> success</li>
+<li><em>100</em> wrong usage</li>
+<li><em>111</em> system call failed</li>
+</ul>
+<h2 id="main-options">Main options</h2>
+<p><code>Main_options</code> are not mandatory.</p>
+<ul>
+<li><p><strong>-h</strong>  : prints this help.</p></li>
+<li><p><strong>-v</strong> <em>verbosity</em> : increases&#47;decreases the verbosity of the command.</p>
+<ul>
+<li><em>1</em> : only print error messages. This is the default.</li>
+<li><em>2</em> : also print warning messages.</li>
+<li><em>3</em> : also print tracing messages.</li>
+<li><em>4</em> : also print debugging messages.</li>
+</ul></li>
+<li><p><strong>-n</strong> : negate the test. Treat fail as true and vise versa.</p></li>
+<li><p><strong>-t</strong> : exit 0 if the test fail.</p></li>
+<li><p><strong>-D</strong> : performs the test without creating the <em>element</em> if it does not exist yet.</p></li>
+<li><p><strong>-X</strong> : do not execute <em>prog</em>.</p></li>
+</ul>
+<h2 id="test_options">Test_options</h2>
+<p><code>Test_options</code> are <em>mandatory</em> and <strong>must</strong> precede the <code>create_options</code>. Parent directories of an <em>element</em> will also be created at creation process, if it doesn&#8217;t exist with <code>0755</code> as permissions, if <strong>-m</strong> is not specified.</p>
+<ul>
+<li><p>Test and create:</p>
+<ul>
+<li><strong>-d</strong> : true if <em>element</em> is a directory.</li>
+<li><strong>-p</strong> : true if <em>element</em> is a fifo.</li>
+<li><strong>-S</strong> : true if <em>element</em> is a socket.</li>
+<li><strong>-m</strong> : true if <em>element</em> is a mountpoint.</li>
+<li><strong>-L</strong> : true if <em>element</em> is a symlink.</li>
+</ul></li>
+<li><p>Test only</p>
+<ul>
+<li><strong>-e</strong> : true if <em>element</em> exist.</li>
+<li><strong>-b</strong> : true if <em>element</em> is a block.</li>
+<li><strong>-c</strong> : true if <em>element</em> is a character.</li>
+<li><strong>-k</strong> : true if sticky bit is set for <em>element</em>.</li>
+<li><strong>-n</strong> : true if the length of <em>element</em> is non-zero.</li>
+<li><strong>-g</strong> : true if <em>element</em> is set-group-id.</li>
+<li><strong>-r</strong> : true if <em>element</em> is readable.</li>
+<li><strong>-s</strong> : true if the size of <em>element</em> is greater than zero.</li>
+<li><strong>-t</strong> : true if <em>element</em> is open and refers to a terminal.</li>
+<li><strong>-u</strong> : true if set-user-id bit is set for <em>element</em>.</li>
+<li><strong>-w</strong> : true if <em>element</em> is writable.</li>
+<li><strong>-x</strong> : true if <em>element</em> is executable.</li>
+<li><strong>-f</strong> : true if <em>element</em> is a regular file.</li>
+<li><strong>-z</strong> : true if the length of <em>element</em> is zero.</li>
+<li><strong>-O</strong> : true if <em>element</em> is owned by the effective user id.</li>
+<li><strong>-U</strong> : true if <em>element</em> is owned by the effective group id.</li>
+<li><strong>-N</strong> : true if <em>element</em> has been modified since it was last read.</li>
+<li><strong>-V</strong> : true if <em>element</em> exists on the environment.</li>
+<li><strong>-E</strong> : true if <em>element</em> is an empty directory. The test performs a check of an existing block, character, fifo, regular file, directory or symlink, inside an <em>element</em>.</li>
+</ul></li>
+</ul>
+<h2 id="create-options">Create options</h2>
+<p>Depending on the <em>element</em> to create, <code>create_options</code> may or may not be mandatory. The following explanation specifies the mandatory ones.</p>
+<ul>
+<li><p><strong>-o</strong> <em>opts</em> : mount options (correspond to mount -o). This option has no effect in other cases.</p></li>
+<li><p><strong>-t</strong> <em>type</em> : type mount options (correspond to mount -t). This also is used in case of symlink creation as a target option. <strong>Mandatory</strong> is the case of mountpoint or symlink creation. This option has no effect in other cases.</p></li>
+<li><p><strong>-d</strong> <em>device</em> : device mount options (correspond to mount -t type device &#47;directory). <strong>Mandatory</strong> is the case of mountpoint creation. This option has no effect in other cases.</p></li>
+<li><p><strong>-u</strong> <em>uid</em> : changes <em>element</em>&#8217;s owner to (numeric&#47;name) uid after the creation. Default is the uid of the owner of the process. This option is used for directory and fifos creation and it has no effects in other cases. If <em>mode</em> is given by a name, it searches the user database for an entry with a matching name.</p></li>
+<li><p><strong>-g</strong> <em>gid</em> : changes <em>element</em>&#8217;s owner to (numeric&#47;name) gid after the creation. Default is the gid of the owner of the process. This option is used for directory and fifos creation and it has no effects in other cases. If <em>mode</em> is given by a name, it searches the user database for an entry with a matching name then it searches the corresponding group of that name. If it&#8217;s not found, it searches the group database for an entry with a matching name.</p></li>
+<li><p><strong>-m</strong> <em>mode</em> : creates <em>element</em>&#8217;s permissions to (numeric) mode. Default is <code>0755</code>, <code>0666</code> and <code>0777</code> for a directory, fifo and socket creation respectively. This option is used for directory, fifos and sockets creation and it has no effects in other cases.</p></li>
+<li><p><strong>-M</strong> <em>mode</em> : creates parent directories of the <em>element</em> with permissions to (numeric) mode. Default is <code>0755</code>.</p></li>
+<li><p><strong>-s</strong> : element will be <code>SOCK_DGRAM</code> where element is a socket. Default <code>SOCK_STREAM</code>. This option is used for socket creation and it has no effects in other cases.</p></li>
+<li><p><strong>-D</strong> : disallow instant rebinding of <em>element</em> to the same path where an <em>element</em> is a socket. Default is allow. This option is used for socket creation and it has no effects in other cases.</p></li>
+<li><p><strong>-B</strong> : the <em>element</em> will be blocking where <em>element</em> is a socket. Default is unlocked. This option is used for socket creation and it has no effects in other cases.</p></li>
+<li><p><strong>-b</strong> <em>backlog</em> : set the maximum of backlog connection on the <em>element</em> where an <em>element</em> is a socket. Default <code>SOMAXCONN</code>. This option is used for socket creation and it has no effects in other cases.</p></li>
+</ul>
+<h2 id="usage-examples">Usage examples</h2>
+<p>Test and create a directory if it does not exist yet:</p>
+<pre><code>    #!&#47;usr&#47;bin&#47;execlineb -P
+    execl-toc -d &#47;run&#47;user&#47;1000 -m 0700
+    66-echo -- "&#47;run&#47;user was created"
+</code></pre>
+<p>Test a directory but do not create it if it does not exist:</p>
+<pre><code>    #!&#47;usr&#47;bin&#47;execlineb -P
+    execl-toc -D -d &#47;run&#47;user&#47;1000
+    66-echo -- "&#47;run&#47;user already exist"
+</code></pre>
+<p>Test a directory, do not create it if it does not exist, and do not execute prog</p>
+<pre><code>    #!&#47;usr&#47;bin&#47;execlineb -P
+    if -n { execl-toc -X -D -d &#47;run&#47;user&#47;1001 }
+    66-echo -- "&#47;run&#47;user&#47;1001 does not exist"
+</code></pre>
+<p>Test a mountpoint and create it if it does not exist</p>
+<pre><code>    #!&#47;usr&#47;bin&#47;execlineb -P
+    execl-toc -m &#47;dev&#47;hugepage -o noatime,nodev,noexec,nosuid -t hugetlbfs -d hugepages
+    66-echo -- "&#47;dev&#47;hugepage created and mounted successfully"
+</code></pre>
+<p>Test a socket and create it if it doesn&#8217;t exist</p>
+<pre><code>    #!&#47;usr&#47;bin&#47;execlineb -P
+    execl-toc -S &#47;run&#47;user&#47;bus
+    66-echo -- "you can now use the socket"
+</code></pre>
+<p>Test if a variable is set on the environment</p>
+<pre><code>    #!&#47;usr&#47;bin&#47;execlineb -P
+    execl-toc -V PATH
+    66-echo -- "PATH variable is set"
+</code></pre>
+<p>Test if a file exists</p>
+<pre><code>    #!&#47;usr&#47;bin&#47;execlineb -P
+    execl-toc -e &#47;home&#47;obarun&#47;.xinitrc
+    66-echo -- ".xinitrc is a regular file"
+</code></pre>
+<p>Test if a file is executable</p>
+<pre><code>    #!&#47;usr&#47;bin&#47;execlineb -P
+    execl-toc -x &#47;home&#47;obarun&#47;.xinitrc
+    66-echo -- ".xinitrc is executable"
+</code></pre>
+<p>Test if a directory is empty</p>
+<pre><code>    #!&#47;usr&#47;bin&#47;execlineb -P
+    execl-toc -E &#47;mnt
+    66-echo -- "&#47;mnt is emtpy"
+</code></pre>
+</body>
+</html>

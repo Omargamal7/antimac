@@ -1,0 +1,7 @@
+## [STARTWARN]
+## DO NOT MODIFY THIS FILE, IT OVERWRITTEN AT UPGRADE TIME.
+## Uses '66 configure boot@system:tty-earlier@tty12' command instead.
+## Or make a copy of this file at /etc/66/conf/boot@system/version/boot@system:tty-earlier@tty12/3.8.1/boot@system:tty-earlier@tty12 and modify it.
+## [ENDWARN]
+Args=!-J 38400
+

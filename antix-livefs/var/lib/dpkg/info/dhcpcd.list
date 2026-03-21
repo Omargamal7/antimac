@@ -1,0 +1,16 @@
+/.
+/etc
+/etc/init.d
+/etc/init.d/dhcpcd
+/usr
+/usr/lib
+/usr/lib/systemd
+/usr/lib/systemd/system
+/usr/lib/systemd/system/dhcpcd.service
+/usr/lib/systemd/system/dhcpcd@.service
+/usr/share
+/usr/share/doc
+/usr/share/doc/dhcpcd
+/usr/share/doc/dhcpcd/NEWS.Debian.gz
+/usr/share/doc/dhcpcd/changelog.Debian.gz
+/usr/share/doc/dhcpcd/copyright

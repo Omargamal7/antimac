@@ -1,0 +1,2 @@
+#!/usr/bin/execlineb -P
+/usr/libexec/66-execute start seatd-log

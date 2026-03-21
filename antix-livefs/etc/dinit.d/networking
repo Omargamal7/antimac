@@ -1,0 +1,6 @@
+type = scripted
+command = /bin/sh /etc/dinit.d/scripts/networking.sh start
+stop-command = /bin/sh /etc/dinit.d/scripts/networking.sh stop
+logfile	= /tmp/networking.log
+
+depends-on = tmpfs

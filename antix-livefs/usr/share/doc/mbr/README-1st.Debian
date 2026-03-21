@@ -1,0 +1,20 @@
+mbr for Debian
+--------------
+
+This package used to consist essentialy of the file /boot/mbr.b, which was
+used by the `lilo' package. Now this has changed and the lilo package uses
+the install-mbr program to install our mbr if you want it.
+
+You can also use the install-mbr by yourself, even to put our mbr on
+machines that don't have Debian or Linux at all, as our mbr is capable of
+loading other OS loaders, and being small it has some nice things, like our
+prompt allowing us to boot from different drives/partitions, or now the Y2K
+patch for some buggy BIOSes.
+
+The README file included in this directory is from the source package and it
+is included here for completeness, you don't have to follow what it says if
+you are letting liloconfig install the mbr for you, but if you want to
+install the mbr by yourself you should give it a look.
+
+If you want to see how the mbr interacts with lilo, see
+/usr/sbin/liloconfig.

@@ -1,0 +1,17 @@
+#!/usr/bin/execlineb -P
+/usr/lib/execline/bin/pipeline -dw --
+{
+  /usr/lib/execline/bin/if --
+  {
+    /usr/lib/execline/bin/forstdin -x0 -- i
+      /usr/lib/execline/bin/exit 0
+  }
+  /usr/lib/execline/bin/if -nt --
+  {
+    /usr/lib/execline/bin/redirfd -r 0 ./data/autofilled
+    /usr/bin/s6-ipcclient -l0 -- s
+    /usr/libexec/s6-rc-fdholder-filler -1 --
+  }
+  /usr/bin/s6-svc -t .
+}
+/usr/bin/s6-fdholder-daemon -1 -n 256 -i data/rules -- s

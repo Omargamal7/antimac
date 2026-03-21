@@ -1,0 +1,22 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Activate btrfs devices"
+User = ( root )
+Depends = ( udevd )
+StdOut = s6log:%%livedir%%/log/devices-btrfs
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp devices-btrfs -1 /dev/console activate btrfs volume if any }
+    ifelse { blkid -c /dev/null --match-token=TYPE="btrfs" }
+        { ifelse -n { 66-which -q btrfs }
+            { if { 66-yeller -cdp device-btrfs -1 /dev/console No btrfs program available, check your configuration! } exit 0 }
+        if -nt {
+            btrfs device scan
+        }
+        66-yeller -fcdp devices-btrfs -1 /dev/console crashed! }
+
+    66-yeller -cdp device-btrfs -1 /dev/console no btrfs volumes available!
+)

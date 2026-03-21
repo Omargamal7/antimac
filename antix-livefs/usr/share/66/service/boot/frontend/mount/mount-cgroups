@@ -1,0 +1,36 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "mount cgroups hierarchy"
+User = ( root )
+Depends = ( mount-dev )
+StdOut = s6log:%%livedir%%/log/mount-cgroups
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp mount-cgroups -1 /dev/console setup cgroups }
+    if -nt {
+
+        execl-toc -m /sys/fs/cgroup -t tmpfs -d cgroup
+        execl-toc -m /sys/fs/cgroup/unified -t cgroup2 -o rw,nosuid,nodev,noexec,relatime,nsdelegate -d cgroup2
+        redirfd -r 0 /proc/cgroups
+        pipeline { s6-tail -n +2 }
+        pipeline { s6-cut -d"\t" -f1 }
+        forstdin -d"\n" -- i
+        importas -iu i i
+        execl-toc -X -m /sys/fs/cgroup/${i} -t cgroup -o rw,nosuid,nodev,noexec,relatime,${i} -d cgroup
+
+    }
+    66-yeller -fcdp mount-cgroups -1 /dev/console crashed!
+)
+
+[Stop]
+Execute=
+(
+    if { 66-yeller -cdp mount-cgroups -1 /dev/console unmount cgroups }
+    if -nt {
+        umount -lR /sys/fs/cgroup
+    }
+    66-yeller -fcdp mount-cgroups -1 /dev/console crashed!
+)

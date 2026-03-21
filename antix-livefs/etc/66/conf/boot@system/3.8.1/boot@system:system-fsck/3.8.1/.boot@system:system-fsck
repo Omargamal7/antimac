@@ -1,0 +1,8 @@
+## [STARTWARN]
+## DO NOT MODIFY THIS FILE, IT OVERWRITTEN AT UPGRADE TIME.
+## Uses '66 configure boot@system:system-fsck' command instead.
+## Or make a copy of this file at /etc/66/conf/boot@system/version/boot@system:system-fsck/3.8.1/boot@system:system-fsck and modify it.
+## [ENDWARN]
+Args=!-A -T -a noopts=_netdev
+ConfFile=!/etc/66/conf/boot@system/version
+

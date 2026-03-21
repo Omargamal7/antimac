@@ -1,0 +1,13 @@
+97e7179590a383c640d6ed5d6e107d48  usr/share/doc/s6-rc-service-dhcpcd/changelog.gz
+8b92f1a9bc3cfba785bbd0a84605146a  usr/share/doc/s6-rc-service-dhcpcd/copyright
+f4278db93c1c20e25d6856df2179da66  usr/share/s6-rc/config/dhcpcd.conf
+01c2a904697ad824156b159ea1972a06  usr/share/s6-rc/services/dhcpcd-log/consumer-for
+6d7fce9fee471194aa8b5b6e47267f03  usr/share/s6-rc/services/dhcpcd-log/notification-fd
+d1d0ee02d4ee1440301735455a81bb00  usr/share/s6-rc/services/dhcpcd-log/pipeline-name
+0cd1f081f4378f03fd9fd0c7be284250  usr/share/s6-rc/services/dhcpcd-log/run
+42c13bdd7f61c06ac59c1aaca9c0f07a  usr/share/s6-rc/services/dhcpcd-log/type
+d41d8cd98f00b204e9800998ecf8427e  usr/share/s6-rc/services/dhcpcd-srv/dependencies.d/udevd-srv
+30010e479e036f3f06377fddca5eb50c  usr/share/s6-rc/services/dhcpcd-srv/producer-for
+c079b1228bd65d37dd6a9dc9b54cd696  usr/share/s6-rc/services/dhcpcd-srv/run
+31d30eea8d0968d6458e0ad0027c9f80  usr/share/s6-rc/services/dhcpcd-srv/timeout-kill
+42c13bdd7f61c06ac59c1aaca9c0f07a  usr/share/s6-rc/services/dhcpcd-srv/type

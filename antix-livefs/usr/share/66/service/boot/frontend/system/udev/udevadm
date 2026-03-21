@@ -1,0 +1,31 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Launch udevadm"
+User = ( root )
+Depends=( udevd )
+StdOut = s6log:%%livedir%%/log/udevadm
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp udevadm -1 /dev/console manage udev }
+    if -nt {
+
+        if { udevadm info --cleanup-db }
+        if { udevadm trigger --action=add --type=subsystems }
+        if { udevadm trigger --action=add --type=devices }
+        udevadm settle
+
+    }
+    66-yeller -fcdp udevadm -1 /dev/console crashed!
+)
+
+[Stop]
+Execute = (
+    if { 66-yeller -cdp udevadm -1 /dev/console stop... }
+    if -nt {
+        udevadm control --exit
+    }
+    66-yeller -fcdp udevadm -1 /dev/console crashed!
+)

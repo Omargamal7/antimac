@@ -1,0 +1,96 @@
+#!/usr/bin/sh
+
+## 66-yeller variable
+export PROG="${MOD_NAME}"
+export VERBOSITY="${MOD_VERBOSITY}"
+export CLOCK_ENABLED=0
+export COLOR_ENABLED="${MOD_COLOR}"
+
+## script variable
+FRONTEND_PATH="${MOD_MODULE_DIR}/frontend"
+ACTIVATED_PATH="${MOD_MODULE_DIR}/activated"
+
+owner="${1}"
+home_env=$(homeof "${owner}" 2>/dev/null)
+home_env="${home_env}/${MOD_SERVICE_USERCONFDIR}svscan@${owner}"
+svscan="${FRONTEND_PATH}/svscan@"
+
+die(){
+  66-yeller -f "${@}"
+  exit 111
+}
+
+if [ -z "${home_env}" ]; then
+    die "invalid user: ${owner}"
+fi
+
+check_empty_var(){
+    name="${1}" var_value="${2}"
+    if [ -z "${var_value}" ]; then
+        die invalid value for variable: "${name}"
+    fi
+}
+
+disable() {
+    name=${1}
+    66-yeller %rdisable%n service: "${name}"
+    sed -i "s:${name}:#${name}:g" "${svscan}" || die "unable to sed ${service_dir}/scandir@"
+}
+
+enable() {
+    name=${1}
+    66-yeller %benable%n service: "${name}"
+    touch "${ACTIVATED_PATH}/${name}"
+}
+
+absolute_path(){
+    name="${1}" var="${2}"
+    if [ "$(66-yeller -i "${var}" | cut -c 1)" != "/" ]; then
+        die "${name}" must be an absolute path
+    fi
+}
+
+if execl-toc -X -V LIVE_DIRECTORY; then
+
+    check_empty_var "LIVE_DIRECTORY" "${LIVE_DIRECTORY}"
+
+    absolute_path "LIVE_DIRECTORY" "${LIVE_DIRECTORY}"
+
+    66-yeller set live directory to: %b"${LIVE_DIRECTORY}"%n
+    sed -i "s:%%livedir%%:-l ${LIVE_DIRECTORY}:" "${svscan}" || die "unable to set the live directory to use"
+else
+    66-yeller set live directory to: %b${MOD_LIVE}%n
+    sed -i "s:%%livedir%%:-l ${MOD_LIVE}:" "${svscan}" || die "unable to set the live directory to use"
+fi
+
+if [ "${USE_ENVIRONMENT}" = yes ]; then
+
+    enable "setenv@${owner}"
+
+    sed -i "s:%%use_environment%%:-e ${home_env}:" "${svscan}" || die "unable to set environment directory to use"
+    sed -i "s:%%environment_path%%:${home_env}:g" "${FRONTEND_PATH}/setenv@" || die "unable to set environment directory to use"
+else
+    disable "setenv@@I"
+    sed -i "s:%%use_environment%%::" "${svscan}" || die "unable to set environment directory to use"
+fi
+
+if [ "${LOGGER}" != "yes" ]; then
+    66-yeller %rdisable%n logger options
+    sed -i "s:log:!log:" "${svscan}" || die "unable to disable log options"
+else
+    66-yeller %benable%n logger options
+fi
+
+if [ "${NOTIFY}" != "yes" ]; then
+    66-yeller %rdisable%n notification
+    sed -i "s:%%notify%%::" "${svscan}" || die "unable to disable notification"
+    sed -i "s:Notify:#Notify:" "${svscan}" || die "unable to disable notification"
+else
+    66-yeller %benable%n notification
+    sed -i "s:%%notify%%:-d3:" "${svscan}" || die "unable to enable notification"
+fi
+
+66-yeller set verbosity level to: %b"${VERBOSITY_LEVEL}"%n
+sed -i "s:%%verbosity_level%%:-v${VERBOSITY_LEVEL}:" "${svscan}" || die "unable to set verbosity"
+
+66-yeller "%bsuccessfully%n configured"

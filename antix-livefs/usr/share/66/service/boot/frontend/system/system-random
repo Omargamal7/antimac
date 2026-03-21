@@ -1,0 +1,39 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Create random seed"
+User = ( root )
+Depends = ( mount-branch )
+StdOut = s6log:%%livedir%%/log/system-random
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp system-random -1 /dev/console create random seed }
+    if -nt {
+
+        if -t { execl-toc -X -r /var/lib/random-seed }
+        redirfd -w 1 /dev/urandom
+        cat /var/lib/random-seed
+
+    }
+    66-yeller -fcdp system-random -1 /dev/console crashed!
+
+)
+
+[Stop]
+Execute=
+(
+    if { 66-yeller -cdp system-random -1 /dev/console stops... }
+    if -nt {
+
+        umask 0077
+        backtick -nD "512" -- bytes {
+            cat /proc/sys/kernel/random/poolsize
+        }
+        importas -iu bytes bytes
+        dd if=/dev/urandom of=/var/lib/random-seed count=1 bs=${bytes} status=none
+
+    }
+    66-yeller -fcdp system-random -1 /dev/console crashed!
+)

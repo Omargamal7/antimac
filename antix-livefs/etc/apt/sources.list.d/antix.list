@@ -1,0 +1,11 @@
+# Use with Debian Trixie repositories. 
+deb [signed-by=/etc/apt/keyrings/antix-archive-keyring.gpg] http://ftp.cc.uoc.gr/mirrors/linux/mx/antix/trixie trixie main nonfree nosystemd  
+#deb-src http://ftp.cc.uoc.gr/mirrors/linux/mx/antix/trixie trixie main nosystemd nonfree  
+
+# Use with Debian Testing/'rolling' repositories.
+#deb http://ftp.cc.uoc.gr/mirrors/linux/mx/antix/testing testing main nosystemd nonfree 
+#deb-src http://ftp.cc.uoc.gr/mirrors/linux/mx/antix/testing testing main nosystemd nonfree 
+
+# Use with Debian Sid repositories. 
+#deb http://ftp.cc.uoc.gr/mirrors/linux/mx/antix/sid sid main nosystemd nonfree 
+#deb-src http://ftp.cc.uoc.gr/mirrors/linux/mx/antix/sid sid main nosystemd nonfree 

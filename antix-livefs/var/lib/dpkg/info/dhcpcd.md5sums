@@ -1,0 +1,5 @@
+749bde1824d78db837ce8ed0940cf56c  usr/lib/systemd/system/dhcpcd.service
+f98f771e6dce8a6e4518d0d51d06ae39  usr/lib/systemd/system/dhcpcd@.service
+7d0eae741adc1ef14fcc6652577e477c  usr/share/doc/dhcpcd/NEWS.Debian.gz
+08c23a86609009decae04d61689adf41  usr/share/doc/dhcpcd/changelog.Debian.gz
+c25b3819748d9c8f4029ceff4996863f  usr/share/doc/dhcpcd/copyright

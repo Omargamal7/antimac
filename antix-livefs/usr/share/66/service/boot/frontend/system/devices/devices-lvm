@@ -1,0 +1,22 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Activate lvm devices"
+User = ( root )
+Depends = ( udevd devices-dmraid devices-mdraid )
+StdOut = s6log:%%livedir%%/log/devices-lvm
+
+[Start]
+Execute =
+(
+if { 66-yeller -cdp devices-lvm -1 /dev/console activate lvm volumes }
+    ifelse { blkid -c /dev/null --match-token=TYPE="LVM2_member" }
+        { ifelse -n { 66-which -q vgchange }
+            { if { 66-yeller -cdp device-lvm -1 /dev/console No vgchange program available, check your configuration! } exit 0 }
+        if -nt {
+           vgchange --sysinit -a ay
+        }
+        66-yeller -fcdp devices-lvm -1 /dev/console crashed! }
+
+    66-yeller -cdp device-lvm -1 /dev/console no lvm volumes available!
+)

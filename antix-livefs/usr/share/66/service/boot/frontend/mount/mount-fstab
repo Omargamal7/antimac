@@ -1,0 +1,19 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount partition from /etc/fstab file"
+User = ( root )
+Depends =( system-fsck )
+StdOut = s6log:%%livedir%%/log/mount-fstab
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp mount-fstab -1 /dev/console implement fstab directives }
+    if -nt {
+
+        mount -a
+
+    }
+    66-yeller -fcdp mount-fstab -1 /dev/console crashed!
+)

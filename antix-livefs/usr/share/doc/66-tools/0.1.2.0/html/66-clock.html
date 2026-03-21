@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66-tools Suite: 66-clock</title>
+</head>
+<body>
+<p><a href="index.html">66-tools</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="66-clock">66-clock</h1>
+<p>66-clock gets the system time and writes it with a specific format.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>    66-clock [ -h ] [ -m message ] [ -n ] tai|iso
+</code></pre>
+<p>66-clock writes the current system time as a <em>TAIN64</em> or <em>ISO</em> timestamp depending of the argument past to stdout.</p>
+<h2 id="exit-codes">Exit codes</h2>
+<ul>
+<li><em>0</em> success</li>
+<li><em>100</em> wrong usage</li>
+<li><em>111</em> system call failed</li>
+</ul>
+<h2 id="options">Options</h2>
+<ul>
+<li><strong>-h</strong> : prints this help.</li>
+<li><strong>-m</strong> <em>message</em> : prints <em>message</em> after the system time.</li>
+<li><strong>-n</strong> : output a trailing newline.</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,5 @@
+type = process
+command = /usr/bin/sh -c "install -m755 -g 81 -o 81 -d /run/dbus && dbus-uuidgen --ensure && exec /usr/bin/dbus-daemon --system --nofork --nopidfile --print-pid"
+logfile	= /tmp/dbus.log
+
+depends-on = loginready

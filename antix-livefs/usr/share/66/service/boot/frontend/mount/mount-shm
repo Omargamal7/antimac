@@ -1,0 +1,34 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount /dev/shm directory"
+User = ( root )
+Depends =( mount-dev )
+StdOut = s6log:%%livedir%%/log/mount-shm
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp mount-shm -1 /dev/console setup shm }
+    if -nt {
+
+        execl-cmdline -s { execl-toc -X -m /dev/shm ${Args} }
+
+    }
+    66-yeller -fcdp mount-shm -1 /dev/console crashed!
+)
+
+[Stop]
+Execute=
+(
+    if { 66-yeller -cdp mount-shm -1 /dev/console unmount shm }
+    if -nt {
+
+        execl-toc -tD -m /dev/shm umount -lR /dev/shm
+
+    }
+    66-yeller -fcdp mount-shm -1 /dev/console crashed!
+)
+
+[Environment]
+Args=!-o mode=1777,nosuid,nodev -t tmpfs -d shm

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: service configuration file</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="service-configuration-file">Service configuration file</h1>
+<p>If the an <code>[Environment]</code> section is set at service <a href="66-frontend.html">frontend</a> file, the <code>[Environment]</code> section is copied to the <code>/etc/66/conf&#47;&#60;service_name&#62;&#47;&#60;service_version&#62;&#47;.service_name</code> file.</p>
+<p><strong>Note</strong>: The file name is prefixed with a dot.</p>
+<p>This file is <strong><em>always</em></strong> written when the parser is called. That means that every single changes made on this file will be lost. This is ensure you to you always have the environment variables set by upstream matching the needs of the service to be started properly.</p>
+<p>However, to suit your needs you may want to change a value of a <code>key=value</code> pair or and a new one for a modified service. In that case, you need to make a copy of the upstream file to a new file at <code>/etc/66/conf&#47;&#60;service_name&#62;&#47;&#60;service_version&#62;&#47;</code> directories.</p>
+<p>To accomplish this task, you have two solutions:</p>
+<ul>
+<li><p>use the <a href="66-configure.html">configure</a> command. This command should always be privilegied, this is the best and easy way to do it. This command create the new file if it doesn&#8217;t exist and allows you to edit it directly.</p></li>
+<li><p>copy manually the <code>/etc/66/conf&#47;&#60;service_name&#62;&#47;&#60;service_version&#62;&#47;.service_name</code> to <code>/etc/66/conf&#47;&#60;service_name&#62;&#47;&#60;service_version&#62;&#47;service_name</code>. The copied file can be named as you want.</p></li>
+</ul>
+<p>At the service start process, the <a href="execl-envfile.html">execl-envfile</a> program will parses and reads every single file found at the <code>/etc/66/conf&#47;&#60;service_name&#62;&#47;&#60;service_version&#62;&#47;</code> directory in <strong>alphabetical order</strong>. That means that the upstream file will be read before any other file define within <code>/etc/66/conf&#47;&#60;service_name&#62;&#47;&#60;service_version&#62;&#47;</code> directory. At the end of the process, for a same <code>key=value</code> pair found at the upstream and modified file, the <code>key=value</code> pair coming from the modified file read will be used.</p>
+</body>
+</html>

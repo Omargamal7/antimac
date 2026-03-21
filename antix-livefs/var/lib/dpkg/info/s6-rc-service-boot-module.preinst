@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+# Remove rc-local from user's default bundle & skel
+# Preinst script can be removed in future upgrades
+
+rm -rf /home/*/.s6-rc/sv/rc-local
+rm -rf /home/*/.s6-rc/sv/default/contents.d/rc-local
+rm -rf /etc/skel/.s6-rc/sv/rc-local
+rm -rf /etc/skel/.s6-rc/sv/default/contents.d/rc-local
+
+
+
+exit 0

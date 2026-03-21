@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: 66</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="66">66</h1>
+<p>Program to control the state of the system and service manager.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>66 [ -h ] [ -z ] [ -v verbosity ] [ -l live ] [ -T timeout ] [ -t tree ] start|stop|reload|restart|free|reconfigure|enable|disable|configure|status|resolve|state|remove|signal|snapshot|tree|parse|scandir|boot|poweroff|reboot|halt|version [&#60;command options&#62; or subcommand &#60;subcommand options&#62;] service...|tree
+</code></pre>
+<p>Invocation of <code>66</code> can be made as <code>root</code> or <code>regular account</code>.</p>
+<h2 id="options">Options</h2>
+<p>These options are available all commands except the <code>-t</code> options. In such cases, the help of the specific command provides clarification.</p>
+<ul>
+<li><p><strong>-h</strong>: prints this help.</p></li>
+<li><p><strong>-z</strong>: use color.</p></li>
+<li><p><strong>-v</strong> <em>verbosity</em>: increases&#47;decreases the verbosity of the command.</p>
+<ul>
+<li><em>0</em>: only print error messages.</li>
+<li><em>1</em>: also, print informative messages. This is the default.</li>
+<li><em>2</em>: also, print warning messages.</li>
+<li><em>3</em>: also, print tracing messages.</li>
+<li><em>4</em>: also, print function name and line code of the messages.</li>
+<li><em>5</em>: also, display the sequence of the current process function by function.</li>
+</ul></li>
+<li><p><strong>-l</strong> <em>live</em>: changes the supervision directory of <em>service</em> to <em>live</em>. By default this will be <code>/run/66</code>. The default can also be changed at compile time by passing the <code>--livedir=</code> option to <code>.&#47;configure</code>. An existing absolute path is expected and should be within a writable and executable filesystem - likely a RAM filesystem—see <a href="66-scandir.html">scandir</a> command.</p></li>
+<li><p><strong>-T</strong> <em>timeout</em>: specifies a general timeout (in milliseconds) passed to command. By default the timeout is set to 0 (infinite).</p></li>
+<li><p><strong>-t</strong> <em>tree</em>: set <em>tree</em> as tree to use.</p></li>
+</ul>
+<h2 id="commands">Commands</h2>
+<h3 id="user-command">User command</h3>
+<ul>
+<li><a href="66-start.html">start</a>: bring up services.</li>
+<li><a href="66-stop.html">stop</a>: bring down services.</li>
+<li><a href="66-enable.html">enable</a>: activate services for the next boot.</li>
+<li><a href="66-disable.html">disable</a>: deactivate services for the next boot.</li>
+<li><a href="66-reload.html">reload</a>: send a SIGHUP signal to services.</li>
+<li><a href="66-restart.html">restart</a>: bring down then bring up services.</li>
+<li><a href="66-status.html">status</a>: display service information.</li>
+<li><a href="66-configure.html">configure</a>: manage service environment variables.</li>
+<li><a href="66-reconfigure.html">reconfigure</a>: bring down, unsupervise, parse it again and bring up service.</li>
+<li><a href="66-remove.html">remove</a>: remove service and cleanup all files belong to it within the system.</li>
+<li><a href="66-free.html">free</a>: bring down services and remove it from scandir.</li>
+<li><a href="66-tree.html">tree</a>: manage or see information of trees.</li>
+<li><a href="66-poweroff.html">poweroff</a>: poweroff the system.</li>
+<li><a href="66-reboot.html">reboot</a>: reboot the system.</li>
+<li><a href="66-halt.html">halt</a>: halt the system.</li>
+<li><a href="66-version.html">version</a>: display 66 version.</li>
+</ul>
+<h3 id="admin-command">Admin command</h3>
+<ul>
+<li><a href="66-boot.html">boot</a>: boot the system.</li>
+<li><a href="66-scandir.html">scandir</a>: manage scandir.</li>
+<li><a href="66-signal.html">signal</a>: send a signal to services.</li>
+<li><a href="66-wall.html">wall</a>: send message to connected users.</li>
+<li><a href="66-snapshot.html">snapshot</a>: manage snapshot.</li>
+</ul>
+<h3 id="debug-command">Debug command</h3>
+<ul>
+<li><a href="66-parse.html">parse</a>: parse the service frontend file.</li>
+<li><a href="66-resolve.html">resolve</a>: display the service&#8217;s resolve file contents.</li>
+<li><a href="66-state.html">state</a>: display service&#8217;s state file contents.</li>
+</ul>
+<h2 id="exit-codes">Exit codes</h2>
+<ul>
+<li><em>0</em> success</li>
+<li><em>100</em> wrong usage</li>
+<li><em>111</em> system call failed</li>
+</ul>
+<p>Furthermore, all commands receive the same exit code.</p>
+<h2 id="instanced-service">Instanced service</h2>
+<p>An <a href="66-instantiated-service.md">instanced <em>service</em></a> name from a service template can be passed as service argument where the name of the <em>service</em> must end with a <code>@</code> (commercial at).—see <a href="66-frontend.html">frontend service file</a>.</p>
+<p><strong>(!)</strong> The name of the template must be declared first immediately followed by the instance name.</p>
+<p>For example, to enable a intanced service, you can do:</p>
+<pre><code>66 enable foo@foobar
+</code></pre>
+<h2 id="handling-dependencies">Handling dependencies</h2>
+<p>Any dependency or required-by dependency of a service or a tree chain will be automatically resolved. Manually defining chains of interdependencies is unnecessary.</p>
+<p>For instance, during the <code>stop</code> command, if the <code>FooA</code> service has a declared required-by dependency on <code>FooB</code>, <code>FooB</code> will be considered and automatically stopped first when <code>FooA</code> is stopped. This process will run recursively until all required-by dependencies are stopped. This is also valuable for the opposite process, meaning start.</p>
+<p>This applies to all <code>66</code> commands when it&#8217;s necessary.</p>
+</body>
+</html>

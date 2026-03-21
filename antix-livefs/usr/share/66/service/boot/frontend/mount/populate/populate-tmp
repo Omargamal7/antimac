@@ -1,0 +1,19 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Populate /tmp directory"
+User = ( root )
+Depends = ( mount-tmp )
+StdOut = s6log:%%livedir%%/log/populate-tmp
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp populate-tmp -1 /dev/console create .X11-unix and ICE-unix file }
+    if -nt {
+
+        execl-toc -d /tmp/.X11-unix -m 1777
+        execl-toc -X -d /tmp/.ICE-unix -m 1777
+    }
+    66-yeller -fcdp populate-tmp -1 /dev/console crashed!
+)

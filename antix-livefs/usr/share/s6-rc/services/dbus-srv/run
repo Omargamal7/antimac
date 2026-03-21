@@ -1,0 +1,10 @@
+#!/usr/bin/execlineb -P
+
+envfile /etc/s6-rc/config/dbus.conf
+importas -sCuD "" Args Args
+importas -sCuD "" Socket Socket
+
+fdmove -c 2 1
+foreground { install -m755 -g 81 -o 81 -d /run/dbus }
+foreground { s6-ipcserver-socketbinder -- ${Socket} dbus-uuidgen --ensure }
+exec -c dbus-daemon ${Args} --address=unix:path=${Socket}

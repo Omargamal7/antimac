@@ -1,0 +1,8 @@
+#!/usr/bin/sh
+set -e
+
+NAME=dbus-session
+LOG="/var/tmp/log/runit/user/$(id -u)/$NAME"
+
+mkdir -p "$LOG"
+exec chpst svlogd -tt "$LOG"

@@ -1,0 +1,23 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Set localtime"
+Depends = ( mount-rw )
+User = ( root )
+StdOut = s6log:%%livedir%%/log/local-time
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp local-time -1 /dev/console setup localtime }
+    if -nt {
+
+        execl-envfile ${ConfFile}
+        s6-ln -nsf /usr/share/zoneinfo/${TZ} /etc/localtime
+
+    }
+    66-yeller -fcdp local-time -1 /dev/console crashed!
+)
+
+[Environment]
+ConfFile=!%%bootconf%%

@@ -1,0 +1,14 @@
+/.
+/lib
+/lib/x86_64-linux-gnu
+/lib/x86_64-linux-gnu/libudev.so.1.6.3
+/usr
+/usr/share
+/usr/share/doc
+/usr/share/doc/libeudev1
+/usr/share/doc/libeudev1/changelog.Debian.gz
+/usr/share/doc/libeudev1/copyright
+/usr/share/lintian
+/usr/share/lintian/overrides
+/usr/share/lintian/overrides/libeudev1
+/lib/x86_64-linux-gnu/libudev.so.1

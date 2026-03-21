@@ -1,0 +1,2 @@
+/etc/apt/keyrings/antix-archive-keyring.gpg
+/etc/apt/trusted.gpg.d/antix-archive-keyring.gpg

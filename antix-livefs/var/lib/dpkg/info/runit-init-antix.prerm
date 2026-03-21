@@ -1,0 +1,24 @@
+#! /bin/sh
+#
+# runit-init-diversity prerm
+#
+
+set -e
+
+case "$1" in
+		remove|purge)
+			# Exit with error code if runit is detected as PID 1
+			if [ $(ps -p1 | grep -ic "runit") -eq 1 ]; then
+				echo "runit has been detected as the running init - stopping here"
+				exit 1
+			fi
+		;;	
+		
+		*) : 
+		;;
+esac
+
+
+
+
+exit 0

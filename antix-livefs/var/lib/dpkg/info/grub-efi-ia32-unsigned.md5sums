@@ -1,0 +1,7 @@
+b6cb307b30f69fa776c3dbffc9f31269  usr/lib/grub/i386-efi/monolithic/gcdia32.efi
+478528ca91a1924c7ba9646b121f3563  usr/lib/grub/i386-efi/monolithic/grubia32.efi
+d72aaf67109c56f8eabf541533209859  usr/lib/grub/i386-efi/monolithic/grubnetia32-installer.efi
+1ac0364652c1a5c7eca59019793a7e41  usr/lib/grub/i386-efi/monolithic/grubnetia32.efi
+8078b6f24767ff216eb390a997926d48  usr/share/bug/grub-efi-ia32-unsigned/presubj
+0d5ead2e5fdc1dad9283d5a770980056  usr/share/bug/grub-efi-ia32-unsigned/script
+a5cdd0fdc12eda3bc7cc461bd0352834  usr/share/lintian/overrides/grub-efi-ia32-unsigned

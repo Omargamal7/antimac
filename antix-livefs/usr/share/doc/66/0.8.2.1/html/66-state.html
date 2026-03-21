@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: state</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="state">state</h1>
+<p>This command displays the contents of the service&#8217;s <em>state</em> file.</p>
+<p>This command is purely a debug command used by system administrator or developers.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>state [ -h ] service
+</code></pre>
+<p>This command displays the contents of the service&#8217;s <em>state</em> file. This file are used internally by the <code>66</code> program to know runtime <em>service</em> information.</p>
+<h2 id="options">Options</h2>
+<ul>
+<li><strong>-h</strong>: prints this help</li>
+</ul>
+<h2 id="usage-example">Usage example</h2>
+<p>Display state of service <code>foo</code></p>
+<pre><code>66 state foo
+</code></pre>
+</body>
+</html>

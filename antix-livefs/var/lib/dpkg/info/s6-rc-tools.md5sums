@@ -1,0 +1,5 @@
+b23b510316262a6abfe9c5d8209d1ad2  usr/share/doc/s6-rc-tools/changelog.Debian.gz
+34f8f5ecb30e006a3da18dc0e40e5271  usr/share/doc/s6-rc-tools/copyright
+52e03daa52ef85c6c3dcc64f25cd76cd  usr/share/s6-rc-tools/s6-db-reload.sh
+96a7534dc24a0d682823d38315b6ef35  usr/share/s6-rc-tools/s6-service.sh
+92e28feec90eca840e3dc48102c3ebda  usr/share/s6-rc-tools/s6-status.sh

@@ -1,0 +1,26 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Active loop devices"
+Depends = (
+    mount-rw
+    local-iptables
+    local-ip6tables
+    local-nftables
+    local-ebtables
+    local-arptables )
+User = ( root )
+StdOut = s6log:%%livedir%%/log/local-loop
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp local-loop -1 /dev/console setup loopback interface }
+    if -nt {
+
+        ip link set up dev lo
+
+    }
+    66-yeller -fcdp local-loop -1 /dev/console crashed!
+)
+

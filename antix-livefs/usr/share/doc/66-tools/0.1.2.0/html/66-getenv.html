@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66-tools Suite: 66-getenv</title>
+</head>
+<body>
+<p><a href="index.html">66-tools</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="66-getenv">66-getenv</h1>
+<p>66-getenv gets and displays the environment variables of a process name.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>    66-getenv [ -h ] [ -x ] [ -d delim ] process
+</code></pre>
+<ul>
+<li><p>It find the corresponding pid of the <em>process</em> name applying a regex search.</p></li>
+<li><p>It open and read <code>&#47;proc&#47;&#60;pid&#62;&#47;environ</code> file and displays its contain.</p></li>
+</ul>
+<h2 id="exit-codes">Exit codes</h2>
+<ul>
+<li><em>0</em> success</li>
+<li><em>100</em> wrong usage</li>
+<li><em>111</em> system call failed</li>
+</ul>
+<h2 id="options">Options</h2>
+<ul>
+<li><p><strong>-h</strong> : prints this help.</p></li>
+<li><p><strong>-x</strong> : match exactly with the process name. It can be a complete command line, in such case its must be double-quoted.</p></li>
+<li><p><strong>-d</strong> <em>delim</em> : specify output delimiter. The default is <code>\n</code> character.</p></li>
+</ul>
+<h2 id="usage-example">Usage example</h2>
+<pre><code>    66-getenv -x jwm
+    66-getenv "ck-launch-session"
+</code></pre>
+<h2 id="note">Note</h2>
+<p>The file <code>&#47;proc&#47;&#60;pid&#62;&#47;environ</code> contains the initial environment that was set when the currently executing program was started via <em>execve(2)</em>. If, after an <em>execve(2)</em>, the process modifies its environment (e.g., by calling functions such as <em>putenv(3)</em> or modifying the <em>environ(7)</em> variable directly), this file will <em>not</em> reflect those changes—see <em>proc(5)</em> for futher informations.</p>
+</body>
+</html>

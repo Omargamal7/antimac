@@ -1,0 +1,15 @@
+Link run file and optionally conf files in this directory
+into /etc/sv/SERVICE-NAME/log/ to enable logging
+for this service.
+
+example: enable logging for SSH service:
+ SRV=ssh
+ mkdir -p /etc/sv/$SRV/log; cd /etc/sv/$SRV/log
+ ln -s -t . ../../svlogd/run
+
+ #optional: tweek values in example-log.config
+ # same goes with example-conf
+ # system-wide conf
+ cd /etc/sv/svlogd; mv ./example-log.config ./log.config
+ # or specific log conf
+ ln -s -t . ../../svlogd/log.config

@@ -1,0 +1,15 @@
+/.
+/usr
+/usr/lib
+/usr/lib/runit
+/usr/lib/runit/runit
+/usr/lib/runit/runit-init
+/usr/sbin
+/usr/share
+/usr/share/doc
+/usr/share/doc/runit-init-antix
+/usr/share/doc/runit-init-antix/NEWS.Debian.gz
+/usr/share/doc/runit-init-antix/changelog.Debian.gz
+/usr/share/doc/runit-init-antix/changelog.gz
+/usr/share/doc/runit-init-antix/copyright
+/usr/sbin/init-runit

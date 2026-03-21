@@ -1,0 +1,11 @@
+16b54d9af64cf35e9a3baeafc741a470  boot/memtest86+ia32.bin
+162335d96a5b0342a6d074c85ea5cf1f  boot/memtest86+ia32.efi
+aa92fdb77f5b1a45b61fb00195c1cc19  boot/memtest86+x64.bin
+af47ca8c0a2a8595feeb2f464e8c25a4  boot/memtest86+x64.efi
+2c6741fdc83d1083bbb236cbbfbd1254  usr/lib/memtest86+/memtest86+ia32.iso
+a4577dc3493c4b287cd8e14d465a3431  usr/lib/memtest86+/memtest86+x64.iso
+1ff262494b6b39ef4ef77356204e5a13  usr/share/doc/memtest86+/README.Debian
+62c3e75871f58b626f58196e4f43eeba  usr/share/doc/memtest86+/README.md.gz
+7d47e77cac6e52cf4cc9ca0a0f91d5f2  usr/share/doc/memtest86+/changelog.Debian.gz
+de5810adfd0337f4981c2dfb9a64c477  usr/share/doc/memtest86+/copyright
+36bac27cda8aab4b10daf2f9af9560f6  usr/share/doc/memtest86+/examples/grub-menu.lst

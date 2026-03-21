@@ -1,0 +1,12 @@
+0abafd84a10f7e154651bb5b8d3ea1d4  usr/bin/plocate
+b05c0a3613e5e763f0411aad4dd9adc2  usr/lib/systemd/system/plocate-updatedb.service
+8c0e85bb5fe08acf05b8d910f6ff221d  usr/lib/systemd/system/plocate-updatedb.timer
+3b6885ab8e007dca96fe4d1da308ec4a  usr/sbin/plocate-build
+b6d32082c8bbb13e2e59b053e1374659  usr/sbin/updatedb.plocate
+3503ebf940b444a524d7d8503d94b450  usr/share/doc/plocate/changelog.Debian.gz
+3e9d487364f1bec4bbb420ae4e1bee33  usr/share/doc/plocate/copyright
+670c5fb35dc0be3925e19e68ccfeedb9  usr/share/man/man1/plocate.1.gz
+91acfdc2d4c29c90aeeab7885b893d7a  usr/share/man/man5/updatedb.conf.5.gz
+3d0e0bb9f3aeefb775cf2222f845eb57  usr/share/man/man8/plocate-build.8.gz
+28063dfdec34125254381971061510c4  usr/share/man/man8/updatedb.plocate.8.gz
+1777d589723c21a5ad4e0cc6da457bd8  var/lib/plocate/CACHEDIR.TAG

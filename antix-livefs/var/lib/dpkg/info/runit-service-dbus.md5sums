@@ -1,0 +1,7 @@
+64bdd4066e28d8888d6a2564687d2428  usr/share/doc/runit-service-dbus/changelog.gz
+8b92f1a9bc3cfba785bbd0a84605146a  usr/share/doc/runit-service-dbus/copyright
+a79ca2f2da71800130d2f21447eaf9ea  usr/share/runit/sv/dbus/check
+a102c29c42bb863d6369600fa7be32bb  usr/share/runit/sv/dbus/finish
+4c6fdb000ecaccfddc1a574cb2a3d409  usr/share/runit/sv/dbus/run
+ceb33e1a9419e2b176fdc4f5215cdfd5  usr/share/runit/usersv/dbus-session/log/run
+800813006a3dad9dc77e46b28e468501  usr/share/runit/usersv/dbus-session/run

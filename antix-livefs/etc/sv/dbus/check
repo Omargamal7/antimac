@@ -1,0 +1,4 @@
+#!/bin/sh
+dbus-send --system / org.freedesktop.DBus.Peer.Ping >/dev/null 2>/dev/null && exit 0
+
+exit 1

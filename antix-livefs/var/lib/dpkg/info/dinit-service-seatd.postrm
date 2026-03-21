@@ -1,0 +1,26 @@
+#!/bin/bash
+# postrm script for dinit-service-seatd.
+set -e
+
+SERVICE1="seatd"
+
+case "$1" in
+    remove|purge)
+		##### GLOBAL SERVICES #####
+		if test -e /etc/dinit.d/boot.d/$SERVICE1; then
+			echo "Removing from boot"
+			rm -rf /etc/dinit.d/boot.d/$SERVICE1
+		fi
+	;;
+	
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    ;;
+
+    *)
+        echo "postrm called with unknown argument '$1'" >&2
+        exit 1
+    ;;
+esac
+
+
+exit 0

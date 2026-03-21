@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# /usr/share/gazelle-installer-data/66-first-run
+#
+# This script is executed only once after a new install when booted in 66.
+# This is required because users need to be properly created for 66 to create user services.
+# After it is executed the /etc/66/rc.local gets replaced by a generic file
+#
+
+INSTANTIATED_SERVICE1="scandir@"
+INSTANTIATED_SERVICE2="boot-user@"
+INSTANTIATED_USER_SERVICE1="dbus@"
+
+COMMON_LIVE_USER1="demo"
+COMMON_LIVE_USER2="user"
+COMMON_LIVE_USER3="antix"
+COMMON_LIVE_USER4="debian"
+COMMON_LIVE_USER5="devuan"
+# Users that get created during antiX-build
+COMMON_LIVE_USER6="bin"
+COMMON_LIVE_USER7="root"
+COMMON_LIVE_USER8="sys"
+
+getent passwd $(basename -a /home/*) | awk -F: '{print $1}' | while read user; do
+
+# Clean-up of old live instantiated service remnants (using commonly known live usernames)
+66 remove ${INSTANTIATED_SERVICE1}${COMMON_LIVE_USER1} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE2}${COMMON_LIVE_USER1} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE1}${COMMON_LIVE_USER2} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE2}${COMMON_LIVE_USER2} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE1}${COMMON_LIVE_USER3} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE2}${COMMON_LIVE_USER3} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE1}${COMMON_LIVE_USER4} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE2}${COMMON_LIVE_USER4} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE1}${COMMON_LIVE_USER5} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE2}${COMMON_LIVE_USER5} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE1}${COMMON_LIVE_USER6} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE2}${COMMON_LIVE_USER6} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE1}${COMMON_LIVE_USER7} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE2}${COMMON_LIVE_USER7} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE1}${COMMON_LIVE_USER8} >/dev/null 2>&1
+66 remove ${INSTANTIATED_SERVICE2}${COMMON_LIVE_USER8} >/dev/null 2>&1
+
+# The below should catch any non-standard live usernames
+rm -rf /etc/66/conf/${INSTANTIATED_SERVICE1}*
+rm -rf /var/lib/66/system/service/svc/${INSTANTIATED_SERVICE1}*
+rm -rf /var/lib/66/system/.resolve/service/${INSTANTIATED_SERVICE1}*
+rm -rf /etc/66/conf/${INSTANTIATED_SERVICE2}*
+rm -rf /var/lib/66/system/service/svc/${INSTANTIATED_SERVICE2}*
+rm -rf /var/lib/66/system/.resolve/service/${INSTANTIATED_SERVICE2}*
+
+# Clean-up of old live user service remnants (using commonly known live usernames)
+runuser -u ${user} -- 66 remove ${INSTANTIATED_USER_SERVICE1}${COMMON_LIVE_USER1} >/dev/null 2>&1
+runuser -u ${user} -- 66 remove ${INSTANTIATED_USER_SERVICE1}${COMMON_LIVE_USER2} >/dev/null 2>&1
+runuser -u ${user} -- 66 remove ${INSTANTIATED_USER_SERVICE1}${COMMON_LIVE_USER3} >/dev/null 2>&1
+runuser -u ${user} -- 66 remove ${INSTANTIATED_USER_SERVICE1}${COMMON_LIVE_USER4} >/dev/null 2>&1
+runuser -u ${user} -- 66 remove ${INSTANTIATED_USER_SERVICE1}${COMMON_LIVE_USER5} >/dev/null 2>&1
+runuser -u ${user} -- 66 remove ${INSTANTIATED_USER_SERVICE1}${COMMON_LIVE_USER6} >/dev/null 2>&1
+runuser -u ${user} -- 66 remove ${INSTANTIATED_USER_SERVICE1}${COMMON_LIVE_USER7} >/dev/null 2>&1
+runuser -u ${user} -- 66 remove ${INSTANTIATED_USER_SERVICE1}${COMMON_LIVE_USER8} >/dev/null 2>&1
+
+# The below should catch any non-standard live usernames
+rm -rf /home/${user}/.66/conf/${INSTANTIATED_USER_SERVICE1}*
+rm -rf /home/${user}/.66/system/service/svc/${INSTANTIATED_USER_SERVICE1}*
+rm -rf /home/${user}/.66/system/.resolve/service/${INSTANTIATED_USER_SERVICE1}*
+
+# Properly generating instantiated services for new users
+66 parse ${INSTANTIATED_SERVICE1}${user} && 66 reconfigure ${INSTANTIATED_SERVICE1}${user} && 66 enable ${INSTANTIATED_SERVICE1}${user} 
+66 parse ${INSTANTIATED_SERVICE2}${user} && 66 reconfigure ${INSTANTIATED_SERVICE2}${user} && 66 enable ${INSTANTIATED_SERVICE2}${user} 
+runuser -u ${user} 66 parse ${INSTANTIATED_USER_SERVICE1}${user} && runuser -u ${user} 66 reconfigure ${INSTANTIATED_USER_SERVICE1}${user} && runuser -u ${user} 66 enable ${INSTANTIATED_USER_SERVICE1}${user}
+
+# Remove /root/.xinitrc & /root/.xsession if they persist
+rm -rf /root/.xinitrc
+rm -rf /root/.xsession
+
+done
+
+# Self-replace mechanism
+(sleep 3 && echo "#!/bin/sh">"/etc/66/rc.local") &

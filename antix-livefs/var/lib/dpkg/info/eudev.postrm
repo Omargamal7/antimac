@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+  purge)
+  rm -f /etc/udev/rules.d/70-persistent-*.rules
+  rmdir --ignore-fail-on-non-empty /etc/udev/rules.d/ 2> /dev/null || true
+  rm -f /lib/udev/hwdb.bin
+  rm -f /var/log/udev
+  if [ -f /run/runit.stopit ] && [ -h /etc/service/udevd ]; then
+    rm /etc/service/udevd && rmdir --ignore-fail-on-non-empty /etc/sv/udevd/ 2> /dev/null || true
+  else
+    update-rc.d udevd remove >/dev/null
+  fi
+  db_purge
+  ;;
+esac
+
+

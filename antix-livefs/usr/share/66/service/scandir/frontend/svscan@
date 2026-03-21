@@ -1,0 +1,28 @@
+[Main]
+Type = classic
+Version = %%version%%
+Description = "Create and start a nested scandir for @I"
+User = ( root )
+Depends = ( setenv@@I )
+Notify = 3
+TimeoutStart = 3000
+Options = ( log )
+
+[Start]
+RunAs = @I
+Execute = (
+    s6-setsid -qb --
+    umask 022
+    execl-cmdline -s { 66 ${Args66} scandir ${ArgsScandirStart} }
+)
+
+[Stop]
+RunAs = @I
+Execute = (
+    execl-cmdline -s { 66 ${Args66} scandir ${ArgsScandirStop} }
+)
+
+[Environment]
+Args66=!%%verbosity_level%% %%livedir%%
+ArgsScandirStart=!start %%notify%% %%use_environment%%
+ArgsScandirStop=!stop

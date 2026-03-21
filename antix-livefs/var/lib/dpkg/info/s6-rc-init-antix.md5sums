@@ -1,0 +1,7 @@
+6d2f1ea4f1611f328fb4995675a7a9fa  usr/lib/s6-rc/halt
+18641ae44ca46a01540ebbb34e43db25  usr/lib/s6-rc/poweroff
+a06bf0cc4142830b4768cc7ff88c737b  usr/lib/s6-rc/reboot
+3aaf0f384ae543feb3731d00194c0445  usr/lib/s6-rc/s6-rc-init
+863c5375200be6432b99e38b8a813a09  usr/share/doc/s6-rc-init-antix/changelog.gz
+8b92f1a9bc3cfba785bbd0a84605146a  usr/share/doc/s6-rc-init-antix/copyright
+d41d8cd98f00b204e9800998ecf8427e  var/lib/s6-rc/rc/compiled

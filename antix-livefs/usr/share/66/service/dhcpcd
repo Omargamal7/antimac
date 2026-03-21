@@ -1,0 +1,16 @@
+[Main]
+Type = classic
+Version = 0.0.2
+Description = "dhcpcd daemon"
+User = ( root )
+
+[Start]
+Execute = (  execl-cmdline -s {  dhcpcd ${ArgsStart} } )
+
+[Stop]
+Execute = (  execl-cmdline -s {  dhcpcd ${ArgsStop} } )
+
+[Environment]
+ArgsStart=!-B ${ArgsConfFile}
+ArgsStop=!-x
+ArgsConfFile=!-f /etc/dhcpcd.conf

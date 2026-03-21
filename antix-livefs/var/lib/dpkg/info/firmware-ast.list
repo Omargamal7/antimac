@@ -1,0 +1,13 @@
+/.
+/usr
+/usr/lib
+/usr/lib/firmware
+/usr/lib/firmware/ast_dp501_fw.bin
+/usr/share
+/usr/share/bug
+/usr/share/bug/firmware-ast
+/usr/share/bug/firmware-ast/presubj
+/usr/share/doc
+/usr/share/doc/firmware-ast
+/usr/share/doc/firmware-ast/changelog.Debian.gz
+/usr/share/doc/firmware-ast/copyright

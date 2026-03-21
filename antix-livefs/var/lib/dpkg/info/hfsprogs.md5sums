@@ -1,0 +1,8 @@
+f98c496901180d0d1820ba9d443ee8ee  usr/sbin/fsck.hfsplus
+dd8d08897d553f61f9daddebcec2d580  usr/sbin/mkfs.hfsplus
+f66ec7febce336753d50629302bfa485  usr/share/doc/hfsprogs/README.Debian
+452cac6c7e3ad52bae114e86585a375c  usr/share/doc/hfsprogs/changelog.Debian.gz
+55d08797ef33c768cb93cc495d4d6761  usr/share/doc/hfsprogs/copyright
+eb19e858ac4d1031ab91f9e3cb088c17  usr/share/man/man8/fsck.hfsplus.8.gz
+482bb6cbccbe4c32192f627c9ea0ee3a  usr/share/man/man8/mkfs.hfsplus.8.gz
+10f65c77f6a1968b15abb648bfb5ce36  usr/share/misc/hfsbootdata

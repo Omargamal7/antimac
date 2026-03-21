@@ -1,0 +1,42 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Check filesystem partition"
+User = ( root )
+Depends = ( system-fontnkey devices-branch )
+StdOut = s6log:%%livedir%%/log/system-fsck
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp system-fsck -1 /dev/console check filesystem }
+
+    execl-envfile ${ConfFile}
+    ifelse -X { test ${FORCECHCK} = yes }
+    {
+        if { 66-yeller -cdp system-fsck -1 /dev/console FORCECHCK was asked... }
+        execl-cmdline -s {
+            ## By default the output of the command
+            ## got to the /run/66/log/system-fsck/current file.
+            ## Uncomment the following line if you want 
+            ## to see the output on the console.
+            redirfd 1 /dev/console
+            fsck -f ${Args} 
+
+        }
+    }
+    foreground {
+        # redirfd 1 /dev/console
+        execl-cmdline -s { fsck ${Args} } 
+    }
+    importas ? ?
+    ifelse { test $? -gt 1 }
+    {
+        66-yeller -Wcdp system-fsck -1 /dev/console fsck reports errors -- at least system should be rebooted
+    }
+    true
+)
+
+[Environment]
+Args=!-A -T -a noopts=_netdev
+ConfFile=!%%bootconf%%

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: snapshot</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="snapshot">snapshot</h1>
+<p>This command handles snapshot of the 66 ecosystem of the owner of the process.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>snapshot [ -h ] create|restore|remove|list [&#60;subcommand options&#62;] name
+</code></pre>
+<p>This command creates, removes, restores or list snapshot of the 66 ecosystem for the owner of the current process depending on the provided options. This command requires a functioning 66 ecosystem and does not verify the presence of mandatory 66 directories or files. Therefore, avoid using this command during the initial installation of 66 without first running another 66 command.</p>
+<p><strong>This command only handle 66 ecosystem for the owner of the process</strong>. Making a snapshot as <code>root</code> do not handle users 66 ecosystem.</p>
+<p>This command can be used at any time without impacting the state of the running services and may be usefull to downgrade a 66 ecosystem if a 66 automatic upgrade process go wrong whatever the reason.</p>
+<p>This command can also usefull to transfert the exact same 66 ecosystem from a machine to another making a snapshot, copying it to the targeted machine and restoring it.</p>
+<h2 id="options">Options</h2>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h2 id="subcommands">Subcommands</h2>
+<ul>
+<li><strong>create</strong>: creates a snapshot of the 66 ecosystem.</li>
+<li><strong>restore</strong>: restores a snapshot called <em>name</em>.</li>
+<li><strong>remove</strong>: deletes a snapshot called <em>name</em>.</li>
+<li><strong>list</strong>: list available snapshot.</li>
+</ul>
+<h2 id="usage-examples">Usage examples</h2>
+<p>Creates a snapshot named foo</p>
+<pre><code>66 snapshot create foo
+</code></pre>
+<p>Restores a snapshot named foo</p>
+<pre><code>66 snapshot restore foo
+</code></pre>
+<p>Deletes a snapshot named foo</p>
+<pre><code>66 snapshot remove foo
+</code></pre>
+<p>List all available snapshot</p>
+<pre><code>66 snapshot list
+</code></pre>
+<h3 id="create">create</h3>
+<p>This subcommand creates a snapshot that doesn&#8217;t exist yet.</p>
+<h4 id="interface-1">Interface</h4>
+<pre><code>snapshot create [ -h ] *name*
+</code></pre>
+<p>This subcommand make a snapshot called <em>named</em> containing a verbatim copy of the <code>%%system_dir%%&#47;system</code>, <code>/etc/66</code>, <code>/etc/66/conf</code>, <code>/etc/66/environment</code>, <code>/etc/66/seed</code>, <code>/etc/66/service</code>, <code>/usr/share/66/service</code>, <code>/usr/share/66/script</code> and <code>/usr/share/66/seed</code> for <code>root</code> user, and make a verbatim copy of the <code>$HOME&#47;.66&#47;system</code>, <code>$HOME&#47;.66/service</code>, <code>$HOME&#47;.66/script</code>, <code>$HOME&#47;.66/conf</code>, <code>$HOME&#47;.66/seed</code> and <code>$HOME&#47;.66/environment</code> directory for regular users.</p>
+<p><code>/run/66</code>, <code>/var/log/66</code> and <code>$HOME&#47;.66/log</code> for regular users are not taken into account.</p>
+<p>The prefix <code>system@</code> is reserved for snapshot names used in automatic upgrade processes. Please consider to choose a different prefix for your personal snapshot names.</p>
+<h4 id="options-1">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h4 id="usage-examples-1">Usage examples</h4>
+<p>Creates a snapshot named <code>fooback</code></p>
+<pre><code>66 snapshot create fooback
+</code></pre>
+<h3 id="restore">restore</h3>
+<p>This subcommand restores a previously created snapshot.</p>
+<h4 id="interface-2">Interface</h4>
+<pre><code>snapshot restore [ -h ] *name*
+</code></pre>
+<p>This subcommand restores a previously created snapshot called <em>name</em>.</p>
+<p>You can get a list of available snapshot invocating the <a href="#list">list</a> subcommand.</p>
+<h4 id="options-2">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h4 id="usage-examples-2">Usage examples</h4>
+<p>Restores a snapshot named <code>fooback</code></p>
+<pre><code>66 snapshot restore fooback
+</code></pre>
+<h3 id="remove">remove</h3>
+<p>This subcommand removes a previously created snapshot.</p>
+<h4 id="interface-3">Interface</h4>
+<pre><code>snapshot remove [ -h ] *name*
+</code></pre>
+<p>This subcommand removes a previously created snapshot called <em>name</em>. This operation <strong>cannot be</strong> undone. Process with caution.</p>
+<p>You can get a list of available snapshot invocating the <a href="#list">list</a> subcommand.</p>
+<h4 id="options-3">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h4 id="usage-examples-3">Usage examples</h4>
+<p>Removes a snapshot named <code>fooback</code></p>
+<pre><code>66 snapshot remove fooback
+</code></pre>
+<h3 id="list">list</h3>
+<p>This subcommand list available snapshot.</p>
+<h4 id="interface-4">Interface</h4>
+<pre><code>snapshot list [ -h ]
+</code></pre>
+<p>This subcommand list all available snapshot for the owner of the current process.</p>
+<h4 id="options-4">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h4 id="usage-examples-4">Usage examples</h4>
+<p>List available snapshot</p>
+<pre><code>66 snapshot list
+</code></pre>
+</body>
+</html>

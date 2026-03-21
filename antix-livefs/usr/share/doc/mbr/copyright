@@ -1,0 +1,33 @@
+This is Debian GNU/Linux's prepackaged version of the MBR Master Boot
+Record for IBM PC compatible computers, by Neil Turton. MBR is used
+in conjunction with other boot loaders such as LILO and the DOS boot
+loader, which are installed on hard disk partitions. MBR makes it possible
+to select one of these partition boot loaders for booting.
+
+The author of this program is Neil Turton <neilt@chiark.greenend.org.uk>.
+
+This package was first put together by Bruce Perens <bruce@hams.com>,
+then it was maintained by Santiago Vila <sanvila@debian.org> and it is
+currently maintained by Santiago García Mantiñán <manty@debian.org>.
+
+The source for the old versions of mbr is available at:
+
+http://www.chiark.greenend.org.uk/~neilt/mbr/
+
+However current source code is available directly from Debian.
+
+Program Copyright (C) 1995, 1999-2001 Neil Turton.
+Modifications for Debian GNU/Linux Copyright (C) 1995 Bruce Perens.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+On Debian GNU/Linux systems, the complete text of the GNU General
+Public License can be found in `/usr/share/common-licenses/GPL'.

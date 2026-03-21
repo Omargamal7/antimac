@@ -1,0 +1,34 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount /tmp directory"
+User = ( root )
+StdOut = s6log:%%livedir%%/log/mount-tmp
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp mount-tmp -1 /dev/console mount /tmp directory }
+    if -nt {
+
+        execl-cmdline -s { execl-toc -X -m /tmp ${Args} }
+
+    }
+    66-yeller -fcdp mount-tmp -1 /dev/console crashed!
+)
+
+[Stop]
+Execute=
+(
+    if { 66-yeller -cdp mount-tmp -1 /dev/console stops... }
+    if -nt {
+
+        execl-toc -tD -m /tmp umount -lR /tmp
+
+    }
+    66-yeller -fcdp mount-tmp -1 /dev/console crashed!
+)
+
+[Environment]
+Args=!-o noatime,nodev,nosuid -t tmpfs -d tmp
+

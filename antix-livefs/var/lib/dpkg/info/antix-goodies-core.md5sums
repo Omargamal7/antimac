@@ -1,0 +1,16 @@
+62f31ac4f36925d0ec438eea1adbf1eb  usr/local/bin/BroadcomStartup
+1ebb4e70bfcecbc40f831be5ca1f7b57  usr/local/bin/boot-log
+0c2e86a633b91a7ee94912a462f16485  usr/local/bin/env-info
+90de09da55a2ede5f18ab06678a4c76c  usr/local/bin/fancy-prompts.bash
+5808c51e7e1846c27e24d9ad026ab9cc  usr/local/bin/fancy-prompts.zsh
+a623e035215842e1e7bf097f71f46419  usr/local/bin/guess-hwclock
+26fc5f2405c21cb8cba01c411be8016f  usr/local/bin/my_installed_debs
+6f1bd38a2edd1b15865796aae13d0ef8  usr/local/bin/pmrp
+b20e9bea6162309b7901c32b0e3ae19d  usr/local/bin/process-reaper
+eb3d9d6504fb7d431144c646ecfab47e  usr/local/bin/ps_initrd.sh
+c2ab7bb7fb5171d76337c2ed6cc7d8ee  usr/local/bin/ps_mem.py
+36dc3ce833951434ed4d66152141faac  usr/local/bin/sort_by_size
+ddcd06db80aa399d8e5cd69197455b27  usr/local/bin/start-t
+7870dfa0bf755aa6e919c33106ac727b  usr/local/bin/zram
+525138fcb045924c299a2c33f16813ce  usr/share/doc/antix-goodies-core/changelog.gz
+7ce5d8d43dc2da5a87b5db6845e651ae  usr/share/doc/antix-goodies-core/copyright

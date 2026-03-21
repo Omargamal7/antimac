@@ -1,0 +1,78 @@
+====================
+TODO file for Recode
+====================
+
+Tell rrt@sc3d.org if you feel like volunteering
+for any of these ideas, listed more or less in decreasing order
+of priority.
+
+Before next official release
+============================
+
++ Revise everything about explodes.
++ Update NEWS for latest libiconv and latest Keld tables.
++ Remove TeX edition warnings, rephrase whatever required.
++ Complete inter-node and menu references, as necessary.
+
+Keld
+====
+
++ recode
+
+  + New tables from Keld
+  + Revise diagnostics
+
++ Standards aspects
+
+  + Wait for PostScript
+
+    + charset in 14652
+    + transliteration in 14652
+    + API in 15435
+    + recoding/iconv APIs (->Handa)
+
++ Miscellaneous
+
+  + African tables
+  + Unicode/W3C short-comings
+
+    + Lithuanian
+
+Particular notes
+================
+
++ feuille Tamil
++ New RFC 1345 tables, still some diagnostics
+
+Charsets
+========
+
++ Clean up applemac vs macintosh and ibmpc vs ibm437.
++ Implement RFC1345 more fully.
++ Generalize older charsets (latex, texte, etc.) to RFC 1345 mnemonics.
++ Support VT320 support and related character sets.  (Alain Simon)
++ Support @code{[nt]roff} diacritics.
++ Support Universite de Montreal *accent* convention.
+
+Surfaces
+========
+
++ Implement some invbits over 8, 7 or 6 bits, maybe more.
++ CR-LF, in ibmpc.c (implied by IBMPC?)
++ CR, in applemac.c (implied by Apple-Mac?)
++ Message headers [RFC 1342]
++ Mnemonic and Mnemo (maybe?) [RFC 1345]
++ Integrate -c and -g into charsets.
++ Find something for ``recode -g ibmpc:ibmpc`` to do what it suggests
++ Option -M (implying -i) to process MIME headers
+
+Mechanics
+=========
+
++ Intercept signals to cleanup the temporary files in any event.
++ Revise --force thoroughly.
++ Rewrite .l converters for lat1{asci,ltex,txte}, for --force.
++ Optimize/merge all one-to-many cases.
++ Write a better ``make check``, not as partial and forgiving.
++ Have -l know which output charset to use (Martin Maechler, 93-12-07).
++ Take note that ->RFC1345 recodings are non reversible.

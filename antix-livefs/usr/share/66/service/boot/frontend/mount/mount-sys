@@ -1,0 +1,22 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount /sys directory"
+User = ( root )
+Depends = ( mount-proc )
+StdOut = s6log:%%livedir%%/log/mount-sys
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp mount-sys -1 /dev/console mount /sys directory }
+    if -nt {
+
+        execl-cmdline -s { execl-toc -X -m /sys ${Args} }
+
+    }
+    66-yeller -fcdp mount-sys -1 /dev/console crashed!
+)
+
+[Environment]
+Args=!-o nosuid,noexec,nodev -t sysfs -d sys

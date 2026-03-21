@@ -1,0 +1,13 @@
+# log service conf, rename into 'conf' to enable a system-wide log conf,
+# or copy as 'conf' in /etc/sv/<service>/log/ for a service specific conf.
+
+# the following are customizable here
+
+# directory for svlogd log dirs
+#RUNITLOG=/var/log/runit
+
+# buffer, see svlogd(8)
+#BUFFER=2048
+
+# this user must exists in the system
+#LOGUSER=_runit-log

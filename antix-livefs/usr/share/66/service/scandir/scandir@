@@ -1,0 +1,36 @@
+[Main]
+Type = module
+Version = 0.8.1
+Description = "Create a nested scandir for @I"
+User = ( root )
+InTree = session
+
+[Regex]
+Configure="@I"
+Files = ( @M=@I )
+InFiles = (
+::%%version%%=0.8.1 )
+
+[Environment]
+## Run the scandir at LIVE_DIRECTORY.
+## Need to be an absolute path.
+## If commented the default is /run/66
+
+#LIVE_DIRECTORY=/run/66
+
+## Create an associated logger [yes|no]
+
+LOGGER=!yes
+
+## Launch the scandir with a environment [yes|no].
+## The environment directory is: $HOME/.66/conf/svscan@@I
+
+USE_ENVIRONMENT=!no
+
+## Use notification [yes|no]
+
+NOTIFY=!yes
+
+## Level of verbosity [0-5]
+
+VERBOSITY_LEVEL=!3

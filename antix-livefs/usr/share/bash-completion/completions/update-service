@@ -1,0 +1,31 @@
+# Wed, 13 Mar  2024 16:47:14 +0100
+# bash-completion for update-service
+
+_update-service_services()
+{
+SVDLIST=$(ls --color=no /etc/sv)
+for svd in /usr/share/runit/sv.current/* ; do
+      svdbase=${svd##*/}
+      [ ! -d /etc/sv/$svdbase ] && SVDLIST="$SVDLIST $svdbase"
+done
+echo "$SVDLIST"
+}
+
+_update-service_comm()
+{
+    echo "--add enable --remove disable --list --check "
+}
+
+_update-services()
+{
+    cur=${COMP_WORDS[COMP_CWORD]}
+    prev=${COMP_WORDS[COMP_CWORD-1]}
+    if [ $COMP_CWORD -eq 1 ]; then
+        COMPREPLY=( $( compgen -W "$(_update-service_comm)" -- "$cur" ) )
+    elif [ $COMP_CWORD -eq 2 ]; then
+        COMPREPLY=( $( compgen -W "$(_update-service_services)" $cur ) )
+        _filedir -d
+    fi
+}
+
+complete -F _update-services update-service

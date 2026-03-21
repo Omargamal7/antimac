@@ -1,0 +1,28 @@
+#!/bin/sh -u
+# Deliberately NO `set -e'. See #923957.
+initdir="${1}"
+set +u
+if [ x = x$2 ]; then
+	rcommand=start
+	rX=S
+else
+	rcommand=stop
+	rX=K
+fi
+set -u
+for script in "$initdir/$rX"* ; do
+	[ ! -x "$script" ] && continue
+	path=$(realpath "$script")
+	name=${path##*/}
+	[ -f /etc/runit/override-sysv.d/"$name".block ] && continue
+	[ -f /etc/runit/override-sysv.d/"$name".pkgblock ] && continue
+	if [ -f /etc/runit/override-sysv.d/"$name".sysv ]; then
+		"$script" "$rcommand"
+		continue
+	fi
+	[ -L "/etc/service/$name" ] && continue
+# undo fix for #1022837 but provide alternative, see #1071395
+	[ -d "/etc/sv/$name" ] && continue
+	[ -d "/usr/share/runit/sv.current/$name" ] && continue
+	"$script" "$rcommand"
+done

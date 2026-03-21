@@ -1,0 +1,17 @@
+/.
+/usr
+/usr/lib
+/usr/lib/firmware
+/usr/lib/firmware/b43
+/usr/lib/firmware/b43/.placeholder
+/usr/share
+/usr/share/doc
+/usr/share/doc/firmware-b43-installer
+/usr/share/doc/firmware-b43-installer/changelog.Debian.gz
+/usr/share/doc/firmware-b43-installer/changelog.gz
+/usr/share/doc/firmware-b43-installer/copyright
+/usr/share/lintian
+/usr/share/lintian/overrides
+/usr/share/lintian/overrides/firmware-b43-installer
+/usr/share/metainfo
+/usr/share/metainfo/org.kernel.drivers.firmware-b43-installer.metainfo.xml

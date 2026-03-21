@@ -1,0 +1,19 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: fbcat
+Upstream-Contact: Piotr Lewandowski <piotr.lewandowski@gmail.com>,
+                  Jakub Wilk <jwilk@jwilk.net>
+Source: https://github.com/jwilk/fbcat
+
+Files: *
+Copyright: 2009, Piotr Lewandowski <piotr.lewandowski@gmail.com>
+           2009-2020 Jakub Wilk <jwilk@jwilk.net>
+License: GPL-2
+
+Files: debian/*
+Copyright: 2009, 2012, Piotr Lewandowski <piotr.lewandowski@gmail.com>
+           2009, Luca Bruno <lucab@debian.org>
+License: GPL-2
+
+License: GPL-2
+ On Debian systems, the complete text of the GNU General Public License can
+ be found in /usr/share/common-licenses/GPL-2.

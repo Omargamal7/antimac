@@ -1,0 +1,34 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount /tmp directory"
+User = ( root )
+Depends = (
+    system-branch
+    mount-rw
+    mount-swap
+    mount-netfs
+    local-iptables
+    local-ip6tables
+    local-nftables
+    local-ebtables
+    local-arptables
+    local-loop
+    local-sethostname
+    local-time
+    local-authfiles
+    local-tmpfiles
+    local-rc
+    local-dmesg
+)
+StdOut = s6log:%%livedir%%/log/local-branch
+
+[Start]
+Execute = (
+    66-yeller -cdp local-branch -1 /dev/console completed
+)
+
+[Stop]
+Execute= (
+    66-yeller -cdp local-branch -1 /dev/console completed
+)

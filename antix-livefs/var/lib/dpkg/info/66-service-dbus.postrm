@@ -1,0 +1,306 @@
+#!/bin/sh
+# postrm script for 66-service-dbus.
+#
+# See: dh_installdeb(1).
+
+set -e
+
+# Summary of how this script can be called:
+#        * <postrm> 'remove'
+#        * <postrm> 'purge'
+#        * <old-postrm> 'upgrade' <new-version>
+#        * <new-postrm> 'failed-upgrade' <old-version>
+#        * <new-postrm> 'abort-install'
+#        * <new-postrm> 'abort-install' <old-version>
+#        * <new-postrm> 'abort-upgrade' <old-version>
+#        * <disappearer's-postrm> 'disappear' <overwriter>
+#          <overwriter-version>
+# for details, see https://www.debian.org/doc/debian-policy/ or
+# the debian-policy package.
+
+SERVICE1="dbus"
+SERVICE2="service2"
+SERVICE3="service3"
+SERVICE4="service4"
+
+USER_SERVICE1="user-service1"
+USER_SERVICE2="user-service2"
+USER_SERVICE3="user-service3"
+USER_SERVICE4="user-service4"
+
+INSTANTIATED_SERVICE1="instantiated-service1"
+INSTANTIATED_SERVICE2="instantiated-service2"
+INSTANTIATED_SERVICE3="instantiated-service3"
+INSTANTIATED_SERVICE4="instantiated-service4"
+
+INSTANTIATED_USER_SERVICE1="dbus@"
+INSTANTIATED_USER_SERVICE2="instantiated-user-service2"
+INSTANTIATED_USER_SERVICE3="instantiated-user-service3"
+INSTANTIATED_USER_SERVICE4="instantiated-user-service4"
+
+case "$1" in
+    remove)
+	;;
+
+    purge)
+		##### GLOBAL SERVICES #####
+		if test -f /etc/66/conf/$SERVICE1; then
+			echo "Purging /etc/66/conf/"$SERVICE1
+			rm  /etc/66/service/$SERVICE1
+		fi
+		if test -f /usr/share/66/service/$SERVICE1; then
+			echo "Purging /usr/share/service/"$SERVICE1
+			rm  /usr/share/66/service/$SERVICE1
+		fi
+		if test -e /etc/66/conf/$SERVICE1; then
+			echo "Purging /etc/66/conf/"$SERVICE1
+			rm -rf /etc/66/conf/$SERVICE1
+		fi
+		if test -f /etc/66/service/$SERVICE2; then
+			echo "Purging /etc/66/service/"$SERVICE2
+			rm  /etc/66/service/$SERVICE2
+		fi
+		if test -f /usr/share/66/service/$SERVICE2; then
+			echo "Purging /usr/share/service/"$SERVICE2
+			rm  /usr/share/66/service/$SERVICE2
+		fi
+		if test -e /etc/66/conf/$SERVICE2; then
+			echo "Purging /etc/66/conf/"$SERVICE2
+			rm -rf /etc/66/conf/$SERVICE2
+		fi
+		if test -f /etc/66/service/$SERVICE3; then
+			echo "Purging /etc/66/service/"$SERVICE3
+			rm  /etc/66/service/$SERVICE3
+		fi
+		if test -f /usr/share/66/service/$SERVICE3; then
+			echo "Purging /usr/share/service/"$SERVICE3
+			rm  /usr/share/66/service/$SERVICE3
+		fi
+		if test -e /etc/66/conf/$SERVICE3; then
+			echo "Purging /etc/66/conf/"$SERVICE3
+			rm -rf /etc/66/conf/$SERVICE3
+		fi
+		if test -f /etc/66/service/$SERVICE4; then
+			echo "Purging /etc/66/service/"$SERVICE4
+			rm  /etc/66/service/$SERVICE4
+		fi
+		if test -f /usr/share/66/service/$SERVICE4; then
+			echo "Purging /usr/share/service/"$SERVICE4
+			rm  /usr/share/66/service/$SERVICE4
+		fi
+		if test -e /etc/66/conf/$SERVICE4; then
+			echo "Purging /etc/66/conf/"$SERVICE4
+			rm -rf /etc/66/conf/$SERVICE4
+		fi
+		##### USER SERVICES #####
+		if test -f /etc/66/service/user/$USER_SERVICE1; then
+			echo "Purging /etc/66/service/user/"$USER_SERVICE1
+			rm /etc/66/service/user/$USER_SERVICE1
+		fi
+		if test -f /usr/share/66/service/user/$USER_SERVICE1; then
+			echo "Purging /etc/66/service/user/"$USER_SERVICE1
+			rm /usr/share/66/service/user/$USER_SERVICE1
+		fi
+		getent passwd $(basename -a /home/*) | awk -F: '{print $1}' | while read user; do 
+		if test -f /home/$user/.66/service/$USER_SERVICE1; then
+			echo "Purging /home/user/.66/service/"$USER_SERVICE1
+			rm /home/$user/.66/service/$USER_SERVICE1
+		fi
+		if test -e /home/$user/.66/conf/$USER_SERVICE1; then
+			echo "Purging /home/$user/.66/conf/$"$USER_SERVICE1
+			rm -rf /home/$user/.66/conf/$USER_SERVICE1
+		fi
+		done
+		if test -f /etc/66/service/user/$USER_SERVICE2; then
+			echo "Purging /etc/66/service/user/"$USER_SERVICE2
+			rm -rf /etc/66/service/user/$USER_SERVICE2
+		fi
+		if test -f /usr/share/66/service/user/$USER_SERVICE2; then
+			echo "Purging /etc/66/service/user/"$USER_SERVICE2
+			rm /usr/share/66/service/user/$USER_SERVICE2
+		fi
+		getent passwd $(basename -a /home/*) | awk -F: '{print $1}' | while read user; do 
+		if test -f /home/$user/.66/service/$USER_SERVICE2; then
+			echo "Purging /home/user/.66/service/"$USER_SERVICE2
+			rm /home/$user/.66/service/$USER_SERVICE2
+		fi
+		if test -e /home/$user/.66/conf/$USER_SERVICE2; then
+			echo "Purging /home/$user/.66/conf/$"$USER_SERVICE2
+			rm -rf /home/$user/.66/conf/$USER_SERVICE2
+		fi
+		done
+		if test -f /etc/66/service/user/$USER_SERVICE3; then
+			echo "Purging /etc/66/service/user/"$USER_SERVICE3
+			rm /etc/66/service/user/$USER_SERVICE3
+		fi
+		if test -f /usr/share/66/service/user/$USER_SERVICE3; then
+			echo "Purging /etc/66/service/user/"$USER_SERVICE3
+			rm /usr/share/66/service/user/$USER_SERVICE3
+		fi
+		getent passwd $(basename -a /home/*) | awk -F: '{print $1}' | while read user; do 
+		if test -f /home/$user/.66/service/$USER_SERVICE3; then
+			echo "Purging /home/user/.66/service/"$USER_SERVICE3
+			rm /home/$user/.66/service/$USER_SERVICE3
+		fi
+		if test -e /home/$user/.66/conf/$USER_SERVICE3; then
+			echo "Purging /home/$user/.66/conf/$"$USER_SERVICE3
+			rm -rf /home/$user/.66/conf/$USER_SERVICE3
+		fi
+		done
+		if test -f /etc/66/service/user/$USER_SERVICE4; then
+			echo "Purging /etc/66/service/user/"$USER_SERVICE4
+			rm /etc/66/service/user/$USER_SERVICE4
+		fi
+		if test -f /usr/share/66/service/user/$USER_SERVICE4; then
+			echo "Purging /etc/66/service/user/"$USER_SERVICE4
+			rm /usr/share/66/service/user/$USER_SERVICE4
+		fi
+		getent passwd $(basename -a /home/*) | awk -F: '{print $1}' | while read user; do 
+		if test -f /home/$user/.66/service/$USER_SERVICE4; then
+			echo "Purging /home/user/.66/service/"$USER_SERVICE4
+			rm /home/$user/.66/service/$USER_SERVICE4
+		fi
+		if test -e /home/$user/.66/conf/$USER_SERVICE4; then
+			echo "Purging /home/$user/.66/conf/$"$USER_SERVICE4
+			rm -rf /home/$user/.66/conf/$USER_SERVICE4
+		fi
+		done
+		##### INSTANTIATED SERVICES #####
+		if test -e /etc/66/service/${INSTANTIATED_SERVICE1%@}; then
+			echo "Purging /etc/66/service/"${INSTANTIATED_SERVICE1%@}
+			rm  -rf /etc/66/service/${INSTANTIATED_SERVICE1%@}
+		fi
+		if test -e /usr/share/66/service/${INSTANTIATED_SERVICE1%@}; then
+			echo "Purging /usr/share/service/"${INSTANTIATED_SERVICE1%@}
+			rm -rf /usr/share/66/service/${INSTANTIATED_SERVICE1%@}
+		fi
+		if test -e /etc/66/conf/$INSTANTIATED_SERVICE1*; then
+			echo "Purging /etc/66/conf/"$INSTANTIATED_SERVICE1
+			rm  -rf /etc/66/conf/$INSTANTIATED_SERVICE1*
+		fi
+		if test -e /etc/66/service/${INSTANTIATED_SERVICE2%@}; then
+			echo "Purging /etc/66/service/"${INSTANTIATED_SERVICE2%@}
+			rm  -rf /etc/66/service/${INSTANTIATED_SERVICE2%@}
+		fi
+		if test -e /usr/share/66/service/${INSTANTIATED_SERVICE2%@}; then
+			echo "Purging /usr/share/service/"${INSTANTIATED_SERVICE2%@}
+			rm -rf /usr/share/66/service/${INSTANTIATED_SERVICE2%@}
+		fi
+		if test -e /etc/66/conf/$INSTANTIATED_SERVICE2*; then
+			echo "Purging /etc/66/conf/"$INSTANTIATED_SERVICE2
+			rm  -rf /etc/66/conf/$INSTANTIATED_SERVICE2*
+		fi
+		if test -e /etc/66/service/${INSTANTIATED_SERVICE3%@}; then
+			echo "Purging /etc/66/service/"${INSTANTIATED_SERVICE3%@}
+			rm  -rf /etc/66/service/${INSTANTIATED_SERVICE3%@}
+		fi
+		if test -e /usr/share/66/service/${INSTANTIATED_SERVICE3%@}; then
+			echo "Purging /usr/share/service/"${INSTANTIATED_SERVICE3%@}
+			rm -rf /usr/share/66/service/${INSTANTIATED_SERVICE3%@}
+		fi
+		if test -e /etc/66/conf/$INSTANTIATED_SERVICE3*; then
+			echo "Purging /etc/66/conf/"$INSTANTIATED_SERVICE3
+			rm  -rf /etc/66/conf/$INSTANTIATED_SERVICE3*
+		fi
+		if test -e /etc/66/service/${INSTANTIATED_SERVICE4%@}; then
+			echo "Purging /etc/66/service/"${INSTANTIATED_SERVICE4%@}
+			rm  -rf /etc/66/service/${INSTANTIATED_SERVICE4%@}
+		fi
+		if test -e /usr/share/66/service/${INSTANTIATED_SERVICE4%@}; then
+			echo "Purging /usr/share/service/"${INSTANTIATED_SERVICE4%@}
+			rm -rf /usr/share/66/service/${INSTANTIATED_SERVICE4%@}
+		fi
+		if test -e /etc/66/conf/$INSTANTIATED_SERVICE4*; then
+			echo "Purging /etc/66/conf/"$INSTANTIATED_SERVICE4
+			rm  -rf /etc/66/conf/$INSTANTIATED_SERVICE4*
+		fi		
+		##### INSTANTIATED USER SERVICES #####
+		if test -e /etc/66/service/user/$INSTANTIATED_USER_SERVICE1; then
+			echo "Purging /etc/66/service/user/"$INSTANTIATED_USER_SERVICE1
+			rm -rf /etc/66/service/user/$INSTANTIATED_USER_SERVICE1
+		fi
+		if test -e /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE1; then
+			echo "Purging /etc/66/service/user/"$INSTANTIATED_USER_SERVICE1
+			rm -rf /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE1
+		fi
+		getent passwd $(basename -a /home/*) | awk -F: '{print $1}' | while read user; do 
+		if test -e /home/$user/.66/conf/$INSTANTIATED_USER_SERVICE1$user; then
+			echo "Purging /home/user/.66/conf/"$INSTANTIATED_USER_SERVICE1$user
+			rm -rf /home/$user/.66/conf/$INSTANTIATED_USER_SERVICE1$user
+		fi
+		if test -e /home/$user/.66/system/service/svc/$INSTANTIATED_USER_SERVICE1$user; then
+			echo "Purging /home/user/.66/system/service/svc/"$INSTANTIATED_USER_SERVICE1$user
+			rm -rf /home/$user/.66/system/service/svc/$INSTANTIATED_USER_SERVICE1$user*
+		fi
+		done
+		if test -e /etc/66/service/user/$INSTANTIATED_USER_SERVICE2; then
+			echo "Purging /etc/66/service/user/"$INSTANTIATED_USER_SERVICE2
+			rm -rf /etc/66/service/user/$INSTANTIATED_USER_SERVICE2
+		fi
+		if test -e /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE2; then
+			echo "Purging /etc/66/service/user/"$INSTANTIATED_USER_SERVICE2
+			rm -rf /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE2
+		fi
+		getent passwd $(basename -a /home/*) | awk -F: '{print $1}' | while read user; do 
+		if test -e /home/$user/.66/conf/$INSTANTIATED_USER_SERVICE2$user; then
+			echo "Purging /home/user/.66/conf/"$INSTANTIATED_USER_SERVICE2$user
+			rm -rf /home/$user/.66/conf/$INSTANTIATED_USER_SERVICE2$user
+		fi
+		if test -e /home/$user/.66/system/service/svc/$INSTANTIATED_USER_SERVICE2$user; then
+			echo "Purging /home/user/.66/system/service/svc/"$INSTANTIATED_USER_SERVICE2$user
+			rm -rf /home/$user/.66/system/service/svc/$INSTANTIATED_USER_SERVICE2$user*
+		fi
+		done
+		if test -e /etc/66/service/user/$INSTANTIATED_USER_SERVICE3; then
+			echo "Purging /etc/66/service/user/"$INSTANTIATED_USER_SERVICE3
+			rm -rf /etc/66/service/user/$INSTANTIATED_USER_SERVICE3
+		fi
+		if test -e /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE3; then
+			echo "Purging /etc/66/service/user/"$INSTANTIATED_USER_SERVICE3
+			rm -rf /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE3
+		fi
+		getent passwd $(basename -a /home/*) | awk -F: '{print $1}' | while read user; do 
+		if test -e /home/$user/.66/conf/$INSTANTIATED_USER_SERVICE3$user; then
+			echo "Purging /home/user/.66/conf/"$INSTANTIATED_USER_SERVICE3$user
+			rm -rf /home/$user/.66/conf/$INSTANTIATED_USER_SERVICE3$user
+		fi
+		if test -e /home/$user/.66/system/service/svc/$INSTANTIATED_USER_SERVICE3$user; then
+			echo "Purging /home/user/.66/system/service/svc/"$INSTANTIATED_USER_SERVICE3$user
+			rm -rf /home/$user/.66/system/service/svc/$INSTANTIATED_USER_SERVICE3$user*
+		fi
+		done
+		if test -e /etc/66/service/user/$INSTANTIATED_USER_SERVICE4; then
+			echo "Purging /etc/66/service/user/"$INSTANTIATED_USER_SERVICE4
+			rm -rf /etc/66/service/user/$INSTANTIATED_USER_SERVICE4
+		fi
+		if test -e /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE4; then
+			echo "Purging /etc/66/service/user/"$INSTANTIATED_USER_SERVICE4
+			rm -rf /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE4
+		fi
+		getent passwd $(basename -a /home/*) | awk -F: '{print $1}' | while read user; do 
+		if test -e /home/$user/.66/conf/$INSTANTIATED_USER_SERVICE4$user; then
+			echo "Purging /home/user/.66/conf/"$INSTANTIATED_USER_SERVICE4$user
+			rm -rf /home/$user/.66/conf/$INSTANTIATED_USER_SERVICE4$user
+		fi
+		if test -e /home/$user/.66/system/service/svc/$INSTANTIATED_USER_SERVICE4$user; then
+			echo "Purging /home/user/.66/system/service/svc/"$INSTANTIATED_USER_SERVICE4$user
+			rm -rf /home/$user/.66/system/service/svc/$INSTANTIATED_USER_SERVICE4$user*
+		fi
+		done				
+	;;
+	
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    ;;
+
+    *)
+        echo "postrm called with unknown argument '$1'" >&2
+        exit 1
+    ;;
+esac
+
+# dh_installdeb will replace this with shell code automatically
+# generated by other debhelper scripts.
+
+
+
+exit 0

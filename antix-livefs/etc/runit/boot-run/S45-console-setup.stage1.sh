@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/console-setup.stage1.sh

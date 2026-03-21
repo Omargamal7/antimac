@@ -1,0 +1,8 @@
+## [STARTWARN]
+## DO NOT MODIFY THIS FILE, IT OVERWRITTEN AT UPGRADE TIME.
+## Uses '66 configure boot@system:local-sethostname' command instead.
+## Or make a copy of this file at /etc/66/conf/boot@system/version/boot@system:local-sethostname/3.8.1/boot@system:local-sethostname and modify it.
+## [ENDWARN]
+ConfFile=!/etc/66/conf/boot@system/version
+HostnameFile=!/etc/hostname
+

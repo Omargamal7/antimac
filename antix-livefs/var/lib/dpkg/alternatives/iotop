@@ -1,0 +1,9 @@
+auto
+/usr/sbin/iotop
+iotop.8.gz
+/usr/share/man/man8/iotop.8.gz
+
+/usr/sbin/iotop-py
+50
+/usr/share/man/man8/iotop-py.8.gz
+

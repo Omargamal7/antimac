@@ -1,0 +1,24 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Populate /run directory"
+User = ( root )
+Depends = ( mount-run )
+StdOut = s6log:%%livedir%%/log/populate-run
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp populate-run -1 /dev/console configure /run directory }
+    if -nt {
+
+        if {
+            forx -o 0 -p dir { lvm user lock }
+            importas -ui dir dir
+            execl-toc -X -d /run/${dir}
+        }
+        install -m0664 -o root -g utmp /dev/null /run/utmp
+
+    }
+    66-yeller -fcdp populate-run -1 /dev/console crashed!
+)

@@ -1,0 +1,46 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Restore iptables rules"
+Depends = ( mount-rw )
+User = ( root )
+StdOut = s6log:%%livedir%%/log/local-iptables
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp local-iptables -1 /dev/console restore iptables configuration }
+    if -nt {
+
+        execl-toc -e ${ScriptConf}
+        iptables-restore ${ScriptConf}
+
+    }
+    66-yeller -fcdp local-iptables -1 /dev/console crashed!
+)
+
+[Stop]
+Execute =
+(#!/usr/bin/bash
+
+    exec 2>&1
+
+    66-yeller -cdp local-iptables -1 /dev/console flush iptables configuration
+
+    if ! type -p iptables &>/dev/null; then
+      66-yeller -fcdp local-iptables -1 /dev/console unable to find iptables program
+      exit 111
+    fi
+
+    while read -r table; do
+        tables+=("/usr/share/iptables/empty-$table.rules")
+    done <"/proc/net/ip_tables_names"
+
+    if (( ${#tables[*]} )); then
+        cat "${tables[@]}" | iptables-restore
+    fi
+)
+
+[Environment]
+ScriptConf=!/etc/iptables/iptables.rules
+

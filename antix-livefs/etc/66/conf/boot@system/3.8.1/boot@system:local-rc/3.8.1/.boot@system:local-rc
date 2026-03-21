@@ -1,0 +1,7 @@
+## [STARTWARN]
+## DO NOT MODIFY THIS FILE, IT OVERWRITTEN AT UPGRADE TIME.
+## Uses '66 configure boot@system:local-rc' command instead.
+## Or make a copy of this file at /etc/66/conf/boot@system/version/boot@system:local-rc/3.8.1/boot@system:local-rc and modify it.
+## [ENDWARN]
+ScriptFile=!/etc/66/rc.local
+

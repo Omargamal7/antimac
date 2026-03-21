@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/random-seed.stage1.sh

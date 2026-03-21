@@ -1,0 +1,164 @@
+#!/bin/sh -e
+
+## Debian/Devuan networking/ifupdown script for Dinit
+## Based on Debian/Devuan networking/ifupdown sysvinit script
+## Author: Mobin Aydinfar <mobin@mobintestserver.ir>
+## LISENCE: GPLv3 or later
+## Copyright (C) 2022 Dinit for Devuan project: https://git.mobintestserver.ir/Dinit_on_Devuan
+
+PATH="/sbin:/bin"
+RUN_DIR="/run/network"
+IFSTATE="$RUN_DIR/ifstate"
+STATEDIR="$RUN_DIR/state"
+
+[ -x /sbin/ifup ] || exit 0
+[ -x /sbin/ifdown ] || exit 0
+
+## No need more. DONT USE LSB VARS
+#. /lib/lsb/init-functions
+
+CONFIGURE_INTERFACES=yes
+EXCLUDE_INTERFACES=
+VERBOSE=no
+
+[ -f /etc/default/networking ] && . /etc/default/networking
+
+verbose=""
+[ "$VERBOSE" = yes ] && verbose=-v
+
+process_exclusions() {
+    set -- $EXCLUDE_INTERFACES
+    exclusions=""
+    for d
+    do
+	exclusions="-X $d $exclusions"
+    done
+    echo $exclusions
+}
+
+process_options() {
+    [ -e /etc/network/options ] || return 0
+    echo $(date) "[WARN] /etc/network/options still exists and it will be IGNORED! Please use /etc/sysctl.conf instead."
+}
+
+check_ifstate() {
+    if [ ! -d "$RUN_DIR" ] ; then
+	if ! mkdir -p "$RUN_DIR" ; then
+	    echo $(date) "[ERR] can't create $RUN_DIR" >> /dev/stderr
+	    exit 1
+	fi
+	if ! chown root:netdev "$RUN_DIR" ; then
+	    echo $(date) "[WARN] can't chown $RUN_DIR"
+	fi
+    fi
+    if [ ! -r "$IFSTATE" ] ; then
+	if ! :> "$IFSTATE" ; then
+	    echo $(date) "[ERR] can't initialise $IFSTATE" >> /dev/stderr
+	    exit 1
+	fi
+    fi
+}
+
+check_network_file_systems() {
+    [ -e /proc/mounts ] || return 0
+
+    if [ -e /etc/iscsi/iscsi.initramfs ]; then
+	echo $(date) "[WARN] not deconfiguring network interfaces: iSCSI root is mounted."
+	exit 0
+    fi
+
+    while read DEV MTPT FSTYPE REST; do
+	case $DEV in
+	/dev/nbd*|/dev/nd[a-z]*|/dev/etherd/e*|curlftpfs*)
+	    echo $(date) "[WARN] not deconfiguring network interfaces: network devices still mounted."
+	    exit 0
+	    ;;
+	esac
+	case $FSTYPE in
+	nfs|nfs4|smbfs|ncp|ncpfs|cifs|coda|ocfs2|gfs|pvfs|pvfs2|fuse.httpfs|fuse.curlftpfs)
+	    echo $(date) "[WARN] not deconfiguring network interfaces: network file systems still mounted."
+	    exit 0
+	    ;;
+	esac
+    done < /proc/mounts
+}
+
+check_network_swap() {
+    [ -e /proc/swaps ] || return 0
+
+    while read DEV MTPT FSTYPE REST; do
+	case $DEV in
+	/dev/nbd*|/dev/nd[a-z]*|/dev/etherd/e*)
+	    echo $(date) "[WARN] not deconfiguring network interfaces: network swap still mounted."
+	    exit 0
+	    ;;
+	esac
+    done < /proc/swaps
+}
+
+ifup_hotplug () {
+    if [ -d /sys/class/net ]
+    then
+	    ifaces=$(for iface in $(ifquery --list --allow=hotplug)
+			    do
+				    link=${iface%%:*}
+				    link=${link%%.*}
+				    if [ -e "/sys/class/net/$link" ] && ! ifquery --state "$iface" >/dev/null
+				    then
+					echo "$iface"
+				    fi
+			    done)
+	    if [ -n "$ifaces" ]
+	    then
+		ifup $ifaces "$@" || true
+	    fi
+    fi
+}
+
+case "$1" in
+start)
+	process_options
+	check_ifstate
+
+	if [ "$CONFIGURE_INTERFACES" = no ]
+	then
+	    echo $(date) "[WARN] Not configuring network interfaces, see /etc/default/networking"
+	    exit 0
+	fi
+	set -f
+	exclusions=$(process_exclusions)
+	echo $(date) "[INFO] Configuring network interfaces..."
+	if [ -x /bin/udevadm ]; then
+		if [ -n "$(ifquery --list --exclude=lo)" ] || [ -n "$(ifquery --list --allow=hotplug)" ]; then
+			/bin/udevadm settle || true
+		fi
+	fi
+	if ifup -a $exclusions $verbose && ifup_hotplug $exclusions $verbose
+	then
+	    echo $(date) "[INFO] Configuring network interfaces has return $?: Done!"
+	else
+	    echo $(date) "[ERR] Configuring network interfaces has return $?: FAILED" >> /dev/stderr
+	fi
+	;;
+
+stop)
+	check_network_file_systems
+	check_network_swap
+
+	echo $(date) "[INFO] Deconfiguring network interfaces..."
+	if ifdown -a --exclude=lo $verbose; then
+	    echo $(date) "[INFO] Deconfiguring network interfaces has return $?: Done!"
+	else
+	    echo $(date) "[ERR] Deconfiguring network interfaces has return $?: FAILED!" >> /dev/stderr
+	fi
+	;;
+
+*)
+	echo "Usage: /etc/dinit.d/scripts/networking networking/ifupdown script for Debina/Devuan with Dinit. DONT USE IT DIRECTLY! using dinitctl(8) for controling networking service"
+	exit 1
+	;;
+esac
+
+exit 0
+
+# vim: noet ts=8

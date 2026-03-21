@@ -1,0 +1,13 @@
+#!/usr/bin/env /lib/runit/invoke-run
+set -e
+
+NAME=dbus-session
+DAEMON=/usr/bin/dbus-daemon
+Socket=/run/user/$(id -u)/bus
+
+exec 2>&1
+
+export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+exec chpst $DAEMON --session --nofork --nopidfile --address=unix:path=${Socket} "$@"
+
+

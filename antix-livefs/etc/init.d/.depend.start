@@ -1,0 +1,6 @@
+TARGETS = killprocs console-setup.sh dhcpcd seatd bootlogs single anacron sudo rsync dbus rmnologin rc.local stop-bootlogd
+INTERACTIVE = console-setup.sh
+single: killprocs
+rmnologin: sudo
+rc.local: rmnologin dhcpcd seatd bootlogs anacron rsync dbus console-setup.sh
+stop-bootlogd: rmnologin dhcpcd seatd bootlogs anacron rsync dbus console-setup.sh

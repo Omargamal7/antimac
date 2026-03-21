@@ -1,0 +1,40 @@
+This README list flag files that can be written in /etc/runit/ and their effect:
+ 
+* /etc/runit/verbose
+     Start/stop messages from runscripts, when they are written to do so
+     Some extra message from maintainerscripts
+     Some extra message from cpsv tool
+
+* /etc/runit/debug
+     Print the exit code of the run file of services, when finish-exec or similar
+     code is used
+     May print debug messages from maintainerscripts or cpsv
+
+* /etc/runit/default.runsvdir
+     During the boot sequence, when this file contains the basename of a
+     directory in /etc/runit/runsvdir/, runsvdir will start monitoring such
+     directory instead of 'default'
+
+* /etc/runit/nosync
+     Do no invoke 'sync' during the shutdown sequence
+
+* /etc/runit/no.emulate.sysv
+     Skip all sysv scripts enabled in rc2.d during the boot sequence, even if
+     there is no correspondent native runscript in /etc/sv/
+
+* /etc/runit/lsb.runit.sysv, /etc/runit/lsb.runit.mask
+     no longer effective, /etc/runit/override-sysv.d README for an alternative
+
+* /etc/runit/native.boot.run
+      If this file exists and /etc/runit/boot-run is a directory, scripts with
+      .sh exstension inside /etc/runit/boot-run/ are used for the boot
+      sequence in stage 1 instead of default scripts inside /etc/rcS.d
+      If the 'bootrun=1' variable is set in the kernel command line it
+      has the same effect as the 'native.boot.run file: this is intended
+      for testing new boot set of scripts.
+      
+      If this file exists and /etc/runit/shutdown-run is a directory, scripts
+      with .sh extension inside /etc/runit/shutdown-run/ are ruse for the
+      shutdown sequence in stage 3 in place of default scripts inside
+      /etc/rc0.d or /etc/rc6.d/
+      

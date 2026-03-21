@@ -1,0 +1,8 @@
+# Recovery mode
+
+type = process
+command = /bin/sh /etc/dinit.d/scripts/recovery.sh
+restart = false
+options = shares-console
+options = starts-rwfs
+chain-to = boot

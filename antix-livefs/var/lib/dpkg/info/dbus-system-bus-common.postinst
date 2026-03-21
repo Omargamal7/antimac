@@ -1,0 +1,9 @@
+#!/bin/sh
+# Copyright © 2003 Colin Walters <walters@debian.org>
+# Copyright © 2006 Sjoerd Simons <sjoerd@debian.org>
+
+set -e
+
+MESSAGEUSER=messagebus
+adduser --system --quiet --group "$MESSAGEUSER"
+

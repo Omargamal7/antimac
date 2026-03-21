@@ -1,0 +1,9 @@
+144c09236c5590a8c44c961b3f2ca473  usr/lib/x86_64-linux-gnu/libisofs.so.6.92.0
+869d6fbaaed04145c69aa4a1ffa7e176  usr/share/doc/libisofs6t64/AUTHORS
+def29cd81f34ef758b550798da645fac  usr/share/doc/libisofs6t64/NEWS.gz
+192fe17ceb759c899db7fffd3a652be9  usr/share/doc/libisofs6t64/README.gz
+eaf654c0fbee35afcfdd361ab8f07ef4  usr/share/doc/libisofs6t64/changelog.Debian.amd64.gz
+d7fdcedc5f1615124725eb930e0fd30f  usr/share/doc/libisofs6t64/changelog.Debian.gz
+eb1c1f75cb403480c4395125666e3398  usr/share/doc/libisofs6t64/changelog.gz
+ebfdbb0eeb9d1dfef2376e88b1993bce  usr/share/doc/libisofs6t64/copyright
+26d6a585df7263c0bf17fae890dffe84  usr/share/lintian/overrides/libisofs6t64

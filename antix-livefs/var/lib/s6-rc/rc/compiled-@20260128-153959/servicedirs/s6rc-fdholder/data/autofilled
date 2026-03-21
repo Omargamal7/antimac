@@ -1,0 +1,5 @@
+dbus-log
+dhcpcd-log
+dmesg-log
+seatd-log
+udevd-log

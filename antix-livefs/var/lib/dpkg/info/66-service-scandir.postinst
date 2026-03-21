@@ -1,0 +1,197 @@
+#!/bin/sh
+# postinst script for 66-service-scandir.
+#
+# See: dh_installdeb(1).
+
+set -e
+
+# Summary of how this script can be called:
+#        * <postinst> 'configure' <most-recently-configured-version>
+#        * <old-postinst> 'abort-upgrade' <new version>
+#        * <conflictor's-postinst> 'abort-remove' 'in-favour' <package>
+#          <new-version>
+#        * <postinst> 'abort-remove'
+#        * <deconfigured's-postinst> 'abort-deconfigure' 'in-favour'
+#          <failed-install-package> <version> 'removing'
+#          <conflicting-package> <version>
+# for details, see https://www.debian.org/doc/debian-policy/ or
+# the debian-policy package.
+
+SERVICE1="service1"
+SERVICE2="service2"
+SERVICE3="service3"
+SERVICE4="service4"
+
+INSTANTIATED_SERVICE1="scandir@"
+INSTANTIATED_SERVICE2="instantiated-service2@"
+INSTANTIATED_SERVICE3="instantiated-service3@"
+INSTANTIATED_SERVICE4="instantiated-service4@"
+
+USER_SERVICE1="user-service1"
+USER_SERVICE2="user-service2"
+USER_SERVICE3="user-service3"
+USER_SERVICE4="user-service4"
+
+INSTANTIATED_USER_SERVICE1="instantiated-user-service1@"
+INSTANTIATED_USER_SERVICE2="instantiated-user-service2@"
+INSTANTIATED_USER_SERVICE3="instantiated-user-service3@"
+INSTANTIATED_USER_SERVICE4="instantiated-user-service4@"
+
+
+case "$1" in
+    configure)
+	##### GLOBAL SERVICES #####
+	if test -d /run/66/scandir && test -f /usr/share/66/service/$SERVICE1 || test -f /etc/66/service/$SERVICE1 ; then
+		echo "parsing/reconfiguring/starting/enabling packaged services"
+		66 parse $SERVICE1 && 66 reconfigure $SERVICE1 && 66 enable $SERVICE1 && 66 start $SERVICE1	
+	fi	
+	if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/$SERVICE1 || test -f /etc/66/service/$SERVICE1 ; then
+		echo "parsing/reconfiguring/enabling packaged services"
+		66 parse $SERVICE1 && 66 reconfigure $SERVICE1 && 66 enable $SERVICE1
+	fi
+	if test -d /run/66/scandir && test -f /usr/share/66/service/$SERVICE2 || test -f /etc/66/service/$SERVICE2 ; then
+		echo "parsing/reconfiguring/starting/enabling packaged services"
+		66 parse $SERVICE2 && 66 reconfigure $SERVICE2 && 66 enable $SERVICE2 && 66 start $SERVICE2	
+	fi	
+	if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/$SERVICE2 || test -f /etc/66/service/$SERVICE2 ; then
+		echo "parsing/reconfiguring/enabling packaged services"
+		66 parse $SERVICE2 && 66 reconfigure $SERVICE2 && 66 enable $SERVICE2
+	fi
+	if test -d /run/66/scandir && test -f /usr/share/66/service/$SERVICE3 || test -f /etc/66/service/$SERVICE3 ; then
+		echo "parsing/reconfiguring/starting/enabling packaged services"
+		66 parse $SERVICE3 && 66 reconfigure $SERVICE3 && 66 enable $SERVICE3 && 66 start $SERVICE3	
+	fi	
+	if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/$SERVICE3 || test -f /etc/66/service/$SERVICE3 ; then
+		echo "parsing/reconfiguring/enabling packaged services"
+		66 parse $SERVICE3 && 66 reconfigure $SERVICE3 && 66 enable $SERVICE3
+	fi
+	if test -d /run/66/scandir && test -f /usr/share/66/service/$SERVICE4 || test -f /etc/66/service/$SERVICE4 ; then
+		echo "parsing/reconfiguring/starting/enabling packaged services"
+		66 parse $SERVICE4 && 66 reconfigure $SERVICE4 && 66 enable $SERVICE4 && 66 start $SERVICE4	
+	fi	
+	if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/$SERVICE4 || test -f /etc/66/service/$SERVICE4 ; then
+		echo "parsing/reconfiguring/enabling packaged services"
+		66 parse $SERVICE4 && 66 reconfigure $SERVICE4 && 66 enable $SERVICE4
+	fi
+	##### USER SERVICES #####
+	getent passwd $(basename -a /home/*) | awk -F: '{print $1}' | while read user; do 
+		if test -d /run/66/scandir && test -f /usr/share/66/service/user/$USER_SERVICE1 || test -f /etc/66/service/user/$USER_SERVICE1 ; then
+		echo "parsing/reconfiguring/starting/enabling packaged services"
+			runuser -u $user 66 parse $USER_SERVICE1 && runuser -u $user 66 reconfigure $USER_SERVICE1 && runuser -u $user 66 enable $USER_SERVICE1 && runuser -u $user 66 start $USER_SERVICE1; 	
+		fi	
+		if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/user/$USER_SERVICE1 || test -f /etc/66/service/user/$USER_SERVICE1 ; then	
+		echo "parsing/reconfiguring/enabling packaged services"
+			runuser -u $user 66 parse $USER_SERVICE1 && runuser -u $user 66 reconfigure $USER_SERVICE1 && runuser -u $user 66 enable $USER_SERVICE1; 
+		fi
+		if test -d /run/66/scandir && test -f /usr/share/66/service/user/$USER_SERVICE2 || test -f /etc/66/service/user/$USER_SERVICE2 ; then
+		echo "parsing/reconfiguring/starting/enabling packaged services"
+			runuser -u $user 66 parse $USER_SERVICE2 && runuser -u $user 66 reconfigure $USER_SERVICE2 && runuser -u $user 66 enable $USER_SERVICE2 && runuser -u $user 66 start $USER_SERVICE2; 
+		fi	
+		if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/user/$USER_SERVICE2 || test -f /etc/66/service/user/$USER_SERVICE2 ; then	
+		echo "parsing/reconfiguring/enabling packaged services"
+			runuser -u $user 66 parse $USER_SERVICE2 && runuser -u $user 66 reconfigure $USER_SERVICE2 && runuser -u $user 66 enable $USER_SERVICE2; 
+		fi
+		if test -d /run/66/scandir && test -f /usr/share/66/service/user/$USER_SERVICE3 || test -f /etc/66/service/user/$USER_SERVICE3 ; then
+		echo "parsing/reconfiguring/starting/enabling packaged services"
+			runuser -u $user 66 parse $USER_SERVICE3 && runuser -u $user 66 reconfigure $USER_SERVICE3 && runuser -u $user 66 enable $USER_SERVICE3 && runuser -u $user 66 start $USER_SERVICE3; 
+		fi	
+		if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/user/$USER_SERVICE3 || test -f /etc/66/service/user/$USER_SERVICE3 ; then	
+		echo "parsing/reconfiguring/enabling packaged services"
+			runuser -u $user 66 parse $USER_SERVICE3 && runuser -u $user 66 reconfigure $USER_SERVICE3 && runuser -u $user 66 enable $USER_SERVICE3; 
+		fi
+		if test -d /run/66/scandir && test -f /usr/share/66/service/user/$USER_SERVICE4 || test -f /etc/66/service/user/$USER_SERVICE4 ; then
+		echo "parsing/reconfiguring/starting/enabling packaged services"
+			runuser -u $user 66 parse $USER_SERVICE4 && runuser -u $user 66 reconfigure $USER_SERVICE4 && runuser -u $user 66 enable $USER_SERVICE4 && runuser -u $user 66 start $USER_SERVICE4;
+		fi	
+		if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/user/$USER_SERVICE4 || test -f /etc/66/service/user/$USER_SERVICE4 ; then	
+		echo "parsing/reconfiguring/enabling packaged services"
+			runuser -u $user 66 parse $USER_SERVICE4 && runuser -u $user 66 reconfigure $USER_SERVICE4 && runuser -u $user 66 enable $USER_SERVICE4; 
+		fi
+	done
+	##### INSTANTIATED SERVICES #####
+	getent passwd $(basename -a /home/*) | awk -F: '{print $1}' | while read user; do 
+		if test -d /run/66/scandir && test -f /usr/share/66/service/${INSTANTIATED_SERVICE1%@}/$INSTANTIATED_SERVICE1 || test -f /etc/66/service/${INSTANTIATED_SERVICE1%@}/$INSTANTIATED_SERVICE1 ; then
+				echo "parsing/reconfiguring/starting/enabling packaged services"
+				66 parse $INSTANTIATED_SERVICE1$user && 66 reconfigure $INSTANTIATED_SERVICE1$user && 66 enable $INSTANTIATED_SERVICE1$user && 66 start $INSTANTIATED_SERVICE1$user
+		fi	
+		if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/${INSTANTIATED_SERVICE1%@}/$INSTANTIATED_SERVICE1 || test -f /etc/66/service/${INSTANTIATED_SERVICE1%@}/$INSTANTIATED_SERVICE1 ; then
+				echo "parsing/reconfiguring/enabling packaged services"
+				66 parse $INSTANTIATED_SERVICE1$user && 66 reconfigure $INSTANTIATED_SERVICE1$user && 66 enable $INSTANTIATED_SERVICE1$user
+		fi
+		if test -d /run/66/scandir && test -f /usr/share/66/service/${INSTANTIATED_SERVICE2%@}/$INSTANTIATED_SERVICE2 || test -f /etc/66/service/${INSTANTIATED_SERVICE2%@}/$INSTANTIATED_SERVICE2 ; then
+				echo "parsing/reconfiguring/starting/enabling packaged services"
+				66 parse $INSTANTIATED_SERVICE2$user && 66 reconfigure $INSTANTIATED_SERVICE2$user && 66 enable $INSTANTIATED_SERVICE2$user && 66 start $INSTANTIATED_SERVICE2$user
+		fi	
+		if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/${INSTANTIATED_SERVICE2%@}/$INSTANTIATED_SERVICE2 || test -f /etc/66/service/${INSTANTIATED_SERVICE2%@}/$INSTANTIATED_SERVICE2 ; then
+				echo "parsing/reconfiguring/enabling packaged services"
+				66 parse $INSTANTIATED_SERVICE2$user && 66 reconfigure $INSTANTIATED_SERVICE2$user && 66 enable $INSTANTIATED_SERVICE2$user
+		fi
+		if test -d /run/66/scandir && test -f /usr/share/66/service/${INSTANTIATED_SERVICE3%@}/$INSTANTIATED_SERVICE3 || test -f /etc/66/service/${INSTANTIATED_SERVICE3%@}/$INSTANTIATED_SERVICE3 ; then
+				echo "parsing/reconfiguring/starting/enabling packaged services"
+				66 parse $INSTANTIATED_SERVICE3$user && 66 reconfigure $INSTANTIATED_SERVICE3$user && 66 enable $INSTANTIATED_SERVICE3$user && 66 start $INSTANTIATED_SERVICE3$user
+		fi	
+		if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/${INSTANTIATED_SERVICE3%@}/$INSTANTIATED_SERVICE3 || test -f /etc/66/service/${INSTANTIATED_SERVICE3%@}/$INSTANTIATED_SERVICE3 ; then
+				echo "parsing/reconfiguring/enabling packaged services"
+				66 parse $INSTANTIATED_SERVICE3$user && 66 reconfigure $INSTANTIATED_SERVICE3$user && 66 enable $INSTANTIATED_SERVICE3$user
+		fi
+		if test -d /run/66/scandir && test -f /usr/share/66/service/${INSTANTIATED_SERVICE4%@}/$INSTANTIATED_SERVICE4 || test -f /etc/66/service/${INSTANTIATED_SERVICE4%@}/$INSTANTIATED_SERVICE4 ; then
+				echo "parsing/reconfiguring/starting/enabling packaged services"
+				66 parse $INSTANTIATED_SERVICE4$user && 66 reconfigure $INSTANTIATED_SERVICE4$user && 66 enable $INSTANTIATED_SERVICE4$user && 66 start $INSTANTIATED_SERVICE4$user
+		fi	
+		if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/${INSTANTIATED_SERVICE4%@}/$INSTANTIATED_SERVICE4 || test -f /etc/66/service/${INSTANTIATED_SERVICE4%@}/$INSTANTIATED_SERVICE4 ; then
+				echo "parsing/reconfiguring/enabling packaged services"
+				66 parse $INSTANTIATED_SERVICE4$user && 66 reconfigure $INSTANTIATED_SERVICE4$user && 66 enable $INSTANTIATED_SERVICE4$user
+		fi
+	done
+	##### INSTANTIATED USER SERVICES #####
+	getent passwd $(basename -a /home/*) | awk -F: '{print $1}' | while read user; do 
+		if test -d /run/66/scandir && test -f /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE1 || test -f /etc/66/service/user/$INSTANTIATED_USER_SERVICE1 ; then
+				echo "parsing/reconfiguring/starting/enabling packaged services"
+				runuser -u $user 66 parse $INSTANTIATED_USER_SERVICE1$user && runuser -u $user 66 reconfigure $INSTANTIATED_USER_SERVICE1$user && runuser -u $user 66 enable $INSTANTIATED_USER_SERVICE1$user && runuser -u $user 66 start $INSTANTIATED_USER_SERVICE1$user
+		fi	
+		if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE1 || test -f /etc/66/service/user/$INSTANTIATED_USER_SERVICE1 ; then
+				echo "parsing/reconfiguring/enabling packaged services"
+				runuser -u $user 66 parse $INSTANTIATED_USER_SERVICE1$user && runuser -u $user 66 reconfigure $INSTANTIATED_USER_SERVICE1$user && runuser -u $user 66 enable $INSTANTIATED_USER_SERVICE1$user
+		fi
+		if test -d /run/66/scandir && test -f /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE2 || test -f /etc/66/service/user/$INSTANTIATED_USER_SERVICE2 ; then
+				echo "parsing/reconfiguring/starting/enabling packaged services"
+				runuser -u $user 66 parse $INSTANTIATED_USER_SERVICE2$user && runuser -u $user 66 reconfigure $INSTANTIATED_USER_SERVICE2$user && runuser -u $user 66 enable $INSTANTIATED_USER_SERVICE2$user && runuser -u $user 66 start $INSTANTIATED_USER_SERVICE2$user
+		fi	
+		if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE2 || test -f /etc/66/service/user/$INSTANTIATED_USER_SERVICE2 ; then
+				echo "parsing/reconfiguring/enabling packaged services"
+				runuser -u $user 66 parse $INSTANTIATED_USER_SERVICE2$user && runuser -u $user 66 reconfigure $INSTANTIATED_USER_SERVICE2$user && runuser -u $user 66 enable $INSTANTIATED_USER_SERVICE2$user
+		fi
+		if test -d /run/66/scandir && test -f /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE3 || test -f /etc/66/service/user/$INSTANTIATED_USER_SERVICE3 ; then
+				echo "parsing/reconfiguring/starting/enabling packaged services"
+				runuser -u $user 66 parse $INSTANTIATED_USER_SERVICE3$user && runuser -u $user 66 reconfigure $INSTANTIATED_USER_SERVICE3$user && runuser -u $user 66 enable $INSTANTIATED_USER_SERVICE3$user && runuser -u $user 66 start $INSTANTIATED_USER_SERVICE3$user
+		fi	
+		if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE3 || test -f /etc/66/service/user/$INSTANTIATED_USER_SERVICE3 ; then
+				echo "parsing/reconfiguring/enabling packaged services"
+				runuser -u $user 66 parse $INSTANTIATED_USER_SERVICE3$user && runuser -u $user 66 reconfigure $INSTANTIATED_USER_SERVICE3$user && runuser -u $user 66 enable $INSTANTIATED_USER_SERVICE3$user
+		fi
+		if test -d /run/66/scandir && test -f /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE4 || test -f /etc/66/service/user/$INSTANTIATED_USER_SERVICE4 ; then
+				echo "parsing/reconfiguring/starting/enabling packaged services"
+				runuser -u $user 66 parse $INSTANTIATED_USER_SERVICE4$user && runuser -u $user 66 reconfigure $INSTANTIATED_USER_SERVICE4$user && runuser -u $user 66 enable $INSTANTIATED_USER_SERVICE4$user && runuser -u $user 66 start $INSTANTIATED_USER_SERVICE4$user
+		fi	
+		if [ ! -d /run/66/scandir ] && test -f /usr/share/66/service/user/$INSTANTIATED_USER_SERVICE4 || test -f /etc/66/service/user/$INSTANTIATED_USER_SERVICE4 ; then
+				echo "parsing/reconfiguring/enabling packaged services"
+				runuser -u $user 66 parse $INSTANTIATED_USER_SERVICE4$user && runuser -u $user 66 reconfigure $INSTANTIATED_USER_SERVICE4$user && runuser -u $user 66 enable $INSTANTIATED_USER_SERVICE4$user
+		fi
+	done
+	;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument '$1'" >&2
+        exit 1
+    ;;
+esac
+
+# dh_installdeb will replace this with shell code automatically
+# generated by other debhelper scripts.
+
+
+
+exit 0

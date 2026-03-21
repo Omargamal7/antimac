@@ -1,0 +1,11 @@
+#!/usr/bin/execlineb -P
+
+backtick -n UID { id -u }
+importas -S UID
+
+envfile /etc/s6-rc/config/dbus.conf
+importas -sCuD "" Args Args
+
+fdmove -c 2 1
+foreground { export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/${UID}/bus" }
+dbus-daemon ${Args} --address=unix:path=/run/user/${UID}/bus

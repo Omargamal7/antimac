@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: upgrade process</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="upgrade-and-migration-process">Upgrade and Migration Process</h1>
+<p>Starting from version <code>0.8.0.0</code>, 66 provides an internal migration process to handle upgrades when necessary. While this process mainly focuses on the <a href="66-deeper.html#resolve-files">resolve files</a> (CDB databases), it may also address other components of the 66 ecosystem as required.</p>
+<p>Distributors, system administrators, or users do not need to take any steps for the migration process, as it will be entirely transparent. 66 will automatically manage all necessary tasks within your personal 66 ecosystem to ensure the system maintains its current behavior.</p>
+<p><strong>The migration process does not affect the state of running services</strong>. Any changes will only take effect upon restarting the affected services. This also means you do not need to reboot the system to start using the new version.</p>
+<p>Before initiating any migration, 66 creates a <a href="66-snapshot.html">snapshot</a> named <code>system@&#60;version&#62;</code>, where <code>&#60;version&#62;</code> represents the current version of 66 before the new release is installed. This snapshot ensures that you can revert to the exact state of your system prior to migration by using the <code>66 snapshot restore system@&#60;version&#62;</code> command if something goes wrong.</p>
+<p>Note that the prefix <code>system@</code> is reserved for snapshot names.</p>
+<p>The migration process is triggered whenever any 66 command is executed, except for the <code>66 boot</code> and <code>66 snapshot</code> commands. This means you can create a snapshot manually without triggering the migration process if desired. The process should complete successfully. If you encounter a fatal error, <a href="66-snapshot.html#restore">restore</a> your previous system and retry the migration with increased verbosity to diagnose the issue. Be sure to also downgrade any packages to match the versions used in your previous system.</p>
+<p>The migration process only applies to the user who owns the process. Therefore, running any 66 command as root does not affect the user&#8217;s 66 ecosystem. To initiate the migration for user-specific settings, you must execute a 66 command as a regular user. <strong>It&#8217;s highly recommended to trigger the migration process for the root account before doing so as a regular user</strong>.</p>
+<p>If a migration is required, the following general tasks will be performed, with additional tasks depending on specific migration needs:</p>
+<ul>
+<li>A snapshot is created to preserve the current state.</li>
+<li>The resolve files for all service trees are migrated by reading the previous files, translating them to the new format (including any necessary name changes, additions, or deletions of keys), and writing them in the updated format.</li>
+<li>The resolve files for all active services (i.e., those listed when running <code>66 tree status</code> with the field <code>contents</code>) are also migrated by re-parsing the services and writing them in the new format.</li>
+<li>The interdependence graph of services is checked and sanitized.</li>
+</ul>
+<h1 id="upgrade-path">Upgrade Path</h1>
+<p>Some versions may require specific intermediary versions for migration. The following table outlines the target version and any mandatory versions that must be installed along the way.</p>
+<table>
+<thead>
+<tr>
+<th>current version</th>
+<th>target version</th>
+<th>mandatory version path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>between <code>0.7.0.0</code> and <code>0.7.1.1</code></td>
+<td><code>0.8.1.1</code></td>
+<td><code>0.7.2.0</code> -&#62; <code>0.8.0.0</code> -&#62; <code>0.8.0.2</code> -&#62; <code>0.8.1.0</code> -&#62; <code>0.8.1.1</code></td>
+</tr>
+<tr>
+<td><code>0.7.2.0</code></td>
+<td><code>0.8.1.1</code></td>
+<td><code>0.8.0.0</code> -&#62; <code>0.8.0.2</code> -&#62; <code>0.8.1.0</code> -&#62; <code>0.8.1.1</code></td>
+</tr>
+<tr>
+<td>between <code>0.8.0.0</code> and <code>0.8.1.0</code></td>
+<td><code>0.8.1.1</code></td>
+<td><code>0.8.1.0</code> -&#62; <code>0.8.1.1</code></td>
+</tr>
+</tbody>
+</table>
+<p>The automatic migration process adheres to predefined paths. For instance, when upgrading from version <code>0.7.2.0</code> to <code>0.8.1.0</code>, it will first migrate to <code>0.8.0.0</code> before proceeding to <code>0.8.1.0</code>.</p>
+<h1 id="version-e.o.l.">Version E.O.L.</h1>
+<p>Releases under <code>0.8.0.0</code> are no longer supported.</p>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>E.O.L.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0.8.0.0</code></td>
+<td>january 2026</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

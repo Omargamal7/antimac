@@ -1,0 +1,22 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Activate software raid devices"
+User = ( root )
+Depends = ( udevd )
+StdOut = s6log:%%livedir%%/log/devices-mdraid
+
+[Start]
+Execute =
+(
+   if { 66-yeller -cdp devices-mdraid -1 /dev/console activate mraid volumes }
+    ifelse { blkid -c /dev/null --match-token=TYPE="linux_raid_member" }
+        { ifelse -n { 66-which -q mdadm }
+            { if { 66-yeller -cdp device-mdraid -1 /dev/console No mdadm program available, check your configuration! } exit 0 }
+        if -nt {
+            mdadm -As
+        }
+        66-yeller -fcdp devices-mdraid -1 /dev/console crashed! }
+
+    66-yeller -cdp device-mdraid -1 /dev/console no mdraid arrays available!
+)

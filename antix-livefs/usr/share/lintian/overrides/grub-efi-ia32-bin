@@ -1,0 +1,6 @@
+grub-efi-ia32-bin: unstripped-binary-or-object **.mod*
+grub-efi-ia32-bin: statically-linked-binary *usr/lib/grub/i386-efi/kernel.img*
+grub-efi-ia32-bin: unstripped-binary-or-object *usr/lib/grub/i386-efi/kernel.img*
+grub-efi-ia32-bin: unstripped-binary-or-object **.mod*
+grub-efi-ia32-bin: statically-linked-binary *usr/lib/grub/i386-efi/kernel.img*
+grub-efi-ia32-bin: unstripped-binary-or-object *usr/lib/grub/i386-efi/kernel.img*

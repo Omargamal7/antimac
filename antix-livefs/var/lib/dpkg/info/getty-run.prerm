@@ -1,0 +1,65 @@
+#!/bin/sh
+set -e
+# Automatically added by dh_runit/2.15.2
+# Unlike postrm, I can be sure, that runit-helper is present on
+# prerm.
+if [ -z "${DPKG_ROOT:-}" ] ; then
+    NAME='getty-hvc0' ENABLE='no' ONUPGRADE='nostop' /lib/runit-helper/runit-helper prerm "$@"
+fi
+# End automatically added section
+# Automatically added by dh_runit/2.15.2
+# Unlike postrm, I can be sure, that runit-helper is present on
+# prerm.
+if [ -z "${DPKG_ROOT:-}" ] ; then
+    NAME='getty-ttyS0' ENABLE='yes' ONUPGRADE='nostop' /lib/runit-helper/runit-helper prerm "$@"
+fi
+# End automatically added section
+# Automatically added by dh_runit/2.15.2
+# Unlike postrm, I can be sure, that runit-helper is present on
+# prerm.
+if [ -z "${DPKG_ROOT:-}" ] ; then
+    NAME='getty-ttyv0' ENABLE='yes' ONUPGRADE='nostop' /lib/runit-helper/runit-helper prerm "$@"
+fi
+# End automatically added section
+# Automatically added by dh_runit/2.15.2
+# Unlike postrm, I can be sure, that runit-helper is present on
+# prerm.
+if [ -z "${DPKG_ROOT:-}" ] ; then
+    NAME='getty-tty6' ENABLE='yes' ONUPGRADE='nostop' /lib/runit-helper/runit-helper prerm "$@"
+fi
+# End automatically added section
+# Automatically added by dh_runit/2.15.2
+# Unlike postrm, I can be sure, that runit-helper is present on
+# prerm.
+if [ -z "${DPKG_ROOT:-}" ] ; then
+    NAME='getty-tty5' ENABLE='yes' ONUPGRADE='nostop' /lib/runit-helper/runit-helper prerm "$@"
+fi
+# End automatically added section
+# Automatically added by dh_runit/2.15.2
+# Unlike postrm, I can be sure, that runit-helper is present on
+# prerm.
+if [ -z "${DPKG_ROOT:-}" ] ; then
+    NAME='getty-tty4' ENABLE='yes' ONUPGRADE='nostop' /lib/runit-helper/runit-helper prerm "$@"
+fi
+# End automatically added section
+# Automatically added by dh_runit/2.15.2
+# Unlike postrm, I can be sure, that runit-helper is present on
+# prerm.
+if [ -z "${DPKG_ROOT:-}" ] ; then
+    NAME='getty-tty3' ENABLE='yes' ONUPGRADE='nostop' /lib/runit-helper/runit-helper prerm "$@"
+fi
+# End automatically added section
+# Automatically added by dh_runit/2.15.2
+# Unlike postrm, I can be sure, that runit-helper is present on
+# prerm.
+if [ -z "${DPKG_ROOT:-}" ] ; then
+    NAME='getty-tty2' ENABLE='yes' ONUPGRADE='nostop' /lib/runit-helper/runit-helper prerm "$@"
+fi
+# End automatically added section
+# Automatically added by dh_runit/2.15.2
+# Unlike postrm, I can be sure, that runit-helper is present on
+# prerm.
+if [ -z "${DPKG_ROOT:-}" ] ; then
+    NAME='getty-tty1' ENABLE='yes' ONUPGRADE='nostop' /lib/runit-helper/runit-helper prerm "$@"
+fi
+# End automatically added section

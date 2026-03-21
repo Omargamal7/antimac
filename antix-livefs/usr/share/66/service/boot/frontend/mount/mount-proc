@@ -1,0 +1,21 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount /proc directory"
+User = ( root )
+StdOut = s6log:%%livedir%%/log/mount-proc
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp mount-proc -1 /dev/console mount /proc directory }
+    if -nt {
+
+        execl-cmdline -s { execl-toc -X -m /proc ${Args} }
+
+    }
+    66-yeller -fcdp mount-proc -1 /dev/console crashed!
+)
+
+[Environment]
+Args=!-o nosuid,noexec,nodev -t proc -d proc

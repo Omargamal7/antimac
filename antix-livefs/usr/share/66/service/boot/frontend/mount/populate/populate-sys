@@ -1,0 +1,61 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Populate /sys directory"
+User = ( root )
+Depends = ( mount-sys )
+StdOut = s6log:%%livedir%%/log/populate-sys
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp populate-sys -1 /dev/console mount Kernel system interface directories }
+    if -nt {
+
+        foreground {
+            if -t { grep -Fq efivarfs /proc/filesystems }
+            execl-toc -tX -m /sys/firmware/efi/efivars -o noatime,nodev,noexec,nosuid,ro -t efivarfs -d efivars
+        }
+
+        foreground {
+            if -t { grep -Fq fusectl /proc/filesystems }
+            execl-toc -tX -m /sys/fs/fuse/connections -o noatime,nodev,noexec,nosuid -t fusectl -d fusectl
+        }
+
+        foreground {
+            if -t { grep -Fq configfs /proc/filesystems }
+            execl-toc -tX -m /sys/kernel/config -o noatime,nodev,noexec,nosuid -t configfs -d configfs
+        }
+        foreground {
+            if -t { grep -Fq debugfs /proc/filesystems }
+            execl-toc -tX -m /sys/kernel/debug -o noatime,nodev,noexec,nosuid -t debugfs -d debugfs
+        }
+        foreground {
+            if -t { grep -Fq securityfs /proc/filesystems }
+            execl-toc -tX -m /sys/kernel/security -o noatime,nodev,noexec,nosuid -t securityfs -d securityfs
+        }
+
+    }
+    66-yeller -fcdp populate-sys -1 /dev/console crashed!
+)
+
+[Stop]
+Execute =
+(
+    if { 66-yeller -cdp populate-sys -1 /dev/console stops... }
+    if -nt {
+
+        foreground {
+            forx -p dir {
+                /sys/firmware/efi/efivars /sys/fs/fuse/connections /sys/kernel/config
+                /sys/kernel/debug /sys/kernel/tracing /sys/kernel/security
+            }
+            importas -ui dir dir
+            foreground {
+                execl-toc -Dt -m ${dir} umount -l ${dir}
+            }
+        }
+
+    }
+    66-yeller -fcdp populate-sys -1 /dev/console crashed!
+)

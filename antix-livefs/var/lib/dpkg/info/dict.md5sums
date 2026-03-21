@@ -1,0 +1,13 @@
+962485719fd37af6eebe7f24437db817  usr/bin/colorit
+80df7a5e597f7b697ecdc297c13e263d  usr/bin/dict
+f3014bc028212aa1c7287049509f3a03  usr/bin/dict_lookup
+03fd228da9a68e35a447ebad64bd04da  usr/bin/dictl
+b24f39dad443f2b82ad6f6a0ec1ca478  usr/share/doc/dict/README.Debian.gz
+a0e922d2dd8bace8a8e70a9d95f51b5b  usr/share/doc/dict/changelog.Debian.gz
+e23674075194641f1cc533726cd1e12d  usr/share/doc/dict/changelog.gz
+927a8724c3ab1a353739062223c6f646  usr/share/doc/dict/copyright
+28881d30cbe2867b702b39eccb43f76c  usr/share/doc/dict/examples/dict1.conf
+649647271da8f8e23e547c578c74afb8  usr/share/man/man1/colorit.1.gz
+559f665d9e98ea39c51fd46e93dc1444  usr/share/man/man1/dict.1.gz
+1d168aee0a87cae205aa117295fa3fd6  usr/share/man/man1/dict_lookup.1.gz
+215140cf72098432934b02b57d45959c  usr/share/man/man1/dictl.1.gz

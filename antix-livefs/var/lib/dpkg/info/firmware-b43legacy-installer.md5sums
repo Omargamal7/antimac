@@ -1,0 +1,6 @@
+f271e225645716b62f57d667cbc26867  usr/lib/firmware/b43legacy/.placeholder
+1813783b099180c0ba5661612fe6d675  usr/share/doc/firmware-b43legacy-installer/changelog.Debian.gz
+a1d8d19009fd47687db0a6155dc37ebb  usr/share/doc/firmware-b43legacy-installer/changelog.gz
+0da269082d83cbf0c4fd8a8638412a37  usr/share/doc/firmware-b43legacy-installer/copyright
+a4b4b31aad6fbc5723eb9078557d5e70  usr/share/lintian/overrides/firmware-b43legacy-installer
+cd54b59dd834dbb78ab13babd3c82b0b  usr/share/metainfo/org.kernel.drivers.firmware-b43legacy-installer.metainfo.xml

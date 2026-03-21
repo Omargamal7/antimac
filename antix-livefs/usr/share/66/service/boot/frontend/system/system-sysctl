@@ -1,0 +1,20 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Apply sysctl configuration file"
+User = ( root )
+RequiredBy = ( udevd )
+StdOut = s6log:%%livedir%%/log/system-sysctl
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp system-sysctl -1 /dev/console apply sysctl configuration file }
+    if -nt {
+
+        if { 66-which -q sysctl }
+        sysctl --system
+
+    }
+    66-yeller -fcdp system-sysctl -1 /dev/console crashed!
+)

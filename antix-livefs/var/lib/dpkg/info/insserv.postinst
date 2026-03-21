@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+
+
+# When installing insserv (usually via sysvinit-core) on an existing system,
+# fix up the rc?.d priorities from the dumb update-rc.d fallback (which uses
+# priority 01 for everything).
+if [ "$1" = "configure" ] && [ -z "$2" ]; then
+    if [ -z "$DPKG_ROOT" ] ; then
+        # normal operation
+        insserv || true
+    else
+        # in chrootless installation, provide the path to the chroot
+        insserv \
+            --path "$DPKG_ROOT/etc/init.d" \
+            --override "$DPKG_ROOT/etc/insserv/overrides/" \
+            --insserv-dir "$DPKG_ROOT/etc/init.d/" \
+            --config "$DPKG_ROOT/etc/insserv.conf" \
+            || true
+    fi
+fi

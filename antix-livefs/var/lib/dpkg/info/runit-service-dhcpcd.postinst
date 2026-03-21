@@ -1,0 +1,29 @@
+#!/bin/bash
+# postinst script for runit-service-dhcpcd.
+
+set -e
+
+SERVICE1="dhcpcd"
+
+case "$1" in
+    configure)
+	##### GLOBAL SERVICES #####
+	if [[ $(ps -p1 | grep -ic "runit") -eq 1 ]]; then
+		echo "sync runit services.."
+		# this will copy and enable appropriate services
+		/lib/runit/trigger_sv setup
+		/lib/runit/trigger_sv upgrade
+		echo ".. done"
+	fi
+	;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument '$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

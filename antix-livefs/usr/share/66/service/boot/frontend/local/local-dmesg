@@ -1,0 +1,38 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Save logs of dmesg"
+Depends = (
+    mount-rw
+    local-iptables
+    local-ip6tables
+    local-nftables
+    local-ebtables
+    local-arptables
+    local-loop
+    local-sethostname
+    local-time
+    local-tmpfiles
+    local-authfiles
+    local-rc )
+User = ( root )
+StdOut = s6log:%%livedir%%/log/local-dmesg
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp local-dmesg -1 /dev/console save dmesg log }
+    if -nt {
+
+        execl-cmdline -s {
+            redirfd -w 1 ${LogFile}
+            dmesg ${Args}
+        }
+
+    }
+    66-yeller -fcdp local-dmesg -1 /dev/console crashed!
+)
+
+[Environment]
+Args=!-T
+LogFile=!/var/log/dmesg.log

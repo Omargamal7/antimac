@@ -1,0 +1,6 @@
+# We do not provide this metadata
+eudev: appstream-metadata-missing-modalias-provide lib/udev/rules.d/50-udev-default.rules
+# False positive - variable name
+eudev: spelling-error-in-binary
+# False positive, the script shuffles the binaries around
+eudev: bin-sbin-mismatch

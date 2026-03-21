@@ -1,0 +1,3 @@
+#!/usr/bin/execlineb -P
+
+exec -c umount -alt nfs4,nfs -O _netdev

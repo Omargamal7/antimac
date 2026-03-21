@@ -1,0 +1,15 @@
+b4dc44096bad946ca7bc5740640834c9  usr/lib/init/bootclean.sh
+c53ba0a6c56424714a3f4a3f20a70119  usr/lib/init/mount-functions.sh
+fd3ea515f075eca25a27b61561223faa  usr/lib/init/tmpfs.sh
+c4115bc9a1f6de22a2016fbbf512c50f  usr/lib/udev/hwclock-set
+1bed9e41c10557a718c2684cb6b162f4  usr/lib/udev/rules.d/85-hwclock.rules
+982a8ab75a85d43e66b4c883c27bfddd  usr/sbin/fsck.nfs
+5dec1ec182c1baa14dde5bef1a9870b9  usr/share/doc/initscripts/README.Debian
+137918d35ae84f9ca0e49664db180754  usr/share/doc/initscripts/changelog.Debian.gz
+1f3bb61560457003fb528f0cc73cddb0  usr/share/doc/initscripts/changelog.gz
+ae955b93107f289f2cd739eb0ca0f384  usr/share/doc/initscripts/copyright
+592524bce9524ac9a2264877ff36238f  usr/share/man/man5/halt.5.gz
+ba7641477e56cf3a0cdef64ec10b596e  usr/share/man/man5/hwclock.5.gz
+6106ee757139d07c6af807efa4c40dc9  usr/share/man/man5/rcS.5.gz
+02c6bb175be4f6ca2c0bf035abefcbf7  usr/share/man/man5/tmpfs-config.5.gz
+a9a4afb2d26656ab1255417643a0318d  usr/share/man/man8/fsck.nfs.8.gz

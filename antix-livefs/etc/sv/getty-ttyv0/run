@@ -1,0 +1,12 @@
+#!/bin/sh -euC
+
+# Disable service, if /dev/tty{N} does not exist. See #914788.
+if ! test -c /dev/ttyv0 ; then
+	mv /etc/service/getty-ttyv0 /etc/service/.getty-ttyv0
+	exit 0
+fi
+
+pgrep -a getty | grep ttyv0 && exit 163
+pgrep -a agetty | grep ttyv0 && exit 163
+
+exec chpst -P agetty --noclear 38400 ttyv0 xterm

@@ -1,0 +1,13 @@
+Dependency based boot sequencing is the default when using sysv-rc in
+Debian. The insserv program is used to order init.d scripts based on
+dependencies declared in the LSB information within the scripts themselves.
+
+Information on the LSB initscript comment convention is available from
+<URL:http://refspecs.linux-foundation.org/LSB_3.0.0/LSB-Core-generic/LSB-Core-generic/iniscrptact.html>,
+<URL:http://wiki.debian.org/LSBInitScripts> and
+<URL:http://wiki.debian.org/LSBInitScripts/DependencyBasedBoot>.
+
+To monitor the boot sequence, the bootchart2 project can be used, although
+Debian packages are not currently available beyond the stretch release.
+
+ -- Mark Hindley <leepen@debian.org>, Sat, 25 Sep 2021 17:01:28 +0100

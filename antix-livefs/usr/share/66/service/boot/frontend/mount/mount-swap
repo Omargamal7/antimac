@@ -1,0 +1,33 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount swap partition"
+User = ( root )
+Depends=( mount-rw )
+StdOut = s6log:%%livedir%%/log/mount-swap
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp mount-swap -1 /dev/console activate swap }
+
+        if -nt {
+
+            swapon -a
+
+        }
+        66-yeller -fcdp mount-swap -1 /dev/console unable to activate the swap!
+
+)
+
+[Stop]
+Execute =
+(
+    if { 66-yeller -cdp mount-swap -1 /dev/console deactivate swap }
+    if -nt {
+
+        swapoff -a
+
+    }
+    66-yeller -Wcdp mount-swap -1 /dev/console failed!
+)

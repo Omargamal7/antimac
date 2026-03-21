@@ -1,0 +1,21 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount /run directory"
+User = ( root )
+StdOut = s6log:%%livedir%%/log/mount-run
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp mount-run -1 /dev/console mount /run directory }
+    if -nt {
+
+        execl-cmdline -s { execl-toc -X -m /run ${Args} }
+
+    }
+    66-yeller -fcdp mount-run -1 /dev/console crashed!
+)
+
+[Environment]
+Args=!-o mode=0755,nosuid,nodev -t tmpfs -d run

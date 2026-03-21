@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    configure|triggered)
+	# what happens to this trigger when runit pkg is removed? maybe this
+	# can be moved into runit-init and runit-run pkgs??
+	if [ -z "${DPKG_ROOT:-}" ] ; then
+		/lib/runit/trigger_sv setup
+		/lib/runit/trigger_sv upgrade
+	fi
+    ;;
+esac
+
+# Automatically added by dh_installdeb/13.11.4
+dpkg-maintscript-helper rm_conffile /etc/sv/default-syslog/finish 2.1.2-60\~ -- "$@"
+dpkg-maintscript-helper rm_conffile /etc/default/runit 2.1.2-60\~ -- "$@"
+# End automatically added section
+

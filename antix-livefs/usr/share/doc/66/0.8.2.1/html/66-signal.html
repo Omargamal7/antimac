@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: signal</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="signal">signal</h1>
+<p>Controls an already supervised <em>service</em>.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>signal [ -h ] [ -wu | -wU | -wd | -wD | -wr | -wR ] [ -abqHkti12pcysodDuUxOrP ] service...
+</code></pre>
+<p>This command expects to find an already supervised <em>service</em> and an already running <a href="66-scandir.html">scandir</a>.</p>
+<p>This command is the heart of <code>66</code> concerning service state change. Every other <code>66</code> command that need to send a signal to a service pass through this command.</p>
+<p>Multiple <em>services</em> can be handled by separating their names with a space.</p>
+<p>This command handles <a href="66.html#handling-dependencies">interdependencies</a>.</p>
+<h2 id="options">Options</h2>
+<ul>
+<li><strong>-h</strong>: print this help.</li>
+<li><strong>-P</strong>: Do not handle service dependencies. In such cases, the <em>signal</em> command will not attempt to send signal to the services that are dependent on the service, regardless of their current state.</li>
+<li><strong>-wu</strong>: do not exit until the service is up.</li>
+<li><strong>-wU</strong>: do not exit until the service is up and ready and has notified readiness.</li>
+<li><strong>-wd</strong>: do not exit until the service is down.</li>
+<li><strong>-wD</strong>: do not exit until the service is down and ready to be brought up and has notified readiness.</li>
+<li><strong>-wr</strong>: do not exit until the service has been started or restarted.</li>
+<li><strong>-wR</strong>: do not exit until the service has been started or restarted and has notified readiness.</li>
+<li><strong>-a</strong>: send a SIGALRM signal.</li>
+<li><strong>-b</strong>: send a SIGABRT signal.</li>
+<li><strong>-q</strong>: send a SIGQUIT signal.</li>
+<li><strong>-H</strong>: send a SIGHUP signal.</li>
+<li><strong>-k</strong>: send a SIGKILL signal.</li>
+<li><strong>-t</strong>: send a SIGTERM signal.</li>
+<li><strong>-i</strong>: send a SIGINT signal.</li>
+<li><strong>-1</strong>: send a SIGUSR1 signal.</li>
+<li><strong>-2</strong>: send a SIGUSR2 signal.</li>
+<li><strong>-p</strong>: send a SIGSTOP signal.</li>
+<li><strong>-c</strong>: send a SIGCONT signal.</li>
+<li><strong>-y</strong>: send a SIGWINCH signal.</li>
+<li><strong>-o</strong>: once. Equivalent to &#8216;-uO&#8217;.</li>
+<li><strong>-d</strong>: send a SIGTERM signal then a SIGCONT signal.</li>
+<li><strong>-D</strong>: bring down service and avoid to be bring it up automatically.</li>
+<li><strong>-u</strong>: bring up service.</li>
+<li><strong>-U</strong>: bring up service and ensure that service can be restarted automatically.</li>
+<li><strong>-x</strong>: bring down the service and propagate to its supervisor.</li>
+<li><strong>-O</strong>: mark the service to run once at most.</li>
+<li><strong>-r</strong>: restart service by sending it a signal(default SIGTERM).</li>
+</ul>
+<h2 id="usage-examples">Usage examples</h2>
+<p>Send a SIGHUP signal to <code>foo</code></p>
+<pre><code>66 signal -H foo
+</code></pre>
+<p>Send a SIGHUP signal to <code>foo</code> by signal name</p>
+<pre><code>66 signal -s SIGHUP foo
+</code></pre>
+<p>Triggers a log rotation of <code>foo-log</code></p>
+<pre><code>66 signal -a -P foo-log
+</code></pre>
+<p>Take down <code>foo</code> and block until the process is down and the finish script has completed</p>
+<pre><code>66 signal -wD -d foo
+</code></pre>
+<p>Bring up <code>foo</code> and block until it has sent notification that it is ready. Exit if it is still not ready after 5 seconds.</p>
+<pre><code>66 -T 5000 -wU -u foo
+</code></pre>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66-tools Suite: 66-writenv</title>
+</head>
+<body>
+<p><a href="index.html">66-tools</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="66-writenv">66-writenv</h1>
+<p>66-writenv stores its environment variables at a specific file location.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>    66-writenv [ -h ] [ -m mode ] dir file
+</code></pre>
+<ul>
+<li>This tool write its environment variables into <em>dir&#47;file</em> under the classic format <code>key=value</code> pair and thoses one per line. <em>dir</em> must be an absolute path. </li>
+</ul>
+<h2 id="exit-codes">Exit codes</h2>
+<ul>
+<li><em>0</em> success</li>
+<li><em>100</em> wrong usage</li>
+<li><em>111</em> system call failed</li>
+</ul>
+<h2 id="options">Options</h2>
+<ul>
+<li><p><strong>-h</strong> : prints this help.</p></li>
+<li><p><strong>-m</strong> <em>mode</em> : create dir with mode <em>mode</em> if it doesn&#8217;t exist yet. Default is <code>0755</code>.</p></li>
+</ul>
+</body>
+</html>

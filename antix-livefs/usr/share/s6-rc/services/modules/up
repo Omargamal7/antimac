@@ -1,0 +1,5 @@
+#!/usr/bin/execlineb -P
+
+importas -sCuD "/usr/sbin:/usr/bin:/sbin:/bin" PATH PATH
+
+exec sh /etc/s6-rc/scripts/modules/modules.sh

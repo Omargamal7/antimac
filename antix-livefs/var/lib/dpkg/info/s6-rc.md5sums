@@ -1,0 +1,12 @@
+b491561fabf974ec335d0e38fad252e7  usr/bin/s6-rc
+0fff8bc1438abb3a3fb79be9d8227a40  usr/bin/s6-rc-bundle
+1070cf489d3aa77914e3c732fa18a56d  usr/bin/s6-rc-compile
+d41d03e940fc3d3db6a74d33cd714760  usr/bin/s6-rc-db
+3cf6dac29b366132ac22421f2cccd501  usr/bin/s6-rc-dryrun
+c2bd45146c1a34613279da7f8afff625  usr/bin/s6-rc-format-upgrade
+f4f06468a18df4a7c8416fdea2cca204  usr/bin/s6-rc-init
+a3c2de14e5035b73be6ccfca1a35f539  usr/bin/s6-rc-update
+d3428d0fa014a710ca2e7e55424770cb  usr/libexec/s6-rc-fdholder-filler
+87719b96cc7730e829eaa6e1cf20c853  usr/libexec/s6-rc-oneshot-run
+0092cee8a6283245aac778a2c1057381  usr/share/doc/s6-rc/changelog.Debian.gz
+16cd6a6fab0328cfdec94c5ce2070adb  usr/share/doc/s6-rc/copyright

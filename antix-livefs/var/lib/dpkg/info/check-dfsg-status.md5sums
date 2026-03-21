@@ -1,0 +1,6 @@
+a25e77ab8390527246e36444901569ac  usr/bin/check-dfsg-status
+dfbe6449142d58a0dcab1fda6c8e0b15  usr/share/check-dfsg-status/reasons/check-dfsg-status
+0b66a33172e5d4ec42e32db0edea2c2b  usr/share/doc/check-dfsg-status/README.Debian
+ff98af1da561b9602e299beee6c7a3ee  usr/share/doc/check-dfsg-status/changelog.gz
+db68f86fad6ec85917e0f8ed92ab7550  usr/share/doc/check-dfsg-status/copyright
+9b52abe9162fec39ec236b2730a53963  usr/share/man/man1/check-dfsg-status.1.gz

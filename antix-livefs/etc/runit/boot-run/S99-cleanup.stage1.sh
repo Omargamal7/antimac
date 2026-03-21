@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/cleanup.stage1.sh

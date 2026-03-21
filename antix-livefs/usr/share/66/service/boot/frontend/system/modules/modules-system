@@ -1,0 +1,22 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Load modules from modules-load directories"
+User = ( root )
+Depends = ( mount-branch )
+StdOut = s6log:%%livedir%%/log/modules-system
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp modules-system -1 /dev/console load sysadmin modules }
+    if -nt {
+
+        ${ScriptFile}
+
+    }
+    66-yeller -fcdp modules-system -1 /dev/console crashed!
+)
+
+[Environment]
+ScriptFile=!%%modulespath%%/modules.sh

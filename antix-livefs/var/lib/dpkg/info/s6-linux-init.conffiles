@@ -1,0 +1,4 @@
+/etc/s6-linux-init/skel/rc.init
+/etc/s6-linux-init/skel/rc.shutdown
+/etc/s6-linux-init/skel/rc.shutdown.final
+/etc/s6-linux-init/skel/runlevel

@@ -1,0 +1,10 @@
+/.
+/sbin
+/sbin/efi-install
+/sbin/partition-info
+/usr
+/usr/share
+/usr/share/doc
+/usr/share/doc/partition-info
+/usr/share/doc/partition-info/changelog.gz
+/usr/share/doc/partition-info/copyright

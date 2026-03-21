@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/bootlogd.stage1.sh

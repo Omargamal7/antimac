@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/net-lo.stage1.sh

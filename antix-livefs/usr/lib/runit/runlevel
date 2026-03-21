@@ -1,0 +1,7 @@
+#!/bin/sh
+unset CURLEVEL
+CURLEVEL="$(head -c 1 /run/runit.runlevel 2>/dev/null)"
+if [ "$CURLEVEL" != '0' ] && [ "$CURLEVEL" != '6' ]; then
+        CURLEVEL=2
+fi
+exec printf '%s\n' "N $CURLEVEL"

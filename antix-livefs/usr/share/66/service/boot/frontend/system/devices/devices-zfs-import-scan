@@ -1,0 +1,23 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Import ZFS pools by device scanning"
+User = ( root )
+Depends = ( udevd )
+StdOut = s6log:%%livedir%%/log/devices-zfs-import-scan
+
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp devices-zfs-import-scan -1 /dev/console scan zfs volumes }
+    if -nt {
+
+        execl-cmdline -s { zpool import ${Args} }
+
+    }
+    66-yeller -fcdp devices-zfs-import-scan -1 /dev/console crashed!
+)
+
+[Environment]
+Args=!-aN -o cachefile=none

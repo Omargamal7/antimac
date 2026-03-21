@@ -1,0 +1,6 @@
+0139a5dbd752b680cfa9f417c36bac99  usr/bin/opensysusers-sysusers
+8e7ce19b559bcee8a20c4bc5ac6ac465  usr/share/doc/opensysusers/changelog.Debian.gz
+c547ab988a3c5a44fd63c5aec5c2e1b5  usr/share/doc/opensysusers/copyright
+0c4d9d5210d644f8750395000e3d8059  usr/share/lintian/overrides/opensysusers
+b8cd0c755a2b809e1c351905404e446a  usr/share/man/man5/opensysusers.d.5.gz
+07d6d2f14c3398269f774460adb536a3  usr/share/man/man8/opensysusers-sysusers.8.gz

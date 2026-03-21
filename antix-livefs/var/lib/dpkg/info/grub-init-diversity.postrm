@@ -1,0 +1,52 @@
+#!/bin/bash
+
+
+
+# postrm script for grub-init-diversity
+
+set -e
+
+case "$1" in
+  purge|remove) \
+  
+    for F in \
+        /etc/default/grub    \
+        /etc/grub.d/00_header    \
+        /etc/grub.d/05_debian_theme    \
+        /etc/grub.d/10_linux    \
+        /etc/grub.d/20_linux_xen    \
+        /etc/grub.d/20_memtest86+   \
+        /etc/grub.d/25_bli   \
+        /etc/grub.d/30_os-prober    \
+        /etc/grub.d/30_uefi-firmware    \
+        /etc/grub.d/40_custom    \
+        /etc/grub.d/41_custom    \
+        /etc/grub.d/README
+    do
+    	if [ -e "$F.dpkg-dist" ]; then
+    		rm $F
+    	fi
+        dpkg-divert --quiet --package grub-init-diversity --rename \
+                    --divert /usr/share/grub-init-diversity/grub-diversions/$F --remove $F || :
+    done
+    
+    ## Running update-grub after changes have been made - skipping this if running in Live/Frugal mode
+	if mountpoint -q /live/aufs; then
+		echo "Live/Frugal system detected - Not updating GRUB"
+		exit 0
+	elif [ "$(stat -c %d/%i /)" != "$(stat -Lc %d/%i /proc/1/root 2>/dev/null)" ]; then
+		echo "A chroot environment has been detected - Not updating GRUB"
+		exit 0
+	else	
+		if [ -x /usr/sbin/update-grub ]; then
+		echo "Updating GRUB to reveal the updated init entries"
+		update-grub
+		fi
+	fi
+  ;;
+  *) :
+  ;;
+
+esac
+
+exit 0

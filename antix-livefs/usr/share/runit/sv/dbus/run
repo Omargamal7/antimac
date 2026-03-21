@@ -1,0 +1,39 @@
+#!/usr/bin/env /lib/runit/invoke-run
+set -e
+
+NAME="dbus"
+DAEMON=/usr/bin/dbus-daemon
+
+# Exit service if DAEMON is not installed
+if [ ! -x $DAEMON ]; then
+	exit 161
+fi
+
+DAEMONUSER=messagebus
+PIDDIR=/var/run/dbus
+
+if [ ! -d $PIDDIR ]; then
+    mkdir -p $PIDDIR
+    chown $DAEMONUSER $PIDDIR
+    chgrp $DAEMONUSER $PIDDIR
+fi
+
+mountpoint -q /proc/ || exit 162
+
+exec  2>&1
+
+UUIDGEN=/usr/bin/dbus-uuidgen
+UUIDGEN_OPTS=--ensure
+
+#create_machineid() {
+# # Create machine-id file
+ if [ -x $UUIDGEN ]; then
+    $UUIDGEN $UUIDGEN_OPTS
+  fi
+#}
+
+if [ "$VERBOSE" = 1 ]; then
+	echo "Invoke-run: Starting $NAME"
+fi
+
+exec chpst -umessagebus dbus-daemon --system --nofork --nopidfile

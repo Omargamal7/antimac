@@ -1,0 +1,16 @@
+/.
+/usr
+/usr/include
+/usr/include/libudev.h
+/usr/include/udev.h
+/usr/lib
+/usr/lib/x86_64-linux-gnu
+/usr/lib/x86_64-linux-gnu/libudev.a
+/usr/lib/x86_64-linux-gnu/pkgconfig
+/usr/lib/x86_64-linux-gnu/pkgconfig/libudev.pc
+/usr/share
+/usr/share/doc
+/usr/share/doc/libeudev-dev
+/usr/share/doc/libeudev-dev/changelog.Debian.gz
+/usr/share/doc/libeudev-dev/copyright
+/usr/lib/x86_64-linux-gnu/libudev.so

@@ -1,0 +1,15 @@
+/.
+/usr
+/usr/include
+/usr/include/s6-linux-init
+/usr/include/s6-linux-init/config.h
+/usr/include/s6-linux-init/s6-linux-init.h
+/usr/lib
+/usr/lib/x86_64-linux-gnu
+/usr/lib/x86_64-linux-gnu/libs6_linux_init.a
+/usr/share
+/usr/share/doc
+/usr/share/doc/libs6-linux-init-dev
+/usr/share/doc/libs6-linux-init-dev/changelog.Debian.gz
+/usr/share/doc/libs6-linux-init-dev/copyright
+/usr/lib/x86_64-linux-gnu/libs6_linux_init.so

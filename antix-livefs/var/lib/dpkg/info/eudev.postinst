@@ -1,0 +1,143 @@
+#!/bin/sh
+set -e
+
+chrooted() {
+  if [ "$(stat -c %d/%i /)" = "$(stat -Lc %d/%i /proc/1/root 2>/dev/null)" ];
+  then
+    # the devicenumber/inode pair of / is the same as that of /sbin/init's
+    # root, so we're *not* in a chroot and hence return false.
+    return 1
+  fi
+  echo "A chroot environment has been detected, udevd not started."
+  return 0
+}
+
+in_debootstrap() {
+  # debootstrap --second-stage may be run in an emulator instead of a chroot,
+  # we need to check for this special case because start-stop-daemon would
+  # not be available. (#520742)
+  if [ -d /debootstrap/ ]; then
+    echo "Being installed by debootstrap, udevd not started."
+    return 0
+  fi
+  return 1
+}
+
+can_start_udevd() {
+  if [ ! -d /sys/class/ ]; then
+    echo "udev requires a mounted sysfs, not started."
+    return 1
+  fi
+  return 0
+}
+
+enable_udevd() {
+  can_start_udevd || return 0
+  invoke-rc.d udev start
+}
+
+update_initramfs() {
+  [ -x /usr/sbin/update-initramfs -a -e /etc/initramfs-tools/initramfs.conf ] \
+    || return 0
+  update-initramfs -u
+}
+
+upgrade_fixes() {
+  # new Default-Stop (See #261, Debian Bug #791944)
+  if dpkg --compare-versions "$2" lt-nl "3.2.7-1"; then
+    update-rc.d -f eudev remove
+  fi
+}
+
+update_hwdb() {
+  udevadm hwdb --usr --update || true
+}
+
+case "$1" in
+    configure)
+    # update/create hwdb before we (re)start udevd
+    update_hwdb
+
+    # Add new system group used by udev rules
+    if ! getent group input >/dev/null; then
+      addgroup --quiet --system input
+    fi
+
+    # Make /dev/kvm accessible to kvm group
+    if ! getent group kvm >/dev/null; then
+      addgroup --quiet --system kvm
+    fi
+
+    # Make /dev/dri/renderD* accessible to render group
+    if ! getent group render >/dev/null; then
+      addgroup --quiet --system render
+    fi
+
+    if [ -z "$2" ]; then # first install
+      if ! chrooted && ! in_debootstrap; then
+	enable_udevd
+      fi
+    else # upgrades
+	upgrade_fixes "$@"
+	if ! chrooted; then
+	    if can_start_udevd; then
+		#FIXME: systemctl daemon-reload || true
+		/usr/sbin/invoke-rc.d udev restart
+		echo "
+*******************************************************
+  Warning: eudev will default to the older network
+  interface names, such as eth0 or wlan0. If you use
+  the new names, such as enp0s3, you will need to add
+  the following to the boot command:
+                net.ifnames=1
+********************************************************
+		"
+	    fi
+	fi
+    fi
+    if mountpoint -q /live/aufs; then
+		echo "Keeping 92-console-font.rules on Live system"
+		else
+		if [ "$(stat -c %d/%i /)" != "$(stat -Lc %d/%i /proc/1/root 2>/dev/null)" ];
+  		then
+                echo "A chroot environment has been detected, keeping 92-console-font.rules."
+                else
+                echo "Removing 92-console-font.rules on installed system"
+                rm -f /lib/udev/rules.d/92-console-font.rules
+		fi
+    fi
+    if [ -f /sbin/runit ]; then
+      if [ -d /etc/sv ] && [ ! -d "/etc/sv/udevd" ]; then
+          cp -r /usr/share/runit/sv/udevd /etc/sv/
+          echo "Copying to /etc/sv"
+      fi
+    fi
+    if [ ! -e /lib/init-diversity ] && [ $(dpkg -l | grep -ic "runit-antix") -eq 1 ] && [ $(ps -p1 | grep -ic "runit") -eq 1 ]; then  
+        #remove /etc/init.d/udev if it exists since we are using runit
+        if [ -f /etc/init.d/udev ]; then
+	 mkdir -p /etc/init.d/disabled
+         mv /etc/init.d/udev /etc/init.d/disabled/udev
+        fi 
+          if [ ! -h "/etc/service/udevd" ]; then
+            ln -s /etc/sv/udevd/ /etc/service/
+          fi  
+    update_initramfs
+    fi
+    ;;
+
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    triggered)
+    update_hwdb
+    exit 0
+    ;;
+
+    *)
+    echo "$0 called with unknown argument '$1'" >&2
+    exit 1
+    ;;
+esac
+
+

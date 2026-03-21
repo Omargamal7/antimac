@@ -1,0 +1,7 @@
+53e92ed08dff0456813ab736297b7085  usr/lib/grub/x86_64-efi/monolithic/gcdx64.efi
+136c00a129bc27eb11081a9fdf3829ab  usr/lib/grub/x86_64-efi/monolithic/grubnetx64-installer.efi
+68fc998877cf9597ee81e2c3d6707772  usr/lib/grub/x86_64-efi/monolithic/grubnetx64.efi
+b54efb4a5dd18e22e046818c5b4fc2f7  usr/lib/grub/x86_64-efi/monolithic/grubx64.efi
+8078b6f24767ff216eb390a997926d48  usr/share/bug/grub-efi-amd64-unsigned/presubj
+0d5ead2e5fdc1dad9283d5a770980056  usr/share/bug/grub-efi-amd64-unsigned/script
+34968860dc005cee2747088048f61eb6  usr/share/lintian/overrides/grub-efi-amd64-unsigned

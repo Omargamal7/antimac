@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "purge" ]; then
+  if [ -h /etc/service/rsync ] && [ -f /run/runit.stopit ] && [ -z $nostop ]; then
+    sv stop rsync
+  fi
+  
+  if [ -x "/etc/init.d/rsync" ] && [ "$1" = remove ]; then
+	invoke-rc.d --skip-systemd-native rsync stop || exit 1
+  fi
+fi

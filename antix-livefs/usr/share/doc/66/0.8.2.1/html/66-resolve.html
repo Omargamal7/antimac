@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: resolve</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="resolve">resolve</h1>
+<p>This command displays the contents of the service&#8217;s <em>resolve</em> file.</p>
+<p>This command is purely a debug command used by system administrators or developers.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>resolve [ -h ] service
+</code></pre>
+<p>This command displays the contents of the service&#8217;s <em>resolve</em> file. This file are used internally by the <code>66</code> program to know <em>service</em> information.</p>
+<p><a href="66-deeper.html#resolve-files">Resolve</a> files are at the core of <code>66</code> for service information. They are used internally by <code>66</code> to build the dependency graph, ascertain file locations, storing the parse process result of a service, and other critical aspects of a service.</p>
+<h2 id="options">Options</h2>
+<ul>
+<li><strong>-h</strong> : prints this help.</li>
+</ul>
+<h2 id="usage-example">Usage example</h2>
+<p>Displays the <em>resolve</em> file of service <code>foo</code></p>
+<pre><code>66 resolve foo
+</code></pre>
+</body>
+</html>

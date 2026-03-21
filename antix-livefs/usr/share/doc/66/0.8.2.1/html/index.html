@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: index</title>
+</head>
+<body>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="what-is-66">What is 66?</h1>
+<p>Sixty-six (66) is a service manager designed around the <a href="http://skarnet.org/software/s6">s6 supervision suite</a> to simplify the implementation and management of service files on your machine. It provides a comprehensive toolbox for declaring, implementing, and administering services with minimal code while delivering powerful functionality.</p>
+<h2 id="key-features-of-66-not-exhaustive">Key Features of 66 (not exhaustive):</h2>
+<ul>
+<li><strong>Frontend Service Files Declaration</strong>: Service files are written in an INI format, making them straightforward to read and edit.</li>
+<li><strong>Simple Scandir Creation</strong>: Easily create <a href="https://skarnet.org/software/s6/scandir.html">scandir</a> directories for both the root and regular users, allowing for efficient service management across different user levels.</li>
+<li><strong>Nested Scandir Supervision</strong>: Regular users have their own independent <a href="https://skarnet.org/software/s6/scandir.html">scandir</a> directories, separate from the root, ensuring user-specific supervision without interference.</li>
+<li><strong>Instance Service File Creation</strong>: Supports instantiated service.</li>
+<li><strong>Identifier Interpretation</strong>: Supports specific identifiers that are replaced at parse time to simplify service file creation.</li>
+<li><strong>Service Configuration Changes</strong>: Includes built-in versioning for configuration files, including environment variables, to streamline service updates and changes.</li>
+<li><strong>Automatic Logger Creation (not mandatory)</strong>: Automatically creates dedicated loggers for each service, covering both classic and oneshot service types.</li>
+<li><strong>Help on I&#47;O Redirection</strong>: Provides keywords in frontend files for easy control over standard input, output, and error redirection.</li>
+<li><strong>Service Notification</strong>: Ensures services are fully ready before managing their dependency chains, using a readiness notification mechanism.</li>
+<li><strong>Service Organization as a Tree</strong>: Allows quick management and visualization of service groups within a tree structure.</li>
+<li><strong>Service Status Overview</strong>: Offers a comprehensive set of tools to monitor the state of services and access detailed information easily.</li>
+<li><strong>User Service Declaration</strong>: Users can declare and manage their own services, facilitating personalized service management.</li>
+<li><strong>Automatic Dependency Chains</strong>: Automatically handles and maintains service dependencies, ensuring smooth and reliable service operations.</li>
+<li><strong>Service Order Dependencies</strong>: Guarantees reliable, stable, and reproducible service order dependencies to maintain consistent service behavior.</li>
+<li><strong>Snapshot Management</strong>: Allows the creation and management of snapshots of your service system, enabling easy backup, recovery, and sharing of service states across multiple hosts.</li>
+</ul>
+<h2 id="behavior-benefits">Behavior Benefits:</h2>
+<ul>
+<li><strong>No Reboot Required During Upgrades</strong>: Service updates do not require system reboots, ensuring continuous operation.</li>
+<li><strong>Independent of Boot Management</strong>: 66 can supervise services independently of the boot process, making it optional to use 66 from startup. It is also fully compatible with virtualization platforms like containerd, Podman, and Docker, allowing for easy monitoring of services within containers.</li>
+<li><strong>Readable Logs</strong>: Logs are stored in a human-readable format for easier analysis and debugging.</li>
+<li><strong>File Descriptor Holding for Log Pipes</strong>: Utilizes file descriptor holding for efficient log piping, enhancing reliability and performance.</li>
+</ul>
+<p>66 focuses on mechanisms, not policies, and can be compiled with either <code>glibc</code> or <code>musl</code> for flexibility across different systems.</p>
+<p><strong>Note</strong>: This documentation tries to be complete and self-contained. However, if you have never heard of <a href="https://skarnet.org/software/s6">s6</a> you might be confused at first. Please refer to the skarnet documentation if in doubt.</p>
+<h2 id="installation">Installation</h2>
+<h3 id="requirements">Requirements</h3>
+<p>Please refer to the <a href="https://git.obarun.org/Obarun/66/-/blob/master/INSTALL.md">INSTALL.md</a> file for details.</p>
+<h3 id="licensing">Licensing</h3>
+<p><code>66</code> is free software. It is available under the <a href="http://opensource.org/licenses/ISC">ISC license</a>.</p>
+<h3 id="upgrade">Upgrade</h3>
+<p>See <a href="66-upgrade.html">changes</a> between version.</p>
+<p><strong>(!)</strong> The significant changes in versions <code>0.7.0.0</code> and above render them incompatible with versions prior to <code>0.7.0.0</code>. You can refer to the <a href="66-rosetta.html#changes-between-v0613-and-0700">Rosetta Stone</a> to understand the interface and behavioral differences between versions below <code>0.7.0.0</code> and version <code>0.7.0.0</code></p>
+<hr/>
+<h2 id="commands">Commands</h2>
+<ul>
+<li><a href="66.html">66</a></li>
+</ul>
+<h3 id="extra-tools">Extra tools</h3>
+<ul>
+<li><a href="66-echo.html">66-echo</a></li>
+<li><a href="66-umountall.html">66-umountall</a></li>
+<li><a href="66-nuke.html">66-nuke</a></li>
+<li><a href="execl-envfile.html">execl-envfile</a></li>
+</ul>
+<h3 id="internal-tools">Internal tools</h3>
+<ul>
+<li><a href="66-hpr.html">66-hpr</a></li>
+<li><a href="66-shutdownd.html">66-shutdownd</a></li>
+<li><a href="66-shutdown.html">66-shutdown</a></li>
+</ul>
+<h3 id="others-documentation">Others documentation</h3>
+<ul>
+<li><a href="66-frontend.html">frontend service file</a></li>
+<li><a href="66-instantiated-service.html">instantiated service file</a></li>
+<li><a href="66-module-usage.html">module service usage</a></li>
+<li><a href="66-module-creation.html">module service creation</a></li>
+<li><a href="66-service-configuration-file.html">Service configuration file</a></li>
+<li><a href="66-deeper.html">Deeper understanding</a></li>
+<li><a href="66-upgrade-process.html">Upgrade and Migration process</a></li>
+<li><a href="66-standard-io-redirection.html">Standard I&#47;O redirection</a></li>
+<li><a href="66-identifier.html">Identifier interpretation</a></li>
+</ul>
+<h2 id="why-is-66-necessary">Why is 66 necessary?</h2>
+<p>Implementation and handling of service files based on <a href="https://skarnet.org/software/s6">s6</a> can be complex and difficult to understand. This led to the creation of the <code>66</code> program.</p>
+<p>Why the name?</p>
+<p>Previously <code>66</code> was the result of the combination of the former <a href="https://skarnet.org/software/s6">s6</a> and <a href="https://skarnet.org/software/s6-rc">s6-rc</a>. With time and code improvement the <code>s6-rc</code> program was dropped. <code>66</code> is now a fully independent service manager, although the name has been retained.
+It is a lot faster and easier to write and remember when writing. Apart from that it is a nice command prefix to have. It identifies the origin of the software and it&#8217;s short.</p>
+<p>Expect more use of the <code>66-</code> prefix in future <a href="https://web.obarun.org">obarun</a> software releases and please avoid using it for your own projects.</p>
+</body>
+</html>

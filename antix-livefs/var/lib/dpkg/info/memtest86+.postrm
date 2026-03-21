@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = remove ] || [ "$1" = purge ] ; then
+	if [ -e /boot/grub/grub.cfg ] &&
+	   { ! [ -x "$(command -v systemd-detect-virt 2>/dev/null)" ] ||
+	     ! systemd-detect-virt --quiet --container ; } ; then
+		if [ -x "$(command -v update-grub2 2>/dev/null)" ] ; then
+			update-grub2 3>&-
+		elif [ -x "$(command -v update-grub 2>/dev/null)" ] ; then
+			update-grub 3>&-
+		fi
+	fi
+	if [ -e /boot/efi/EFI/memtest86+/memtest86+x64.efi ] ; then
+	    rm /boot/efi/EFI/memtest86+/memtest86+x64.efi
+	fi
+	if [ -e /boot/efi/loader/entries/memtest.conf ] ; then
+	    rm /boot/efi/loader/entries/memtest.conf
+	fi
+fi
+
+

@@ -1,0 +1,8 @@
+Template: shared/packages-wordlist
+Type: text
+Description: Do not translate, for internal use.
+
+Template: wamerican/languages
+Type: text
+Default: american (American English)
+Description: Do not translate, for internal use.

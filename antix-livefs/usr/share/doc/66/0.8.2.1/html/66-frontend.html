@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: frontend</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="the-frontend-service-file">The frontend service file</h1>
+<p>The <a href="https://skarnet.org/software/s6">s6</a> programs use different files. It is quite complex to understand and manage the relationship between all those files. If you&#8217;re interested in the details you should read <a href="https://skarnet.org/software/s6/servicedir.html">the documentation for the s6 servicedir</a> and also about <a href="https://skarnet.org/software/s6/servicedir.html">classic</a> and <a href="66-module-creation.html">module</a> services. The frontend service file of <code>66</code> program allows you to deal with all these different services in a centralized manner and in one single location.</p>
+<p>By default <code>66</code> program expects to find service files in <code>/usr/share/66/service</code> and <code>/etc/66/service</code> for root user, <code>/usr/share/66/service&#47;user</code> and <code>/etc/66/service&#47;user</code> for regular accounts. For regular accounts, <code>$HOME&#47;.66/service</code> will take priority over the previous ones. Although this can be changed at compile time by passing the <code>--with-system-service=DIR</code>, <code>--with-sysadmin-service=DIR</code> and <code>--with-user-service=DIR</code> option to <code>.&#47;configure</code>.</p>
+<p>The frontend service file has a format of <code>INI</code> with a specific syntax on the key field. The name of the file usually corresponds to the name of the daemon and does not have any extension or prefix.</p>
+<p>The file is made of <em>sections</em> which can contain one or more <code>key = value</code> pairs where the <em>key</em> name can contain special characters like <code>-</code> (hyphen) or <code>_</code> (low line) except the character <code>@</code> (commercial at) which is reserved.</p>
+<p>You can find a prototype with all valid section and all valid <code>key=value</code> pair at the end of this <a href="#prototype-of-a-frontend-file">document</a>.</p>
+<h3 id="file-names-examples">File names examples</h3>
+<pre><code>/usr/share/66/service&#47;dhcpcd
+/usr/share/66/service&#47;very_long_name_which_make_no_sense
+</code></pre>
+<h3 id="file-content-example">File content example</h3>
+<pre><code>[Main]
+Type = classic
+Description = "ntpd daemon"
+Version = 0.1.0
+User = ( root )
+
+[Start]
+Execute = (
+    foreground { mkdir -p  -m 0755 ${RUNDIR} }
+    execl-cmdline -s { ntpd ${CMD_ARGS} }
+)
+
+[Environment]
+RUNDIR=!&#47;run&#47;openntpd
+CMD_ARGS=!-d -s
+</code></pre>
+<p>The parser will <strong>not</strong> accept an empty value. If a <em>key</em> is set then the <em>value</em> <strong>can not</strong> be empty. Comments are allowed using the number sign <code>#</code>. Empty lines are also allowed.</p>
+<p><em>Key</em> names are <strong>case sensitive</strong> and can not be modified. Most names should be specific enough to avoid confusion.</p>
+<h2 id="sections">Sections</h2>
+<p>All sections need to be declared with the name written between square brackets <code>[]</code> and <strong>must begins</strong> with a uppercase followed by lowercase letters <strong>only</strong>. This means that special characters and numbers are not allowed in the name of a section.</p>
+<p>The <code>[Main]</code> section <strong>must be</strong> declared first.</p>
+<p>The frontend service file allows the following section names:</p>
+<ul>
+<li><a href="#section-main">[Main]</a></li>
+<li><a href="#section-start">[Start]</a></li>
+<li><a href="#section-stop">[Stop]</a></li>
+<li><a href="#section-logger">[Logger]</a></li>
+<li><a href="#section-environment">[Environment]</a></li>
+<li><a href="#section-regex">[Regex]</a></li>
+<li><a href="#section-execute">[Execute]</a></li>
+</ul>
+<p>Although a section can be mandatory not all of its key fields must be necessarily so.</p>
+<h3 id="syntax-legend">Syntax legend</h3>
+<p>The <em>value</em> of a <em>key</em> is parsed in a specific format depending on the key. The following is a break down of how to write these syntaxes.</p>
+<h4 id="inline"><em>inline</em></h4>
+<p>An inline <em>value</em>. <strong>Must</strong> be on the same line with its corresponding <em>key</em>.</p>
+<ul>
+<li><p>Valid syntax:</p>
+<pre><code>Type = classic
+
+Type=classic
+</code></pre></li>
+<li><p><strong>(!)</strong> Invalid syntax:</p>
+<pre><code>Type=
+classic
+</code></pre>
+<h4 id="quotes"><em>quotes</em></h4></li>
+</ul>
+<p>A <em>value</em> between double-quotes. <strong>Must</strong> be on the same line with its corresponding <em>key</em>.</p>
+<ul>
+<li><p>Valid syntax:</p>
+<pre><code>Description = "some awesome description"
+
+Description="some awesome description"
+</code></pre></li>
+<li><p><strong>(!)</strong> Invalid syntax:</p>
+<pre><code>Description=
+"some awesome description"
+
+Description = "line break inside a double-quote
+is not allowed"
+</code></pre></li>
+</ul>
+<h4 id="brackets"><em>brackets</em></h4>
+<p>Multiple <em>values</em> between parentheses <code>()</code>. Values need to be separated with a space. A line break can be used instead.</p>
+<ul>
+<li><p>Valid syntax:</p>
+<pre><code>Depends = ( fooA fooB fooC )
+
+Depends=(fooA fooB fooC)
+
+Depends=(
+fooA
+fooB
+fooC
+)
+
+Depends=
+(
+fooA
+fooB
+fooC
+)
+</code></pre></li>
+<li><p><strong>(!)</strong> Invalid syntax:</p>
+<pre><code>Depends = (fooAfooBfooC)
+</code></pre></li>
+</ul>
+<h4 id="uint"><em>uint</em></h4>
+<p>A positive whole number. <strong>Must</strong> be on the same line with its corresponding <em>key</em>.</p>
+<ul>
+<li><p>Valid syntax:</p>
+<pre><code>Notify = 3
+
+Notify=3
+</code></pre></li>
+<li><p><strong>(!)</strong> Invalid syntax:</p>
+<pre><code>Notify=
+3
+</code></pre></li>
+</ul>
+<h4 id="path"><em>path</em></h4>
+<p>An absolute path beginning with a forward slash <code>&#47;</code>. <strong>Must</strong> be on the same line with its corresponding <em>key</em>.</p>
+<ul>
+<li><p>Valid syntax:</p>
+<pre><code>Destination = &#47;etc&#47;66
+
+Destination=&#47;etc&#47;66
+</code></pre></li>
+<li><p><strong>(!)</strong> Invalid syntax:</p>
+<pre><code>Destination=&#47;a&#47;very&#47;
+long&#47;path
+</code></pre></li>
+</ul>
+<h4 id="pair"><em>pair</em></h4>
+<p>Same as <a href="#inline"><em>inline</em></a>.</p>
+<ul>
+<li><p>Valid syntax:</p>
+<pre><code>MYKEY = MYVALUE
+
+anotherkey=anothervalue
+
+anotherkey=where_value=&#47;can_contain&#47;equal&#47;Character
+</code></pre></li>
+<li><p><strong>(!)</strong> Invalid syntax:</p>
+<pre><code>MYKEY=
+MYVALUE
+</code></pre></li>
+</ul>
+<h4 id="colon"><em>colon</em></h4>
+<p>A value between double colons followed by a <em>pair</em> syntax. <strong>Must</strong> be one by line.</p>
+<ul>
+<li><p>Valid syntax:</p>
+<pre><code>::key=value
+
+:filename:key=value
+</code></pre></li>
+<li><p><strong>(!)</strong> Invalid syntax:</p>
+<pre><code>::MYKEY=
+MYVALUE
+
+::
+MYKEY=MYVALUE
+
+::key=value :filename:anotherkey=anothervalue
+</code></pre></li>
+</ul>
+<h4 id="simple-colon"><em>simple-colon</em></h4>
+<p>A values separated by a colon. <strong>Must</strong> be on the same line with its corresponding <em>key</em>.</p>
+<ul>
+<li><p>Valid syntax:</p>
+<pre><code>RunAs = 1000:19
+</code></pre></li>
+<li><p><strong>(!)</strong> Invalid syntax:</p>
+<pre><code>RunAs = 1000:
+19
+</code></pre></li>
+</ul>
+<h4 id="boolean"><em>boolean</em></h4>
+<p>A value specifying a true state for the key. <strong>Must</strong> be on the same line with its corresponding <em>key</em>. If the key is not defined, it defaults to <code>false</code>.</p>
+<ul>
+<li><p><strong>Valid syntax</strong>:</p>
+<pre><code>BlockPrivileges = true
+BlockPrivileges = True
+BlockPrivileges = TRUE
+BlockPrivileges = 1
+BlockPrivileges = false
+BlockPrivileges = False
+BlockPrivileges = FALSE
+BlockPrivileges = 0
+</code></pre></li>
+<li><p><strong>(!)</strong> <strong>Invalid syntax</strong>:</p>
+<pre><code>BlockPrivileges =
+true
+BlockPrivileges =
+</code></pre></li>
+<li><p>note: For code simplicity and rapidity, setting e.g. <code>key = T</code> is strictly equivalent to <code>key = True</code> or <code>key = TRUE</code> as the parser only check the first letter of the string value.</p></li>
+</ul>
+<h3 id="section-main">Section [Main]</h3>
+<p>This section is <em>mandatory</em>. (!)</p>
+<h4 id="type">Type</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Type = classic
+</code></p>
+<p>Defines the service type. Determines how <strong>66</strong> orchestrates startup and supervision.</p>
+<ul>
+<li><p>mandatory: yes (!)</p></li>
+<li><p>syntax: <a href="#inline">inline</a></p></li>
+<li><p>valid values :</p>
+<ul>
+<li>classic : Standard supervised service. Runs continuously and is automatically restarted if it crashes.</li>
+<li>oneshot : Executes once and does not restart. Suitable for initialization tasks.</li>
+<li>module : Configurable set of different type of service; integrates with the <a href="#section-regex"><code>[Regex]</code></a> section for file and directory transformations.</li>
+</ul></li>
+</ul>
+<h4 id="version">Version</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Version = 0.1.0
+</code></p>
+<p>Specifies the semantic version of the service. This helps track updates and compatibility. If not specified, defaults to the actual installed version of <em>66</em>.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#inline">inline</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>Any valid version with number, alphabetical, release or mixed components. See <a href="#a-word-about-the-version-key">A word about the Version key</a> below.</li>
+</ul></li>
+</ul>
+<h4 id="description">Description</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Description = "ntpd daemon"
+</code></p>
+<p>Provides a concise, human-readable summary of the service’s purpose. Enclosed in double quotes. If not specified, defaults to &#8220; service&#8221;.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#quote">quote</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>Anything you want.</li>
+</ul></li>
+</ul>
+<h4 id="user">User</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+User = ( root )
+</code></p>
+<p>Specifies the system user(s) list allowed to manage and operate the service. If not defined, defaults to the current process owner&#8217;s username. <em>66</em> automatically distinguishes between user services and root services based on their installation paths. By default, only the specified users can start, stop, or interact with the service</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#brackets">brackets</a></p></li>
+<li><p>valid values :</p>
+<ul>
+<li>Any valid user of the system. If you don&#8217;t know in advance the name of the user who will deal with the service, you can use the term <code>user</code>. In that case every user of the system will be able to deal with the service. You can also use the <code>@U</code> identifier to be more specific.</li>
+</ul>
+<p>(!) Be aware that <code>root</code> is not automatically added for a user service. If you don&#8217;t declare <code>root</code> in this field, you will not be able to use the service even with <code>root</code> privileges.</p></li>
+</ul>
+<h4 id="depends">Depends</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Depends = ( fooA fooB fooC )
+</code></p>
+<p>Declares the mandatory service dependencies. Each listed service must start successfully before this service launches.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#brackets">brackets</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>The name of any valid service.</li>
+</ul>
+<p>It is unnecessary to manually define chained sets of dependencies, see <a href="66.html#handling-dependencies">66</a>.</p>
+<p>A service can be commented out by placing the number sign <code>#</code> at the begin of the name like this:</p>
+<pre><code>Depends = ( fooA #fooB fooC )
+</code></pre></li>
+</ul>
+<h4 id="requiredby">RequiredBy</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+RequiredBy = ( fooX fooY )
+</code></p>
+<p>Specifies reverse dependencies—services that depend on this service. Starting or enabling this service automatically updates those listed.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#brackets">brackets</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>The name of any valid service.</li>
+</ul>
+<p>It is unnecessary to manually define chained sets of dependencies, see <a href="66.html#handling-dependencies">66</a>.</p>
+<p>A service can be commented out by placing the number sign <code>#</code> at the begin of the name like this:</p>
+<pre><code>Depends = ( fooA #fooB fooC )
+</code></pre></li>
+</ul>
+<h4 id="optsdepends">OptsDepends</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+OptsDepends = ( fooA fooB )
+</code></p>
+<p>Lists optional dependencies. <strong>66</strong> will enable the first available service from this list at startup.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#brackets">brackets</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>The name of any valid service. A service declared as optional dependencies is not mandatory. The parser will look the corresponding service:
+<ul>
+<li>If enabled, it will warn the user and do nothing.</li>
+<li>If not, it will try to find the corresponding frontend file.
+<ul>
+<li>If the frontend service file is found, it will enable it.</li>
+<li>If it is not found, it will warn the user and do nothing.</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>The order is <em>important</em> (!). The first service found will be used and the parse process of the field will be stopped. So, you can considere <code>OptsDepends</code> field as: &#8220;enable one on this service or none&#8221;.</p>
+<p>A service can be commented out by placing the number sign <code>#</code> at the begin of the name like this:</p>
+<pre><code>OptsDepends = ( fooA #fooB fooC )
+</code></pre></li>
+</ul>
+<h4 id="options">Options</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Options = (log)
+</code></p>
+<p>Configures optional behaviors for the service. Wrap options in parentheses for multiple entries.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#brackets">brackets</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li><p>log : automatically create a logger for the service. This is <strong>default</strong>. The logger will be created even if this options is not specified. If you want to avoid the creation of the logger, prefix the options with an exclamation mark:</p>
+<pre><code>Options = ( !log )
+</code></pre>
+<p>The behavior of the logger can be configured in the corresponding section—see <a href="66-frontend.html#section-logger">[Logger]</a>.</p></li>
+</ul></li>
+</ul>
+<h4 id="flags">Flags</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Flags = (down earlier)
+</code></p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#brackets">brackets</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>down: This will create the file down corresponding to the file down of <a href="https://skarnet.org/software/s6">s6</a> program. Once this file was created the default state of the service will be considered down, not up: the service will not automatically be started until it receives a <a href="66-start.html">66 start</a> command. Without this file the default state of the service will be up and started automatically.</li>
+<li>earlier: This set the service as an <em>earlier</em> service meaning starts the service as soon as the <a href="66-scandir.html">scandir</a> is up.</li>
+</ul></li>
+</ul>
+<h4 id="notify">Notify</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Notify = 3
+</code></p>
+<p>Enables readiness notification. Creates <code>notification-fd</code> containing the specified file descriptor number.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>Any valid number.</li>
+</ul>
+<p>This will create the file <em>notification-fd</em>. Once this file is created the service supports <a href="https://skarnet.org/software/s6/notifywhenup.html">readiness notification</a>. The value equals the number of the file descriptor that the service writes its readiness notification to. (For instance, it should be 1 if the daemon is <a href="https://skarnet.org/software/s6/s6-ipcserverd.html">s6-ipcserverd</a> run with the -1 option.) When the service reseive signal and this file is present containing a valid descriptor number, <a href="66.html">66</a> command will wait for the notification from the service and broadcast its readiness.</p></li>
+</ul>
+<h4 id="timeoutstop">TimeoutStop</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+TimeoutStop = 5000
+</code></p>
+<p>Specifies the maximum time (ms) to wait for the stop script (<code>finish</code>) to complete before forcibly killing it.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>Any valid number.</li>
+</ul>
+<p>This will create the file <em>timeout-finish</em>. Once this file is created the value will equal the number of milliseconds after which the <em>.&#47;finish</em> script—if it exists—will be killed with a <code>SIGKILL</code>. The default is <code>0</code> allowing finish scripts to run forever.</p></li>
+</ul>
+<h4 id="timeoutstart">TimeoutStart</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+TimeoutStart = 2000
+</code>
+Defines the grace period (ms) after SIGTERM before sending SIGKILL on stop commands.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>Any valid number.</li>
+</ul>
+<p>This will create the file <em>timeout-kill</em>. Once this file is created and the value is not <code>0</code>, then on reception of a <a href="66-stop.html">stop</a> command—which sends a <code>SIGTERM</code> and a <code>SIGCONT</code> to the service — a timeout of value in milliseconds is set. If the service is still not dead, after <em>value</em> in milliseconds, it will receive a <code>SIGKILL</code>. If the file does not exist, or contains <code>0</code>, or an invalid value, then the service is never forcibly killed.</p></li>
+</ul>
+<h4 id="maxdeath">MaxDeath</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+MaxDeath = 10
+</code></p>
+<p>Limits the number of recorded service crashes. Exceeding this resets the oldest record when tallying failures.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li>Any valid number.</li>
+</ul>
+<p>This will create the file <em>max-death-tally</em>. Once this file was created the value will equal the maximum number of service death events that the supervisor will keep track of. If the service dies more than this number of times, the oldest event will be forgotten and the transition (<a href="66-start.html">start</a> or <a href="66-stop.html">stop</a>) will be declared as failed. Tracking death events is useful, for example, when throttling service restarts. The value cannot be greater than 4096. Without this file a default of 10 is used.</p></li>
+</ul>
+<h4 id="downsignal">DownSignal</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+DownSignal = SIGTERM
+</code></p>
+<p>Specifies which signal to send when stopping or reloading the service.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li>The name or number of a signal.</li>
+</ul>
+<p>This will create the file <em>down-signal</em> which is used to kill the supervised process when a <a href="66-reload.html">reload</a>, <a href="66-restart.html">restart</a> or <a href="66-stop.html">stop</a> command is used. If the file does not exist <code>SIGTERM</code> will be used by default.</p></li>
+</ul>
+<h4 id="copyfrom">CopyFrom</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+CopyFrom = (.&#47;config &#47;etc&#47;default&#47;service)
+</code></p>
+<p>Verbatim copy directories and files on the fly to the main service destination. When dealing with directories, it copies all found files and directories recursively. In case of file, it copy it to the root of the service directory.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#brackets">brackets</a> with <a href="#path">path</a> entries.</p></li>
+<li><p>valid values:</p>
+<ul>
+<li><p>Any files or directories. It accepts <em>absolute</em> or <em>relative</em> path.</p>
+<pre><code>CopyFrom = ( data
+.&#47;.env
+&#47;etc&#47;resolv.conf)
+</code></pre></li>
+</ul>
+<p><strong>Note</strong>: <code>66</code> version must be higher than 0.3.0.1.</p></li>
+</ul>
+<h4 id="intree">InTree</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+InTree = my-tree
+</code></p>
+<p>Automatically activate the service within a named service tree. If a corresponding seed file exists, it will be applied.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#inline">inline</a></p></li>
+<li><p>valid values :</p>
+<ul>
+<li>Any name.</li>
+</ul>
+<p>The service will automatically be activated at the tree name set in the <em>InTree</em> key value.</p>
+<p><strong>Note</strong>: If a corresponding <a href="66-tree.html#seed-files">seed</a> file exist on your system, its will be used to create and configure the tree.</p></li>
+</ul>
+<h4 id="stdin">StdIn</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+StdIn = null
+</code></p>
+<p>Controls standard I&#47;O redirection for the standard input entries.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#inline">inline</a>,<a href="#simple-colon">simple-colon</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>tty:&#47;path&#47;to&#47;tty: Redirects Standard Input to the given tty specified by the path and try to become the controlling process of the terminal. The path must be absolute and exist. If the terminal is already being controlled by another process and the operation returns an EPERM failure, 66 will warn the user and continue its execution. If the failure is other than EPERM, it will terminate.</li>
+<li>s6log: Redirects Standard Input to the socket of the s6-log program. This is the default.</li>
+<li>null: Redirects Standard Input to <code>&#47;dev&#47;null</code></li>
+<li>parent: This is a no-op redirection. The Standard Input is inherited from the parent process, meaning the <code>s6-supervise</code> program.</li>
+<li>close: Close the Standard Input.</li>
+</ul>
+<p>Please see <a href="66-standard-io-redirection.html">Standard IO redirection</a> documentation for further information.</p></li>
+</ul>
+<h4 id="stdout">StdOut</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+StdOut = s6log
+</code></p>
+<p>Controls standard I&#47;O redirection for the standard output entries.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#inline">inline</a>,<a href="#simple-colon">simple-colon</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>tty:&#47;path&#47;to&#47;tty: Redirects Standard Output to the given tty specified by the path. The path must be absolute and exist. It does not try to take control of the terminal.</li>
+<li>file:&#47;path&#47;to&#47;file: Redirects Standard Output to the given file specified by the path. The path must be absolute. If the directory of the file and the file itself do not exist, <em>66</em> will create it. In that case, the directory will get <code>0755</code> permissions and the file will be set with <code>0666</code> permissions.</li>
+<li>console: Redirects Standard Output to the active console. It does not try to take control of the console.</li>
+<li>s6log: Redirects Standard Output to the socket of the <code>s6-log</code> program. This is the default.</li>
+<li>syslog: Redirects Standard Output to the <code>&#47;dev&#47;log</code> socket.</li>
+<li>null: Redirects Standard Output to <code>&#47;dev&#47;null</code>.</li>
+<li>parent: This is a no-op redirection. The Standard Output is inherited from the parent process, meaning the <code>s6-supervise</code> program.</li>
+<li>close: Closes the Standard Output.</li>
+</ul>
+<p>Please see <a href="66-standard-io-redirection.html">Standard IO redirection</a> documentation for further information.</p></li>
+</ul>
+<h4 id="stderr">StdErr</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+StdErr = inherit
+</code></p>
+<p>Controls standard I&#47;O redirection for the standard error entries.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#inline">inline</a>,<a href="#simple-colon">simple-colon</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>tty:&#47;path&#47;to&#47;tty: Redirects Standard Error to the given tty specified by the path. The path must be absolute and exist. It does not try to take control of the terminal.</li>
+<li>file:&#47;path&#47;to&#47;file: Redirects Standard Erro to the given file specified by path. Path must be absolute. If the directory of file and the file itself doesn&#8217;t exist, <em>66</em> create it. In that case, the directory get <code>0755</code> as permissions and the file is set with <code>0666</code> as permissions.</li>
+<li>console: Redirects Standard Error to the active console. It does not try to take control of the console.</li>
+<li>syslog: Redirects Standard Output to the <code>&#47;dev&#47;log</code> socket.</li>
+<li>null: Redirects Standard Output to <code>&#47;dev&#47;null</code>.</li>
+<li>parent: This is a no-op redirection. The Standard Error is inherited from the parent process, meaning the <code>s6-supervise</code> program.</li>
+<li>inherit: Duplicates the Standard Error to the Standard Output. This is the default.</li>
+<li>close: Closes the Standard Error.</li>
+</ul>
+<p>Please see <a href="66-standard-io-redirection.html">Standard IO redirection</a> documentation for further information.</p></li>
+</ul>
+<h4 id="provide">Provide</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Provide = ( network networking )
+</code></p>
+<p>Defines one or more service aliases—alternate names under which this service can be referenced. These aliases behave like symbolic links, allowing the same service to be managed with different name.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#brackets">brackets</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>Any abitrary name.</li>
+</ul></li>
+</ul>
+<h4 id="conflict">Conflict</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Conflict = ( connmand networkmanager )
+</code></p>
+<p>Defines one or more services that cannot run or be enabled simultaneously with this service. If a conflicting service is running, attempts to start this service will fail. Similarly, if a conflicting service is enabled, attempts to enable this service will be rejected.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#brackets">brackets</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>Any valid service name.</li>
+</ul></li>
+</ul>
+<h3 id="section-start">Section [Start]</h3>
+<p>This section is <em>mandatory</em>. (!)</p>
+<h4 id="build">Build</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Build = auto
+</code></p>
+<p>Determines how the service script is generated from the <code>Execute</code> field.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#inline">inline</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li><p>auto : creates a service script by copying the <code>Execute</code> field verbatim and prepending an <a href="https://skarnet.org/software/execline">execline</a> shebang to the beginning of the script. This is the <strong>default</strong>.</p></li>
+<li><p>custom : Creates a service script by copying the <code>Execute</code> field verbatim and applying the specified shebang to execute the script. <strong>Do not forget</strong> to set the shebang at <code>Execute</code> key field.</p></li>
+</ul></li>
+</ul>
+<h4 id="runas">RunAs</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+RunAs = oblive
+</code>
+Drops privileges to the specified user or UID:GID before executing the service.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#inline">inline</a>,<a href="#simple-colon">simple-colon</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li><p>Any valid user name set on the system or valid uid:gid number.</p>
+<pre><code>RunAs = oblive
+
+RunAs = 1000:19
+
+# if uid is not specified,
+# the uid of the owner of the process
+# is pick by default
+RunAs = :19
+
+# if gid is not specified,
+# the gid of the owner of the process
+# is pick by default
+RunAs = 1000:
+</code></pre>
+<p>This will pass the privileges of the service to the given user before starting the run script of the service.</p></li>
+</ul>
+<p><strong>Note</strong>: (!) The service needs to be first started with root if you want to hand over priviliges to a user. Only root can pass on privileges. This field has no effect for other use cases.</p></li>
+</ul>
+<h4 id="execute">Execute</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Execute = ( &#47;usr&#47;bin&#47;auditd -f )
+</code>
+Defines the command(s) executed to start the service. Enclose multiple lines in brackets.</p>
+<ul>
+<li><p>mandatory: yes (!)</p></li>
+<li><p>syntax: <a href="#brackets">brackets</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li>The command to execute when starting the service.</li>
+</ul>
+<p><strong>Note</strong>: The field will be used as is. No changes will be applied at all except in <code>custom</code> case(see <a href="#a-word-about-the-execute-key">A word about the execute key</a>). It&#8217;s the responsability of the author to make sure that the content of this field is correct.</p></li>
+</ul>
+<h3 id="section-stop">Section [Stop]</h3>
+<p>This section is <em>optional</em>.</p>
+<p>This section is exactly the same as <a href="66-frontend.html#section-start">[Start]</a> and shares the same keys. With the exception that it will handle the stop process of the service.</p>
+<h3 id="section-logger">Section [Logger]</h3>
+<p>This section is optional and controls the behavior of the default logging system used by <em>66</em>, which utilizes the excellent <code>s6-log</code> program.</p>
+<p>It will only have effects if value <em>log</em> was <strong>not</strong> prefixed by an exclamation mark to the <a href="#options"><code>Options</code></a> key in the <a href="#section-main">[Main]</a> section. Additionally, the <code>StdIn</code> or <code>StdOut</code> keys from the <a href="#section-main">[Main]</a> <strong>must be set</strong> to <code>s6log</code>, or these keys <strong>must not</strong> be defined at all.</p>
+<p>This section extends the <code>Build</code>, <code>RunAs</code>, and <code>Execute</code> key fields from <a href="66-frontend.html#section-start">[Start]</a> and the <code>TimeoutStop</code> and <code>TimeoutStart</code> key fields from <a href="66-frontend.html#section-main">[Main]</a> . These are also valid keys for <a href="66-frontend.html#section-logger">[Logger]</a> and behave the same way they do in the other sections but they can not be specified except for the mandatory key <code>Build</code>—see example below. In such case the default behaviour for those key are apply.</p>
+<p>Furthermore there are some keys specific to the log.</p>
+<p>The following key names are also valid:</p>
+<ul>
+<li><code>Build</code>, <code>RunAs</code>, and <code>Execute</code> — See <a href="66-frontend.html#section-start">[Start]</a></li>
+<li><code>TimeoutStop</code>, <code>TimeoutStart</code> — See <a href="66-frontend.html#section-main">[Main]</a></li>
+</ul>
+<h4 id="backup">Backup</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Backup = 3
+</code>
+Number of rotated log files to retain before overwriting the oldest.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li><p>Any valid number.</p>
+<p>The log directory will keep <em>value</em> files. The next log to be saved will replace the oldest file present. By default <code>3</code> files are kept.</p></li>
+</ul></li>
+</ul>
+<h4 id="maxsize">MaxSize</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+MaxSize = 1000000
+</code>
+Byte threshold to trigger log rotation when the current file grows too large.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li><p>Any valid number.</p>
+<p>A new log file will be created every time the current one approaches <em>value</em> bytes. By default, filesize is <code>1000000</code>; it cannot be set lower than <code>4096</code> or higher than <code>268435455</code>.</p></li>
+</ul></li>
+</ul>
+<h4 id="timestamp">Timestamp</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Timestamp = iso
+</code></p>
+<p>Specifies timestamp format prefixed to each log entry.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#inline">inline</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li><p>tai</p>
+<p>The logged line will be preceded by a TAI64N timestamp (and a space) before being processed by the next action directive.</p></li>
+<li><p>iso</p>
+<p>The selected line will be preceded by a ISO 8601 timestamp for combined date and time representing local time according to the systems timezone, with a space (not a <code>T</code>) between the date and the time and two spaces after the time, before being processed by the next action directive.</p></li>
+<li><p>none</p>
+<p>The logged line will not be preceded by any timestamp.</p>
+<p>The following are two possible examples for the <a href="66-frontend.html#section-logger">[Logger]</a> section definition.</p>
+<pre><code>[Logger]
+RunAs = user
+TimeoutStop = 10000
+Backup = 10
+Timestamp = iso
+</code></pre>
+<pre><code>[Logger]
+Backup = 10
+</code></pre></li>
+</ul></li>
+</ul>
+<h3 id="section-environment">Section [Environment]</h3>
+<p>This section is <em>optional</em>.</p>
+<p>A file containing the <code>key=value</code> pair(s) will be created by default at <code>/etc/66/conf&#47;name_of_service</code> directory. The default can also be changed at compile-time by passing the <code>--with-sysadmin-service-conf=DIR</code> option to <code>.&#47;configure</code>.</p>
+<h4 id="any-pair">Any <code>key=value</code> pair</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+DirRun=&#47;run&#47;openntpd
+</code></p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#pair">pair</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li><p>You can define any variables that you want to add to the environment of the service. For example:</p>
+<pre><code>[Environment]
+dir_run=&#47;run&#47;openntpd
+cmd_args=-d -s
+</code></pre>
+<p>The <code>!</code> character can precede the value. Ensure <strong>no</strong> space exists between the exclamation mark and the <em>value</em>. This action explicitly avoids setting the value of the <em>key</em> for the runtime process but only applies it at the start of the service. For intance, the following valid example unset the <code>key=value</code> pair <code>dir_run=!&#47;run&#47;openntpd</code> from the general environment variables of the service.</p>
+<p>the following syntax is valid</p>
+<pre><code>[Environment]
+dir_run=!&#47;run&#47;openntpd
+cmd_args = !-d -s
+</code></pre>
+<p>where this one is not</p>
+<pre><code>[Environment]
+dir_run=! &#47;run&#47;openntpd
+cmd_args = ! -d -s
+</code></pre>
+<p>Refers to <a href="execl-envfile.html">execl-envfile</a> for futhers information.</p></li>
+</ul></li>
+</ul>
+<h4 id="importfile">ImportFile</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+ImportFile=&#47;etc&#47;66&#47;init.conf
+</code></p>
+<p>The <code>ImportFile</code> variable is recognized by <code>66</code> and treated as a <code>key=value</code> pair, similar to other environment variables. However, <code>ImportFile</code> itself is not exported to the environment.</p>
+<p>The target file must adhere to the environment definition syntax specified in the <a href="execl-envfile.html#file-syntax">file syntax</a> guidelines.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#path">path</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li><p>Any valid absolute file path can be specified. The <code>ImportFile</code> variable can be defined multiple times. For example:</p>
+<pre><code>[Environment]
+dir_run=&#47;run&#47;openntpd
+ImportFile=&#47;etc&#47;66&#47;init.conf
+</code></pre>
+<p>The <code>!</code> character has no effect on <code>ImportFile</code>.</p>
+<p><code>ImportFile</code> processing occurs at the end of the environment setup. If a key is defined both in the <code>[Environment]</code> section and in a file specified by <code>ImportFile</code>, the value from the <code>ImportFile</code> takes precedence.</p>
+<p>For multiple <code>ImportFile</code> declarations, the last declared file takes precedence for any duplicate keys found across the specified files.</p>
+<p><a href="66-identifier.html">identifier</a> is still also <strong>interpreted</strong>. For example:</p>
+<pre><code>[Environment]
+dir_run=&#47;run&#47;openntpd
+ImportFile=&#47;etc&#47;66&#47;init.conf
+ImportFile=@H&#47;.66&#47;environment&#47;my.conf
+</code></pre></li>
+</ul></li>
+</ul>
+<h3 id="section-regex">Section [Regex]</h3>
+<p>This section is <em>optional</em>.</p>
+<p>It will only have an effect when the service is a <code>module</code> type—see the section <a href="66-module-creation.html">Module service creation</a>.</p>
+<p><a href="66-identifier.html">identifier</a> are replaced before applying the regex section.</p>
+<h4 id="configure">Configure</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Configure = "--enable-feature"
+</code></p>
+<p>Arguments passed to the module’s <code>configure</code> script.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#quotes">quotes</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li>You can define any arguments to pass to the module&#8217;s configure script.</li>
+</ul></li>
+</ul>
+<h4 id="directories">Directories</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Directories = ( DM=sddm )
+</code></p>
+<p>Regex-based renaming rules for module subdirectories. Each entry is <code>regex=replacement</code>.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#pair">pair</a> inside <a href="#brackets">brackets</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li><p>Any <code>key=value</code> pair where key is the regex to search on the directory name and value the replacement of that regex. For example:</p>
+<pre><code>Directories = ( DM=sddm TRACKER=consolekit )
+</code></pre>
+<p>Where the module directory contains two sub-directories named use-DM and by-TRACKER directories. It will be renamed as use-sddm and by-consolekit respectively.</p></li>
+</ul></li>
+</ul>
+<h4 id="files">Files</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Directories = ( servicename=newname )
+</code></p>
+<p>Regex-based renaming rules for files. Each entry is <code>regex=replacement</code>.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#pair">pair</a> inside <a href="#brackets">brackets</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li>Reacts exactly as Directories field but on files name instead of directories name.</li>
+</ul></li>
+</ul>
+<h4 id="infiles">InFiles</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+InFiles = ( :mount-tmp:args=-o noexec )
+</code></p>
+<p>In-file regex replacements for module files. Use <code>:filename:regex=replacement</code> or <code>::regex=replacement</code> for all files.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#colon">colon</a> inside <a href="#brackets">brackets</a></p></li>
+<li><p>valid value:</p>
+<ul>
+<li><p>Any valid filename between the double colon with any <code>key=value</code> pair where key is the regex to search inside the file and value the replacement of that regex. The double colon <strong>must</strong> be present but the name between it can be omitted. In that case, the <code>key=value</code> pair will apply to all files contained on the module directories and to all keys (regex) found inside the same file.For example:</p>
+<pre><code>InFiles = ( :mount-tmp:args=-o noexec
+::user=@I )
+</code></pre>
+<ul>
+<li>It replaces first the term <code>@I</code> by the name of the module.</li>
+<li>It opens the file named mount-tmp, search for the args regex and replaces it by the value of the regex.</li>
+<li>It opens all files found on the module directory and replaces all regex &#8216;user&#8217; found by the name of the module in each file.</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="section-execute">Section [Execute]</h3>
+<p>This section is <em>optional</em>.</p>
+<p>This section configures tasks executed just before calling <code>exec</code> for the service’s start and stop processes.</p>
+<p>Resource limits (e.g., <code>LimitNICE</code>, <code>LimitAS</code>) sets soft (rlim<em>cur) and hard (rlim</em>max) limits by retrieving current limits with <code>getrlimit()</code>, adjusting the hard limit for root-owned services if needed, capping the soft limit to the hard limit for non-root services, and applying the new limits with <code>setrlimit()</code>. If a limit is zero, no changes are made.</p>
+<p>All LimitXXX keys accept the value <code>unlimited</code> to set the corresponding <code>RLIMIT_*</code> resource to <code>RLIM_INFINITY</code>, allowing unrestricted use of that resource. For unprivileged services (non-root users), <code>unlimited</code> or values exceeding the current hard limit (<code>rlim_max</code>) are capped at <code>rlim_max</code> to prevent errors. Setting <code>unlimited</code> or raising limits beyond <code>rlim_max</code> requires root privileges or <code>CAP_SYS_RESOURCE</code>. Linux-specific limits (e.g., LimitNICE, LimitRTPRIO) are ignored on systems where they are not supported.</p>
+<h4 id="limitas">LimitAS</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitAS = unlimited
+</code></p>
+<p>Specifies the maximum address space (virtual memory) for the service process, in bytes. Corresponds to the <code>RLIMIT_AS</code> resource limit.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 1048576 for 1 MB).</li>
+</ul></li>
+</ul>
+<h4 id="limitcore">LimitCORE</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitCORE = 0
+</code></p>
+<p>Specifies the maximum size of core dump files generated by the service process, in bytes. Corresponds to the <code>RLIMIT_CORE</code> resource limit.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 0 to disable core dumps, 1048576 for 1 MB).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Setting to 0 disables core dumps.</p></li>
+</ul>
+<h4 id="limitcpu">LimitCPU</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitCPU = unlimited
+</code></p>
+<p>Specifies the maximum CPU time the service process can use, in seconds. Corresponds to the <code>RLIMIT_CPU</code> resource limit.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 3600 for 1 hour).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Exceeding the limit sends SIGXCPU to the process.</p></li>
+</ul>
+<h4 id="limitdata">LimitDATA</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitDATA = 5242880
+</code></p>
+<p>Specifies the maximum size of the service process’s data segment, in bytes. Corresponds to the <code>RLIMIT_DATA</code> resource limit.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 5242880 for 5 MB).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Affects memory allocations (e.g., malloc()).</p></li>
+</ul>
+<h4 id="limitfsize">LimitFSIZE</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitFSIZE = unlimited
+</code></p>
+<p>Specifies the maximum size of files the service process can create, in bytes. Corresponds to the <code>RLIMIT_FSIZE</code> resource limit.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 1048576 for 1 MB).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Exceeding the limit sends SIGXFSZ to the process.</p></li>
+</ul>
+<h4 id="limitlocks">LimitLOCKS</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitLOCKS = 1024
+</code></p>
+<p>Specifies the maximum number of file locks the service process can hold. Corresponds to the <code>RLIMIT_LOCKS</code> resource limit (Linux-specific).</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 1024).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Only available on Linux; ignored on systems lacking RLIMIT_LOCKS.</p></li>
+</ul>
+<h4 id="limitmemlock">LimitMEMLOCK</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitMEMLOCK = 65536
+</code></p>
+<p>Specifies the maximum amount of memory the service process can lock into RAM, in bytes. Corresponds to the <code>RLIMIT_MEMLOCK</code> resource limit.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 65536 for 64 KB).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Affects mlock() and similar calls.</p></li>
+</ul>
+<h4 id="limitmsgqueue">LimitMSGQUEUE</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitMSGQUEUE = 819200
+</code></p>
+<p>Specifies the maximum size of POSIX message queues the service process can create, in bytes. Corresponds to the <code>RLIMIT_MSGQUEUE</code> resource limit (Linux-specific).</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 819200).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Only available on Linux; ignored on systems lacking <code>RLIMIT_MSGQUEUE</code>.</p></li>
+</ul>
+<h4 id="limitnice">LimitNICE</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitNICE = -20
+</code></p>
+<p>Specifies the maximum nice value (scheduling priority) the service process can set. Corresponds to the <code>RLIMIT_NICE</code> resource limit (Linux-specific).</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>An integer between <code>-20</code> and <code>19</code> (e.g., <code>-20</code> for highest priority, <code>19</code> for lowest).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Lower values (e.g., <code>0</code>) give higher CPU priority; higher values (e.g., <code>19</code>) give lower priority.
+Only available on Linux; ignored on systems lacking RLIMIT_NICE.</p>
+<p>Numeric values are adjusted to the hard limit if exceeded (e.g., <code>-20</code> may be capped to 0 if <code>ulimit -He</code> is <code>20</code>).</p>
+<p>Setting negative nice values may require <code>CAP_SYS_NICE</code> for unprivileged processes.</p></li>
+</ul>
+<h4 id="limitnofile">LimitNOFILE</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitNOFILE = 1024
+</code></p>
+<p>Specifies the maximum number of open file descriptors the service process can have. Corresponds to the <code>RLIMIT_NOFILE</code> resource limit.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 1024).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Affects files, sockets, and pipes.</p></li>
+</ul>
+<h4 id="limitnproc">LimitNPROC</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitNPROC = 4096
+</code></p>
+<p>Specifies the maximum number of processes the service process’s user can create. Corresponds to the <code>RLIMIT_NPROC</code> resource limit.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 4096).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Applies to the user’s total processes, not just the service.</p></li>
+</ul>
+<h4 id="limitrtprio">LimitRTPRIO</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitRTPRIO = 50
+</code></p>
+<p>Specifies the maximum real-time priority the service process can set. Corresponds to the <code>RLIMIT_RTPRIO</code> resource limit (Linux-specific).</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>An integer between 0 and 100 (e.g., 50; 0 disables real-time priority).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Higher values give higher real-time scheduling priority.
+Only available on Linux; ignored on systems lacking RLIMIT_RTPRIO.</p></li>
+</ul>
+<h4 id="limitrttime">LimitRTTIME</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitRTTIME = unlimited
+</code></p>
+<p>Specifies the maximum real-time CPU time the service process can use, in microseconds. Corresponds to the <code>RLIMIT_RTTIME</code> resource limit (Linux-specific).</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 1000000 for 1 second).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Only available on Linux; ignored on systems lacking RLIMIT_RTTIME.</p></li>
+</ul>
+<h4 id="limitsigpending">LimitSIGPENDING</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitSIGPENDING = 8192
+</code></p>
+<p>Specifies the maximum number of queued signals the service process can have. Corresponds to the <code>RLIMIT_SIGPENDING</code> resource limit (Linux-specific).</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 8192).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Only available on Linux; ignored on systems lacking <code>RLIMIT_SIGPENDING</code>.</p></li>
+</ul>
+<h4 id="limitstack">LimitSTACK</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+LimitSTACK = 8388608
+</code></p>
+<p>Specifies the maximum stack size for the service process, in bytes. Corresponds to the RLIMIT_STACK resource limit.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A non-negative integer (e.g., 8388608 for 8 MB).</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Affects thread stacks and recursion depth.</p></li>
+</ul>
+<h4 id="blockprivileges">BlockPrivileges</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+BlockPrivileges = true
+</code></p>
+<p>Enables the Linux <code>PR_SET_NO_NEW_PRIVS</code> flag via <code>prctl()</code>, preventing the service process and its children from gaining additional privileges (e.g., via <code>setuid</code> binaries or capability inheritance).</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#boolean">boolean</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li>A boolean value</li>
+</ul></li>
+<li><p>notes:</p>
+<p>Only available on Linux; ignored on other systems.</p>
+<p>Once set, cannot be unset for the process or its children.</p></li>
+</ul>
+<h4 id="umask">UMask</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+UMask = 022
+</code></p>
+<p>Sets the file creation mask for the service process via <code>umask()</code>, controlling default permissions for newly created files and directories. The value is specified in octal notation, determining which permission bits are masked from the default mode.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li><p>An octal number between <code>000</code> and <code>777</code> (e.g., <code>022</code>, <code>002</code>, <code>077</code>).</p></li>
+<li><p>Undefined: Defaults to system-wide configuration.</p></li>
+</ul></li>
+</ul>
+<h4 id="nice">Nice</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+Nice = -10
+</code></p>
+<p>Sets the CPU scheduling priority (nice value) for the service process via <code>setpriority()</code>, affecting how the kernel allocates CPU time. Lower values increase priority; higher values decrease it.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#uint">uint</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li><p>An integer between <code>-20</code> (highest priority) and <code>19</code> (lowest priority).</p></li>
+<li><p>Undefined: Defaults to system-wide configuration.</p></li>
+</ul></li>
+<li><p>notes:</p>
+<p>Negative values (e.g., <code>-10</code>) require <code>CAP_SYS_NICE</code> for unprivileged services (non-root users) or root privileges.</p>
+<p>Must be within the <code>RLIMIT_NICE</code> limit set by <code>LimitNICE</code>.</p>
+<p>Affects the service process and its children.</p></li>
+</ul>
+<h4 id="changedirectory">ChangeDirectory</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+ChangeDirectory = &#47;var&#47;lib&#47;myservice
+</code></p>
+<p>Sets the working directory for the service process via <code>chdir()</code>, affecting the default directory for file operations (e.g., opening files with relative paths).</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#path">path</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li><p>Any valid absolute file path can be specified.</p></li>
+<li><p>Undefined: Inherits the working directory from the parent process (default, typically the supervision directory).</p></li>
+</ul></li>
+<li><p>notes:</p>
+<p>The directory must exist and be accessible (readable and executable) by the service’s user. Permission or non-existent directory errors cause the service to fail with a logged warning.</p>
+<p>Affects the service process and its children.</p></li>
+</ul>
+<h4 id="capsbound">CapsBound</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+CapsBound = (CAP_SYS_NICE CAP_CHOWN)
+</code></p>
+<p>Defines the Linux capabilities allowed in the capability bounding set for a root-owned service’s process. This setting controls which special permissions (like adjusting process priorities or changing file ownership) the service can use, restricting it to only the listed capabilities or excluding specific ones.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#brackets">brackets</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li><p>A space-separated list of capability names in parentheses, such as (<code>CAP_SYS_NICE</code> <code>CAP_CHOWN</code> <code>CAP_DAC_OVERRIDE</code>).</p></li>
+<li><p>Capability names can be prefixed with <code>!</code> to exclude them, allowing all other capabilities. For example, (<code>CAP_NET_ADMIN</code> <code>!CAP_SYS_ADMIN</code> <code>CAP_MAC_OVERRIDE</code> <code>!CAP_SYS_RESOURCE</code>) allows all capabilities except <code>CAP_SYS_ADMIN</code> and <code>CAP_SYS_RESOURCE</code>.</p></li>
+<li><p>Valid capability names include <code>CAP_SYS_NICE</code>, <code>CAP_CHOWN</code>, <code>CAP_DAC_OVERRIDE</code>, <code>CAP_SYS_ADMIN</code>, and others (see Linux documentation for the full list).</p></li>
+<li><p>Undefined: No changes are made to the bounding set, and the service uses the system’s default permissions.</p></li>
+</ul></li>
+<li><p>notes:</p>
+<p>Only applies to services running as the root user. For non-root services, this setting is silently ignored.</p>
+<p>Clears all existing capabilities in the bounding set before applying the listed ones, ensuring only specified capabilities are allowed.</p>
+<p>If any capability name is prefixed with <code>!</code>, the list is interpreted as allowing all capabilities except those marked with <code>!</code>. For example, (<code>CAP_NET_ADMIN</code> <code>!CAP_SYS_ADMIN</code>) allows all capabilities except <code>CAP_SYS_ADMIN</code>. Where doing, (<code>CAP_SYS_NICE</code> <code>CAP_CHOWN</code>) restricts the bounding set to only <code>CAP_SYS_NICE</code> and <code>CAP_CHOWN</code>.</p>
+<p>Invalid capability names are ignored, and a warning is logged when the service configuration is parsed.</p>
+<p>Requires Linux kernel version <code>5.6</code> or later.</p></li>
+</ul>
+<h4 id="capsambient">CapsAmbient</h4>
+<p><strong>Source Snippet</strong>:
+<code>ini
+CapsAmbient = (CAP_SYS_NICE)
+</code></p>
+<p>Specifies Linux capabilities that a service and its child processes automatically retain, even when starting new programs. This allows permissions, such as adjusting process priorities, to be passed to child processes without requiring root privileges.</p>
+<ul>
+<li><p>mandatory: no</p></li>
+<li><p>syntax: <a href="#brackets">brackets</a></p></li>
+<li><p>valid values:</p>
+<ul>
+<li><p>A space-separated list of capability names in parentheses, such as <code>(CAP_SYS_NICE CAP_CHOWN CAP_DAC_OVERRIDE)</code>.</p></li>
+<li><p>Capability names can be prefixed with <code>!</code> to exclude them, allowing all other capabilities. For example, <code>(CAP_SYS_NICE !CAP_SYS_ADMIN)</code> includes all capabilities except <code>CAP_SYS_ADMIN</code>.</p></li>
+<li><p>Undefined: No ambient capabilities are set, and child processes inherit no special permissions.</p></li>
+</ul></li>
+<li><p>notes:</p>
+<p>Applies to both root-owned services and non-root services.</p>
+<p>The bounding set must contain at least <code>CAP_SETPCAT</code> capability and each listed capability. If not, it is skipped, and a warning is logged. If <code>CAP_SETPCAT</code> is not in bounding set, the process die.</p>
+<p>For root-owned services, if <code>CapsBound</code> is not set, the service checks the system’s current set of allowed permissions to decide which capabilities can be used. If <code>CapsBound</code> is set, only the capabilities listed in <code>CapsBound</code> are considered. For example, if <code>CapsBound = (CAP_SYS_NICE)</code> and <code>CapsAmbient = (CAP_DAC_OVERRIDE)</code>, the <code>CAP_DAC_OVERRIDE</code> capability will be skipped because it is not in the <code>CapsBound</code> list, and a warning will be logged.</p>
+<p>Requires Linux kernel version <code>5.6</code> or later.</p></li>
+</ul>
+<h2 id="a-word-about-the-execute-key">A word about the Execute key</h2>
+<p>As described above the <code>Execute</code> key can be written in any language as long as you define the key <code>Build</code> as <code>custom</code>. For example if you want to write your <code>Execute</code> field with bash:</p>
+<pre><code>Build = custom
+Execute = (#!&#47;usr&#47;bin&#47;bash
+echo "This script displays available services"
+for i in $(ls /usr/share/66/service); do
+    echo "daemon : ${i} is available"
+done
+)
+</code></pre>
+<p>This is an unnecessary example but it shows how to construct this use case. The resulting file will be :</p>
+<pre><code>#!&#47;usr&#47;bin&#47;bash
+echo "This script displays available services"
+for i in $(ls /usr/share/66/service); do
+    echo "daemon : ${i} is available"
+done
+</code></pre>
+<p>The parser duplicates exactly what appears between <code>(</code> and <code>)</code>, preserving all characters as they are. However, it removes any carriage return (<code>\r</code>), tab (<code>\t</code>), space, or newline (<code>\n</code>) located between the opening parenthesis and the <code>#</code> of the shebang declaration. No other characters are permitted in this span. For instance, if you write</p>
+<pre><code>Execute = (
+
+    #!&#47;bin&#47;bash
+    echo hello world!
+)
+</code></pre>
+<p>the final result will be</p>
+<pre><code>#!&#47;bin&#47;bash
+    echo hello world!
+</code></pre>
+<p>ensuring that the very first line of the script is the declaration of the shebang to avoid an <strong><em>Exec format error</em></strong>.</p>
+<p>Note that with <code>Build=custom</code>, variables will <strong>not be replaced</strong> by their corresponding environment values within the script, unlike the behavior with the execlineb script format.</p>
+<p><a href="66-identifier.html">identifier</a> is still also <strong>interpreted</strong> even in custom script.</p>
+<p>This same behavior applies to the <a href="#section-logger">[Logger]</a> section. Also, The fields <code>Backup</code>, <code>MaxSize</code> and <code>Timestamp</code> will have <strong>no effect</strong> in a custom case. You need to explicitly define the program to use the logger and the options for it in your <code>Execute</code> field.</p>
+<h2 id="a-word-about-the-version-key">A word about the Version key</h2>
+<p>The <code>Version</code> key supports formats inspired by semantic versioning (e.g., <code>"1.0.0"</code>) but is flexible enough to handle any number of components separated by dots or other non-alphanumeric characters, pre-release tags (e.g., <code>"1.0.0-alpha"</code>), mixed components (e.g., <code>"0ab"</code>), and complex strings (e.g., <code>"1.0ab.01-1"</code>). This following explains what constitutes a valid version string and what does not, helping users effectively utilize the field.</p>
+<h3 id="what-can-be-used-as-a-version-string">What Can Be Used as a Version String</h3>
+<p>The <code>Version</code> key accepts version strings composed of components separated by any number of non-alphanumeric characters (e.g., dots, hyphens). Components can be numeric (e.g., <code>"123"</code>), alphabetic (e.g., <code>"alpha"</code>), or mixed (e.g., <code>"123abc"</code>). The function handles leading zeros, pre-release tags, letter suffixes, and any number of components (not limited to three dots). Below are the characteristics of valid version strings:</p>
+<p><strong>Numeric Versions with Any Number of Components</strong>:
+   - Strings like <code>"1"</code>, <code>"1.0"</code>, <code>"1.0.0"</code>, <code>"1.0.0.0"</code>, or <code>"10.0.1.2.3"</code>.
+   - The number of dots (or other separators) is not restricted to three; you can have zero, one, two, three, four, or more components (e.g., <code>"1.0"</code> or <code>"1.0.0.0.0"</code>).
+   - Numbers can include leading zeros, which are ignored during comparison (e.g., <code>"01.00.00"</code> is equivalent to <code>"1.0.0"</code>).
+   - Components are separated by any non-alphanumeric characters (e.g., <code>"1-0-0"</code>, <code>"1..0--0"</code>, <code>"1.0.0.0_0"</code>).</p>
+<p><strong>Pre-release Versions</strong>:
+   - Versions with alphabetic pre-release tags, such as <code>"1.0.0-alpha"</code>, <code>"2.0.0-beta"</code>, or <code>"1.0.0.0-rc1"</code>.
+   - Pre-release tags (e.g., <code>"alpha"</code>, <code>"beta"</code>) are treated as higher precedence than stable versions (e.g., <code>"1.0.0-alpha" &#60; "1.0.0"</code>).
+   - Tags are case-insensitive (e.g., <code>"1.0.0-ALPHA"</code> is equivalent to <code>"1.0.0-alpha"</code>).
+   - Only the first letter is taken into account whatever le lenght of the string.</p>
+<p><strong>Mixed Components</strong>:
+   - Components that combine numeric and alphabetic parts without a separator, such as <code>"123abc"</code> or <code>"0ab"</code>, are valid.
+   - These are parsed as a numeric component followed by an alphabetic suffix:
+     - <code>"123abc"</code> splits into numeric <code>"123"</code> and alphabetic <code>"abc"</code>.
+     - <code>"0ab"</code> splits into numeric <code>"0"</code> and alphabetic <code>"ab"</code>.
+   - Example: <code>"1.0.0-123abc"</code> is parsed as numeric <code>"123"</code> followed by an alphabetic suffix <code>"abc"</code>.
+   - Only the first letter is taken into account whatever le lenght of the string.</p>
+<p><strong>Letter Suffixes</strong>:
+   - Versions with an alphabetic suffix after a pre-release tag or mixed component, such as <code>"1.0.0-alpha.1"</code>, <code>"1.0.0-beta.patch"</code>, or <code>"1.0ab.01-1"</code>.
+   - The alphabetic part is treated as a separate component with lower precedence than numeric components.</p>
+<p><strong>Complex Version Strings</strong>:
+   - Strings combining multiple component types with any number of separators, such as <code>"1.0ab.01-1"</code> or <code>"1.0.0.0.0-alpha.2"</code>, are valid.
+   - Example breakdown of <code>"1.0ab.01-1"</code>:
+     - <code>"1"</code>: Numeric component.
+     - <code>"0ab"</code>: Numeric <code>"0"</code> + alphabetic suffix <code>"ab"</code>.
+     - <code>"01"</code>: Numeric component (equivalent to <code>"1"</code>).
+     - <code>"1"</code>: Numeric component.</p>
+<p><strong>Shortened or Extended Versions</strong>:
+   - Versions with any number of components are valid, from a single component (e.g., <code>"1"</code>) to many (e.g., <code>"1.0.0.0.0"</code>).
+   - Shorter versions are treated as equivalent to versions padded with zeros (e.g., <code>"1.0"</code> is equivalent to <code>"1.0.0"</code>, <code>"1"</code> is equivalent to <code>"1.0.0.0"</code>).
+   - Extended versions with more components are compared component-by-component (e.g., <code>"1.0.0.0" == "1.0.0"</code>).</p>
+<p><strong>Empty Strings</strong>:
+   - An empty string (<code>""</code>) is valid and treated as a version with a single zero component (equivalent to <code>"0"</code>).</p>
+<p><strong>Separators</strong>:
+   - Any non-alphanumeric character (e.g., <code>.</code>, <code>-</code>, <code>_</code>, <code>+</code>) can act as a separator, and any number of consecutive separators is allowed and ignored (e.g., <code>"1..0"</code> is equivalent to <code>"1.0"</code>, <code>"1---0..0"</code> is equivalent to <code>"1.0.0"</code>).
+   - Separators are flexible, so <code>"1-0-0"</code>, <code>"1_0_0"</code>, and <code>"1.0.0"</code> are equivalent.</p>
+<p><strong>Examples of Valid Version Strings</strong>:
+- <code>"1"</code>
+- <code>"1.0"</code>
+- <code>"1.0.0"</code>
+- <code>"1.0.0.0"</code>
+- <code>"1.0.0.0.0"</code>
+- <code>"2.0.0-alpha"</code>
+- <code>"1.0.0-beta.1"</code>
+- <code>"01.00.00"</code>
+- <code>"1-0-0"</code>
+- <code>"1.0.0-rc.2"</code>
+- <code>"1.0ab.01-1"</code>
+- <code>"1.0.0-123abc"</code>
+- <code>""</code>
+- <code>"2.0.0--alpha..patch"</code>
+- <code>"1-0ab-01--1"</code>
+- <code>"10.0.1.2.3"</code></p>
+<h3 id="what-cannot-be-used-as-a-version-string">What Cannot Be Used as a Version String</h3>
+<p>While the <code>Version</code> key is robust, certain inputs are invalid or problematic. Users should avoid the following:</p>
+<p><strong>Special Characters in Components</strong>:
+   - Components should consist of numeric (<code>0-9</code>) or alphabetic (<code>a-z</code>, <code>A-Z</code>) characters. Special characters like <code>@</code>, <code>#</code>, or <code>$</code> within components (not as separators) are not supported and may lead to incorrect parsing.
+   - Example: <code>"1.0.0@alpha"</code> is invalid because <code>@alpha</code> contains an unsupported character in the component.</p>
+<p><strong>Whitespace in Components</strong>:
+   - Whitespace within components (e.g., <code>"1.0.0 alpha"</code>) is treated as a separator, which may split components unexpectedly. Use hyphens or dots for pre-release tags (e.g., <code>"1.0.0-alpha"</code>).
+   - Example: <code>"1.0.0 alpha"</code> is valid from an algorithm point of view but the parsed will only consider the first element.</p>
+<p><strong>Excessively Long Strings</strong>:
+   - Extremely long version strings (e.g., thousands of characters or hundreds of components) may cause performance issues or stack overflows due to the fixed-size arrays in the function. Keep version strings reasonably short (e.g., under 50 characters).
+   - Example: A string with hundreds of components is technically valid but impractical.</p>
+<p><strong>Examples of Invalid or Problematic Version Strings</strong>:
+- <code>NULL</code> (causes undefined behavior).
+- <code>"1.0.0@alpha"</code> (invalid character <code>@</code> in component).
+- <code>"1.0.0#patch"</code> (invalid character <code>#</code> in component).
+- <code>"1.0.0 alpha"</code> (whitespace splits components unexpectedly, likely not intended).
+- A 51-character or higher string is invalid.</p>
+<h2 id="prototype-of-a-frontend-file">Prototype of a frontend file</h2>
+<p>The minimal template is e.g.:</p>
+<pre><code>[Main]
+Type = classic
+
+[Start]
+Execute = ( &#47;usr&#47;bin&#47;true )
+</code></pre>
+<p>This prototype contain all valid section with all valid <code>key=value</code> pair.</p>
+<pre><code>[Main]
+Type =
+Description = ""
+Version =
+Depends = ()
+RequiredBy = ()
+OptsDepends = ()
+Options = ()
+Flags = ()
+Notify =
+User = ()
+TimeoutStart =
+TimeoutStop =
+MaxDeath =
+DownSignal =
+CopyFrom = ()
+InTree =
+StdIn =
+StdOut =
+StdErr =
+Provide = ()
+
+[Start]
+Build =
+RunAs =
+Execute = ()
+
+[Stop]
+Build =
+RunAs =
+Execute = ()
+
+[Logger]
+Build =
+RunAs =
+Destination =
+Backup =
+MaxSize =
+Timestamp =
+TimeoutStart =
+TimeoutStop =
+Execute = ()
+
+[Environment]
+ImportFile=&#47;path&#47;to&#47;file
+mykey=myvalue
+ANOTHERKEY=!antohervalue
+
+[Regex]
+Configure = ""
+Directories = ()
+Files = ()
+InFiles = ()
+
+[Execute]
+LimitAS =
+LimitCORE =
+LimitCPU =
+LimitDATA =
+LimitFSIZE =
+LimitLOCKS =
+LimitMEMLOCK =
+LimitMSGQUEUE =
+LimitNICE =
+LimitNOFILE =
+LimitNPROC =
+LimitRTPRIO =
+LimitRTTIME =
+LimitSIGPENDING =
+LimitSTACK =
+BlockPrivileges =
+UMask =
+ChangeDirectory = &#47;directory&#47;path
+CapsBound = ()
+CapsAmbient = ()
+</code></pre>
+</body>
+</html>

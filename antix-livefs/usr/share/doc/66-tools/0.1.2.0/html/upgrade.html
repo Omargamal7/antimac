@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: upgrade</title>
+</head>
+<body>
+<p><a href="index.html">66-tools</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="changelog-for-66-tools">Changelog for 66-tools</h1>
+<hr/>
+<h1 id="in-0.1.2.0">In 0.1.2.0</h1>
+<ul>
+<li>Adapt to <code>oblibs</code> 0.3.4.0</li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p>This is a bug fix and enhancement release.</p>
+<h2 id="bug-fixes">Bug Fixes</h2>
+<ul>
+<li>Fixed type behavior and adapted to <code>oblibs</code> for <code>hash.h</code> file (<code>0182864</code>).</li>
+<li>Suppressed compiler warning (<code>0182864</code>).</li>
+<li>Fixed typos in documentation (<code>0182864</code>, <code>a536fb9</code>).</li>
+</ul>
+<h2 id="enhancements">Enhancements</h2>
+<ul>
+<li>Switched to Meson build system for improved cross-platform support and efficiency (<code>378e67f</code>). Traditional <code>configure</code> and <code>make</code> remain functional during the transition but consider it as deprecated. See <code>INSTALL_MESON.md</code> for details.</li>
+</ul>
+<hr/>
+<h1 id="in-0.1.1.0">In 0.1.1.0</h1>
+<ul>
+<li>Adapt to <code>oblibs</code> 0.3.1.0</li>
+</ul>
+<h2 id="new-features">New features</h2>
+<ul>
+<li><a href="66-dbus-launch.html">66-dbus-launch</a>: A tool for launching, supervising, and reacting to <a href="https://github.com/bus1/dbus-broker">dbus-broker</a> events emitted by relevant D-Bus signals. This tool is not build by default, see <code>.&#47;configure --help</code> at <code>Dbus support</code> section and <a href="66-dbus-launch.html">66-dbus-launch documentation</a> for build requirements and use.</li>
+</ul>
+<h2 id="bug-fixes-1">Bug Fixes</h2>
+<ul>
+<li>Typo fix</li>
+</ul>
+<hr/>
+<h1 id="in-0.1.0.2">In 0.1.0.2</h1>
+<ul>
+<li><p>Adapt to <code>oblibs</code> 0.3.0.0</p></li>
+<li><p>Bugs fix:</p>
+<ul>
+<li>fix <code>-r</code> options at <em>66-ns</em> program.</li>
+<li>reset ignore options if element exist to avoid skipping it.</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.1.0.1">In 0.1.0.1</h1>
+<ul>
+<li><p>Bugs fix</p></li>
+<li><p>Adapt to skalibs 2.14.1.0</p></li>
+<li><p>Adapt to oblibs 0.2.0.2</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.1.0.0">In 0.1.0.0</h1>
+<ul>
+<li><p>Adapt to skalibs 2.14.0.1</p></li>
+<li><p>Adapt to execline 2.9.4.0</p></li>
+<li><p>Adapt to oblibs 0.2.0.0</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.0.8.0">In 0.0.8.0</h1>
+<ul>
+<li><p>Adapt to skalibs 2.11.0.0</p></li>
+<li><p>Adapt to execline 2.8.1.0</p></li>
+<li><p>Adapt to oblibs 0.1.4.0</p></li>
+<li><p>Remove slashpackage convention.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.0.7.3">In 0.0.7.3</h1>
+<ul>
+<li><p>Behavior changes:
+<em>execl-cmdline</em>: accept empty value for a key with -s options</p></li>
+<li><p>Bugs fix:
+<em>66-getenv</em>: do not split single&#47;double quoted value</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.0.7.2">In 0.0.7.2</h1>
+<ul>
+<li>Bugs fix:
+<em>66-ns</em>: Fix overeating cpu usage</li>
+</ul>
+<hr/>
+<h1 id="in-0.0.7.1">In 0.0.7.1</h1>
+<ul>
+<li>Fix musl build</li>
+</ul>
+<hr/>
+<h1 id="in-0.0.7.0">In 0.0.7.0</h1>
+<ul>
+<li><p>Adapt to skalibs 2.10.0.0</p></li>
+<li><p>Adapt to execline 2.7.0.0</p></li>
+<li><p>Adapt to oblibs 0.1.2.0</p></li>
+<li><p>New tool:</p>
+<ul>
+<li><em>66-ns</em>: setup a namespace and execs a program inside it.</li>
+</ul></li>
+<li><p>html documentation is now versionned.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.0.6.2">In 0.0.6.2</h1>
+<ul>
+<li>bug fix:
+<ul>
+<li><em>execl-toc</em> respect <strong>-t</strong> <strong>-n</strong> options if the test crash</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.0.6.1">In 0.0.6.1</h1>
+<ul>
+<li>Bugs fix: fix <em>execl-toc</em> <strong>-t</strong> <strong>-n</strong> main_options behavior</li>
+</ul>
+<hr/>
+<h1 id="in-0.0.6.0">In 0.0.6.0</h1>
+<p><strong><em>WARNING</em></strong>: execl-envfile binary was <strong>removed</strong>. It now a part of <a href="https://framagit.org/obarun/66.git">66</a> software.</p>
+<ul>
+<li><p>adapt to oblibs v0.0.9.0</p></li>
+<li><p>execl-toc:</p>
+<ul>
+<li>Add <em>-M</em> options: create the parent directories of an element with a specific <em>mode</em>.</li>
+<li>Allow to set the uid&#47;gid at <em>-u</em> and <em>-g</em> by numeric or name value.</li>
+</ul></li>
+<li><p>66-yeller:</p>
+<ul>
+<li><em>-z</em> option mean now enable color instead of disable color. It was a big mistake to do the contrary. Sorry for this inconvenient.</li>
+</ul></li>
+<li><p>documentation installation: calling the makefile with <code>make install</code> install now the documentation by default.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.0.5.1">In 0.0.5.1</h1>
+<ul>
+<li>Bug fix: fix wrong umask at creation time</li>
+</ul>
+<hr/>
+<h1 id="in-0.0.5.0">In 0.0.5.0</h1>
+<ul>
+<li>Adapt to oblibs v0.0.8.0</li>
+<li>add -m option to 66-clock tool</li>
+<li>New tool:
+<ul>
+<li>execl-toc:
+<ul>
+<li>this tool allow to check an element and create it if it not exist.</li>
+</ul></li>
+<li>66-yeller:
+<ul>
+<li>A powerfull, specialized echo tool.</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.0.4.0">In 0.0.4.0</h1>
+<ul>
+<li><p>Minor bugs fix</p></li>
+<li><p>Adapt to oblibs v0.0.6.0</p></li>
+<li><p>New 66-clock tool:</p>
+<ul>
+<li>get and write sytem time to stdout.</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.0.3.1">In 0.0.3.1</h1>
+<ul>
+<li><p>Adapt to oblibs v0.0.5.0</p></li>
+<li><p>Fix parse of double-quote at execl-cmdline</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.0.3.0">In 0.0.3.0</h1>
+<ul>
+<li>Adapt to oblibs v0.0.4.0</li>
+<li>Supports relative path at execl-envfile</li>
+<li>New 66-olexec tool:
+<ul>
+<li>opens, locks a tty and execs a program</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.0.2.0">In 0.0.2.0</h1>
+<ul>
+<li><p>Remove deprecated 66-enfvile tools</p></li>
+<li><p>Adapt to skalibs 2.9.1.0, execline 2.5.3.0, oblibs 0.0.3.1</p></li>
+</ul>
+</body>
+</html>

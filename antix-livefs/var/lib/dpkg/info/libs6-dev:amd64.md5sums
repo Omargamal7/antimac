@@ -1,0 +1,14 @@
+96fd6bd29de461f9cb4175f24757668a  usr/include/x86_64-linux-gnu/s6/accessrules.h
+8c8ad4f8a0af43454541a74b4db2fcea  usr/include/x86_64-linux-gnu/s6/auto.h
+c9badfb245ef972c7705c80b9b67be4c  usr/include/x86_64-linux-gnu/s6/compat.h
+e27701ec7a7310e4c4434aaa567b97e0  usr/include/x86_64-linux-gnu/s6/config.h
+0bfb1ef5a1810fb67f24ec9f00737ce8  usr/include/x86_64-linux-gnu/s6/fdholder.h
+3b98887d94d0126e139b9a006b794f37  usr/include/x86_64-linux-gnu/s6/ftrigr.h
+57d2093740df8ff61fdb5df99fd82994  usr/include/x86_64-linux-gnu/s6/ftrigw.h
+d1379315e34a8cab2189d21c23301cbc  usr/include/x86_64-linux-gnu/s6/lock.h
+cb72be8e4be88be67ca8567661620f85  usr/include/x86_64-linux-gnu/s6/s6.h
+f901b598528f1a14b35b931ce154f3f8  usr/include/x86_64-linux-gnu/s6/servicedir.h
+4b61943603ac4bab2689b929e17f38f1  usr/include/x86_64-linux-gnu/s6/supervise.h
+5934a05f421906e456ef84c45cccffcb  usr/lib/x86_64-linux-gnu/libs6.a
+63e72293f9bfbcdef2cd691f756b52ea  usr/share/doc/libs6-dev/changelog.Debian.gz
+c990720f0b7df8d19d5d10e278f9025e  usr/share/doc/libs6-dev/copyright

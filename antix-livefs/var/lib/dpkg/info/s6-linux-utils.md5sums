@@ -1,0 +1,14 @@
+43ea7b915b91907c4b09b7c6bb6f5227  usr/bin/rngseed
+3932aff6e65cf3866d4d368cede38b9e  usr/bin/s6-chroot
+2e4eaf8bf6d1b86dbcda27b7c9a7f9ef  usr/bin/s6-freeramdisk
+17ac5b73ec72e8b485cd74907a60cfd7  usr/bin/s6-hostname
+3e9ed556d7a18b97c3b3424b3be3cb32  usr/bin/s6-logwatch
+4c9cc6761093db5438cb40774b63491e  usr/bin/s6-mount
+4d74cd2dbb14195e31a9c14b24f1c7d4  usr/bin/s6-pivotchroot
+93120d62f8ad37aafebe9c7da01694f8  usr/bin/s6-ps
+1ee5f0c995c08dd26390854e503bd019  usr/bin/s6-swapoff
+0825ae84a7b3c2c43c466f15b3eaaa76  usr/bin/s6-swapon
+35561117c8f4ffd45893681438636c45  usr/bin/s6-umount
+a04e420f90b17cca1d7c5bdf99c69ce6  usr/include/s6-linux-utils/config.h
+d93002b39c1211648e2061fb16b81ff5  usr/share/doc/s6-linux-utils/changelog.Debian.gz
+74949cf2134f0519899e3a1f3cdb23e2  usr/share/doc/s6-linux-utils/copyright

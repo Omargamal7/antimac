@@ -1,0 +1,29 @@
+#!/bin/bash
+# postinst script for dinit-service-boot-module.
+
+set -e
+
+SERVICE1="swap"
+
+case "$1" in
+    configure)
+	##### GLOBAL SERVICES #####
+	if [[ $(ps -p1 | grep -ic "dinit") -eq 1 ]]; then
+		echo "dinit is running as the system's init system - enabling & starting using dinitctl"
+		dinitctl enable $SERVICE1 && dinitctl start $SERVICE1; 
+	else
+		echo "dinit not detected as init - enabling service via symlink"
+		ln -sf /etc/dinit.d/$SERVICE1 /etc/dinit.d/boot.d/$SERVICE1
+	fi	
+	;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument '$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

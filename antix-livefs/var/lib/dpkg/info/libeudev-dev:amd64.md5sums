@@ -1,0 +1,6 @@
+5645bd4c4e5663eb03dbe468e7a7aaa8  usr/include/libudev.h
+10e63fea40569f704e74987dbd3cc8f6  usr/include/udev.h
+bf389280bc899a3992cca20fe4220afd  usr/lib/x86_64-linux-gnu/libudev.a
+533740d548ded36e5a79376c7077ca40  usr/lib/x86_64-linux-gnu/pkgconfig/libudev.pc
+5b991149e5d1cf69559d9896bc761b7e  usr/share/doc/libeudev-dev/changelog.Debian.gz
+41a8ef4e2cd245f4a8a5a8727818fdbb  usr/share/doc/libeudev-dev/copyright

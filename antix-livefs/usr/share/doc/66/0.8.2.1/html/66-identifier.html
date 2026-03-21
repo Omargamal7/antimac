@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: identifier</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="identifier-interpretation">Identifier interpretation</h1>
+<p>The following table provides a comprehensive understanding of various identifiers used in the system. These identifiers are replaced with specific values before the parsing process to write generic frontend files. If an identifier is invalid, it will remain unchanged. In this context, the term <code>user</code> refers to the owner of the process.</p>
+<table>
+<thead>
+<tr>
+<th>Identifier</th>
+<th>Meaning</th>
+<th>Replaced by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@I</code></td>
+<td>Instance name</td>
+<td>For instantiated services, this is the string between the first <code>@</code> character and the rest of the instantiated service name. For non-instantiated services, it is the service name.</td>
+</tr>
+<tr>
+<td><code>@U</code></td>
+<td>User name</td>
+<td>The user name. If the user is <code>0</code>, it is replaced by <code>root</code>.</td>
+</tr>
+<tr>
+<td><code>@u</code></td>
+<td>User UID</td>
+<td>The numeric user ID (<code>UID</code>).</td>
+</tr>
+<tr>
+<td><code>@G</code></td>
+<td>User group</td>
+<td>The user group name.</td>
+</tr>
+<tr>
+<td><code>@g</code></td>
+<td>User GID</td>
+<td>The numeric group ID (<code>GID</code>).</td>
+</tr>
+<tr>
+<td><code>@H</code></td>
+<td>User home directory</td>
+<td>The user&#8217;s home directory. For user <code>0</code>, it is <code>&#47;root</code>.</td>
+</tr>
+<tr>
+<td><code>@S</code></td>
+<td>User shell</td>
+<td>The user’s shell.</td>
+</tr>
+<tr>
+<td><code>@R</code></td>
+<td>User runtime directory</td>
+<td>The user&#8217;s runtime directory. For user <code>0</code>, it is <code>&#47;run</code>; for other users, it corresponds to <code>$XDG_RUNTIME_DIR</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>By understanding these identifiers and their replacements, you can effectively create and manage service files, ensuring that user-specific details are correctly populated during the service parsing process.</p>
+<h2 id="examples-of-identifiers-usage">Examples of identifiers usage</h2>
+<ul>
+<li><p>Using <code>@R</code> identifier</p>
+<p>Original file: <code>dbus@</code></p>
+<pre><code>[Main]
+Type = classic
+Version = 0.7.0
+Description = "dbus session daemon for @U user"
+User = ( user )
+MaxDeath = 3
+Notify = 4
+TimeoutStart = 3000
+
+[Start]
+Execute = (
+    &#47;usr&#47;bin&#47;execl-cmdline -s { &#47;usr&#47;bin&#47;dbus-daemon ${Args} }
+)
+
+[Stop]
+Execute = (
+    &#47;usr&#47;bin&#47;s6-rmrf ${Socket}
+)
+
+[Environment]
+Args=!--session --print-pid=4 --nofork --nopidfile --address=unix:path=${Socket}
+Socket=!@R&#47;bus
+</code></pre>
+<p>Result after calling <code>66 parse dbus@oblive</code> where <em>oblive</em> has UID <code>1000</code></p>
+<pre><code>[Main]
+Type = classic
+Version = 0.7.0
+Description = "dbus session daemon for oblive user"
+User = ( user )
+MaxDeath = 3
+Notify = 4
+TimeoutStart = 3000
+
+[Start]
+Execute = (
+    &#47;usr&#47;bin&#47;execl-cmdline -s { &#47;usr&#47;bin&#47;dbus-daemon ${Args} }
+)
+
+[Stop]
+Execute = (
+    &#47;usr&#47;bin&#47;s6-rmrf ${Socket}
+)
+
+[Environment]
+Args=!--session --print-pid=4 --nofork --nopidfile --address=unix:path=${Socket}
+Socket=!&#47;run&#47;user&#47;1000&#47;bus
+</code></pre>
+<p>In this example, the <code>@R</code> identifier is replaced by <code>&#47;run&#47;user&#47;1000</code>, updating the <em>Socket</em> field with the correct runtime directory for the user <em>oblive</em>. The <code>@U</code> identifier is replaced by <em>oblive</em> in the <em>Description</em> field.</p></li>
+<li><p>Using <code>@I</code> identifier</p>
+<p>Original file: <code>tty@</code></p>
+<pre><code>[Main]
+Type = classic
+Version = 0.0.1
+Description = "Launch @I"
+User = ( root )
+
+[Start]
+Execute = ( agetty -J 38400 @I )
+</code></pre>
+<p>Result after calling <code>66 parse tty@tty1</code></p>
+<pre><code>[Main]
+Type = classic
+Version = 0.0.1
+Description = "Launch tty1"
+User = ( root )
+
+[Start]
+Execute = ( agetty -J 38400 tty1 )
+</code></pre>
+<p>In this example, the <code>@I</code> identifier is replaced by <code>tty1</code>, resulting in the Description and Execute fields being updated accordingly.</p></li>
+</ul>
+</body>
+</html>

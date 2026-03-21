@@ -1,0 +1,144 @@
+## [STARTWARN]
+## DO NOT MODIFY THIS FILE, IT OVERWRITTEN AT UPGRADE TIME.
+## Uses '66 configure boot@system' command instead.
+## Or make a copy of this file at /etc/66/conf/boot@system/3.8.1/boot@system and modify it.
+## [ENDWARN]
+# Copyright (c) 2024 Eric Vidal <eric@obarun.org>
+# All rights reserved.
+#
+# This file is part of Obarun. It is subject to the license terms in
+# the LICENSE file found in the top-level directory of this
+# distribution.
+# This file may not be copied, modified, propagated, or distributed
+# except according to the terms contained in the LICENSE file.
+#
+# System configuration file for a boot process running and handled
+# by 66 suite program.
+#
+# Do not use quotes or double-quotes on this file
+#
+# The '!' is used to not export the variable on the environment.
+# If you want to keep it, remove the exclamation mark '!'.
+#
+#========================== WARNING ====================================
+#
+# Do not forget to configure again the boot@ module after editing
+# this file to apply your changes at the next reboot e.g:
+# 66 reconfigure boot@system
+#
+#======================= Global Settings ===============================
+## Set your HOSTNAME.
+HOSTNAME=antix1
+## Set your timezone, available timezones can be found at /usr/share/zoneinfo.
+TZ=UTC
+## Set the number of tty(s) to start.
+## 0 means no tty. Maximum is 11.
+TTY=!2
+## Console keymap to load, see loadkeys(8).
+KEYMAP=!us
+## Console font to load, see setfont(8).
+FONT=!lat9w-16
+## Console map to load, see setfont(8).
+#FONT_MAP=
+## Console unimap to load, see setfont(8).
+#FONT_UNIMAP=
+#========================== Devices ====================================
+## Mount devices from FSTAB file [yes|no].
+FSTAB=!no
+## Activate swap [yes|no].
+SWAP=!yes
+## Activate lvm volume groups [yes|no].
+LVM=!no
+## Activate dmraid disks [yes|no].
+DMRAID=!no
+## Activate btrfs devices [yes|no].
+BTRFS=!no
+## Mount zfs filesystems [yes|no].
+ZFS=!no
+## Zpool Import method [scan|zpoolcache]
+## It has no effects if ZFS is set to no or commented.
+ZFS_IMPORT=!zpoolcache
+## Activate mdraid arrays
+MDRAID=!no
+#========================== Configuration checks ==========================
+## Check the configuration for errors
+CHECK_CONFIGURATION=!no
+#=======================================================================
+#=================== Advanced user configuration =======================
+#
+# If you don't know what the following variables do, you
+# don't need to change them.  The machine will still boot
+# with the default values
+#
+#=======================================================================
+#====================== System configuration ===========================
+## Setup the console
+## If set to no, KEYMAP,FONT,FONT_MAP,FONT_UNIMAP has no effects
+SETUPCONSOLE=!yes
+## Set RTC [UTC|localtime].
+HARDWARECLOCK=UTC
+## Use udev [yes|no]
+## If set to no the following variables has no effects or set to no:
+## SETUPCONSOLE, KEYMAP, FONT, FONT_MAP, FONT_UNIMAP, CRYPTTAB, DMRAID,
+## BTRFS, LVM
+UDEV=!yes
+## Kernel configuration with sysctl [yes|no].
+SYSCTL=!yes
+## Force a check of filesystem partition [yes|no].
+FORCECHCK=!no
+## Use rc.local script [yes|no].
+LOCAL=!yes
+## Boot inside a container [yes|no].
+## If set to yes the following variables have no effect or are set to no:
+## HARDWARECLOCK, SETUPCONSOLE, KEYMAP, FONT, FONT_MAP, FONT_UNIMAP, CRYPTTAB
+## SWAP, LVM, DMRAID, BTRFS, ZFS, UDEV, SYSCTL, FORCECHCK, CGROUPS
+## MODULE_SYSTEM, RANDOMSEED, MNT_NETFS
+CONTAINER=!no
+## Apply tmpfiles.d configuration file [yes|no].
+TMPFILE=!no
+## Load kernel modules [yes|no].
+MODULE_KERNEL=!no
+## Load modules from modules.d files
+MODULE_SYSTEM=!no
+## Populate ramdom seed
+RANDOMSEED=!yes
+#========================== Security ===================================
+## Activate encrypted devices [yes|no].
+CRYPTTAB=!no
+## Firewall program to use [iptables|ip6tables|nftables|ebtables|arptables]
+## Comment to not use any firewall at all.
+#FIREWALL=
+#========================== Pseudo filesystem ==========================
+## Mount cgroups [yes|no].
+CGROUPS=!yes
+## Mount /proc directory [yes|no].
+MNT_PROC=!no
+## Mount /sys directory [yes|no].
+MNT_SYS=!no
+## Mount /dev directory [yes|no].
+MNT_DEV=!no
+## Mount /run directory [yes|no].
+MNT_RUN=!yes
+## Mount /tmp directory [yes|no].
+MNT_TMP=!yes
+## Mount /dev/pts directory [yes|no].
+## Only valuable if MNT_DEV is set to yes.
+MNT_PTS=!yes
+## Mount /dev/shm directory [yes|no].
+## Only valuable if MNT_DEV is set to yes.
+MNT_SHM=!yes
+## Mount no-network filesystem [yes|no].
+## Fstype mounted is: nosysfs,nonfs,nonfs4,nosmbfs,nocifs
+MNT_NETFS=!no
+## Create and mount /sys/firmware/efi/efivars, /sys/fs/fuse/connections,
+## /sys/kernel/{config,debug,security} and /sys/kernel/debug/tracing
+## if exist at /proc/filesystems
+POPULATE_SYS=!yes
+## Create and mount /dev/{hugepages,mqueue}
+## if exist at /proc/filesystems
+POPULATE_DEV=!yes
+## Create /run/{lvm,user,lock,utmp} directories
+POPULATE_RUN=!yes
+## Create /tmp/{.X11-unix,.ICE-unix} files
+POPULATE_TMP=!yes
+

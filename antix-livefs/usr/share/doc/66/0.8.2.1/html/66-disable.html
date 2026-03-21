@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: disable</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="disable">disable</h1>
+<p>This command disables one or more services.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>disable [ -h ] [ -S ] service...
+</code></pre>
+<p>This command expects to find an already enabled <em>service</em>. The targeted service(s) can also be stopped on the fly when disabling it with the <strong>-S</strong> option. Generally speaking this command is the strict opposite of the <a href="66-enable.html">enable</a> command.</p>
+<p>The <code>66 -t</code> command option have no effect. <code>66</code> will detect automatically the associated <em>tree</em> of the service along its required-by dependencies.</p>
+<p>In case of <code>module</code> service type, all services within the <code>module</code> are disabled.</p>
+<p>Multiple <em>services</em> can be disabled by separating their names with a space.</p>
+<p>This command handles <a href="66.html#handling-dependencies">interdependencies</a>.</p>
+<h2 id="options">Options</h2>
+<ul>
+<li><p><strong>-h</strong>: prints this help.</p></li>
+<li><p><strong>-S</strong>: stops the <em>service</em> on the fly directly after disabling it. If the state of the <em>service</em> is already down, this option will have no effect. This also applies to the required-by  dependencies of the service.</p></li>
+</ul>
+<h2 id="usage-examples">Usage examples</h2>
+<p>Disable the service</p>
+<pre><code>66 disable foo
+</code></pre>
+<p>Disable an intanced service</p>
+<pre><code>66 disable foo@foobar
+</code></pre>
+<p>Disable and stop the service, also increase the default verbosity:</p>
+<pre><code>66 -v3 disable -S foo
+</code></pre>
+</body>
+</html>

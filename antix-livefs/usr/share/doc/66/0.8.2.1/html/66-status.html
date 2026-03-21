@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: status</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="status">status</h1>
+<p>This command displays information about service.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>status [ -h ] [ -n ] [ -o name,intree,status,... ] [ -g ] [ -d depth ] [ -r ] [ -p nline ] service
+</code></pre>
+<p>By default the dependency graph is rendered in the <a href="66-start.html">start</a> order of execution. You can reverse the rendered order, meaning the <a href="66-stop.html">stop</a> execution, with the <code>-r</code> option.</p>
+<p>Without specifying the <code>-o</code>, all fields are displayed.</p>
+<p>If no <em>service</em> is specified, it displays all services from all trees. This is a useful way to quickly get an overview of the entire service system. In that case, <code>-g</code> is implied and <code>-d</code> can be use but <code>-p</code>, <code>-o</code> and <code>-n</code> options have no effects.</p>
+<h2 id="options">Options</h2>
+<ul>
+<li><p><strong>-h</strong>: prints this help.</p></li>
+<li><p><strong>-n</strong>: do not display the field name(s) specified. Combining this options with the <code>-o</code> facilitates scripting usage.</p></li>
+<li><p><strong>-o</strong>: comma separated list of fields to display.</p></li>
+<li><p><strong>-g</strong>: shows the dependency list of the <em>service</em> as a hierarchical graph instead of a list.</p></li>
+<li><p><strong>-d</strong> <em>depth</em>: limits the depth of the dependency list visualisation; default is 1. This implies <strong>-g</strong> option.</p></li>
+<li><p><strong>-r</strong>: shows the dependency list of <em>services</em> in reverse mode.</p></li>
+<li><p><strong>-p</strong> <em>nline</em>: prints the <em>nline</em> last lines from the log file of the <em>service</em>. Default is 10.</p></li>
+</ul>
+<h2 id="valid-fields-for--o-options">Valid fields for -o options</h2>
+<ul>
+<li><strong>name</strong>: displays the name.</li>
+<li><strong>version</strong>: displays the version of the service.</li>
+<li><strong>intree</strong>: displays the service&#8217;s tree name.</li>
+<li><strong>status</strong>: displays the status.</li>
+<li><strong>type</strong>: displays the service type.</li>
+<li><strong>description</strong>: displays the description.</li>
+<li><strong>partof</strong>: displays the module name for services part of that module.</li>
+<li><strong>notify</strong>: displays the number of the fd for readiness notification.</li>
+<li><strong>maxdeath</strong>: displays the number of maximum death.</li>
+<li><strong>earlier</strong>: displays if service is an earlier one.</li>
+<li><strong>source</strong>: displays the source of the service&#8217;s <a href="66-frontend.html">frontend</a> file.</li>
+<li><strong>live</strong>: displays the service&#8217;s live directory.</li>
+<li><strong>depends</strong>: displays the service&#8217;s dependencies.</li>
+<li><strong>requiredby</strong>: displays the service(s) which depends on service.</li>
+<li><strong>contents</strong>: displays services within module.</li>
+<li><strong>optsdepends</strong>: displays the service&#8217;s optional dependencies. Also displays the name of the associated <em>tree</em> of the optional dependencies after the <code>colon(:)</code> mark if any.</li>
+<li><strong>start</strong>: displays the service&#8217;s start script.</li>
+<li><strong>stop</strong>: displays the service&#8217;s stop script.</li>
+<li><strong>envat</strong>: displays the source of the environment file.</li>
+<li><strong>envfile</strong>: displays the contents of the environment file.</li>
+<li><strong>stdin</strong>: displays the Standard Input type and destination separated by a <code>(colon(:)</code>.</li>
+<li><strong>stdout</strong>: displays the Standard Output type and destination separated by a <code>(colon(:)</code>.</li>
+<li><strong>stderr</strong>: displays the Standard Error type and destination separated by a <code>(colon(:)</code>.</li>
+<li><strong>logname</strong>: displays the logger&#8217;s name.</li>
+<li><strong>logfile</strong>: displays the contents of the log file.</li>
+</ul>
+<h2 id="usage-examples">Usage examples</h2>
+<p>Displays all information of service <code>foo</code></p>
+<pre><code>66 status foo
+</code></pre>
+<p>Only displays the field <code>name</code> and <code>status</code> of service <code>foo</code></p>
+<pre><code>66 status -o name,status foo
+</code></pre>
+<p>Also, do not display the name of the field <code>name</code> and <code>status</code> of service <code>foo</code></p>
+<pre><code>66 status -no name,status foo
+</code></pre>
+<p>Only displays the contents of the log file of the service <code>foo</code></p>
+<pre><code>66 status -o logfile foo
+</code></pre>
+<p>Also, displays the last 100 lines of the log file of the service <code>foo</code></p>
+<pre><code>66 status -o logfile -p100 foo
+</code></pre>
+<p>In a script you can do</p>
+<pre><code>#!&#47;bin&#47;sh
+
+service="${1}"
+type=$(66 status -no type ${service})
+
+if [ ${type} = "classic" ]; then
+    echo ${service} is a classic service
+else if [ ${type} = "module" ]; then
+    echo ${service} is a module service
+else if [ ${type} = "oneshot" ]; then
+    echo ${service} is a oneshot service
+fi
+</code></pre>
+<p>Displays information of the service using the graph mode</p>
+<pre><code>66 status -g dbus
+
+Name                  : dbus
+Version               : 0.0.1
+In tree               : global
+Status                : enabled, up (pid 731) 34829 seconds, ready 34829 seconds
+Type                  : classic
+Description           : dbus system daemon
+Part of               : None
+Notify                : 4
+Max death             : 3
+Earlier               : 0
+Source                : &#47;etc&#47;66&#47;service&#47;dbus
+Live                  : &#47;run&#47;66&#47;scandir&#47;0&#47;dbus
+Dependencies          : \
+                        └─dbus-log (pid=723, state=Enabled, type=classic, tree=global)
+Required by           : \
+                        ├─networkmanager (pid=747, state=Enabled, type=classic, tree=global)
+                        ├─boot-user@oblive (pid=up, state=Enabled, type=module, tree=session)
+                        └─consolekit (pid=746, state=Enabled, type=classic, tree=global)
+Contents              : \
+                        └─None
+Optional dependencies : None
+Start script          :
+                        #!&#47;usr&#47;bin&#47;execlineb -P
+                        fdmove -c 2 1
+                        execl-envfile -v4 &#47;etc&#47;66&#47;conf&#47;dbus&#47;version
+                            execl-toc -S ${socket_name} -m 0755
+                            foreground {
+                                execl-toc -d &#47;var&#47;lib&#47;dbus
+                                dbus-uuidgen --ensure
+                            }
+                            execl-cmdline -s { dbus-daemon ${cmd_args} }
+Stop script           :
+                        #!&#47;usr&#47;bin&#47;execlineb -P
+                        fdmove -c 2 1
+                        execl-envfile -v4 &#47;etc&#47;66&#47;conf&#47;dbus&#47;version
+                         s6-rmrf ${socket_name}
+Environment source    : &#47;etc&#47;66&#47;conf&#47;dbus&#47;0.0.1
+Environment file      : environment variables from: &#47;etc&#47;66&#47;conf&#47;dbus&#47;0.0.1&#47;.dbus
+                        cmd_args=!--system --print-pid=4 --nofork --nopidfile --address=unix:path=${socket_name}
+                        socket_name=!&#47;run&#47;dbus&#47;system_bus_socket
+
+                        environment variables from: &#47;etc&#47;66&#47;conf&#47;dbus&#47;0.0.1&#47;dbus
+                        cmd_args=!--system --print-pid=4 --nofork --nopidfile --address=unix:path=${socket_name}
+                        socket_name=!&#47;run&#47;dbus&#47;system_bus_socket
+
+StdIn                 : s6log:&#47;run&#47;66&#47;scandir&#47;0&#47;fdholder
+StdOut                : s6log:&#47;var&#47;log&#47;66&#47;dbus
+StdErr                : inherit:&#47;var&#47;log&#47;66&#47;dbus
+Logger name           : dbus-log
+Logger file           :
+dbus-daemon[731]: [system] Activating service name=&#39;org.freedesktop.nm_dispatcher&#39; requested by &#39;:1.2&#39; (uid=0 pid=747 comm="NetworkManager -d") (using servicehelper)
+dbus-daemon[731]: [system] Successfully activated service &#39;org.freedesktop.nm_dispatcher&#39;
+dbus-daemon[731]: [system] Activating service name=&#39;org.freedesktop.nm_dispatcher&#39; requested by &#39;:1.2&#39; (uid=0 pid=747 comm="NetworkManager -d") (using servicehelper)
+dbus-daemon[731]: [system] Successfully activated service &#39;org.freedesktop.nm_dispatcher&#39;
+dbus-daemon[731]: [system] Activating service name=&#39;org.freedesktop.nm_dispatcher&#39; requested by &#39;:1.2&#39; (uid=0 pid=747 comm="NetworkManager -d") (using servicehelper)
+dbus-daemon[731]: [system] Successfully activated service &#39;org.freedesktop.nm_dispatcher&#39;
+dbus-daemon[731]: [system] Activating service name=&#39;org.freedesktop.nm_dispatcher&#39; requested by &#39;:1.2&#39; (uid=0 pid=747 comm="NetworkManager -d") (using servicehelper)
+dbus-daemon[731]: [system] Successfully activated service &#39;org.freedesktop.nm_dispatcher&#39;
+dbus-daemon[731]: [system] Activating service name=&#39;org.freedesktop.nm_dispatcher&#39; requested by &#39;:1.2&#39; (uid=0 pid=747 comm="NetworkManager -d") (using servicehelper)
+dbus-daemon[731]: [system] Successfully activated service &#39;org.freedesktop.nm_dispatcher&#39;
+dbus-daemon[731]: [system] Activating service name=&#39;org.freedesktop.nm_dispatcher&#39; requested by &#39;:1.2&#39; (uid=0 pid=747 comm="NetworkManager -d") (using servicehelper)
+dbus-daemon[731]: [system] Successfully activated service &#39;org.freedesktop.nm_dispatcher&#39;
+dbus-daemon[731]: [system] Activating service name=&#39;org.freedesktop.nm_dispatcher&#39; requested by &#39;:1.2&#39; (uid=0 pid=747 comm="NetworkManager -d") (using servicehelper)
+dbus-daemon[731]: [system] Successfully activated service &#39;org.freedesktop.nm_dispatcher&#39;
+dbus-daemon[731]: [system] Activating service name=&#39;org.freedesktop.nm_dispatcher&#39; requested by &#39;:1.2&#39; (uid=0 pid=747 comm="NetworkManager -d") (using servicehelper)
+dbus-daemon[731]: [system] Successfully activated service &#39;org.freedesktop.nm_dispatcher&#39;
+dbus-daemon[731]: [system] Activating service name=&#39;org.freedesktop.nm_dispatcher&#39; requested by &#39;:1.2&#39; (uid=0 pid=747 comm="NetworkManager -d") (using servicehelper)
+dbus-daemon[731]: [system] Successfully activated service &#39;org.freedesktop.nm_dispatcher&#39;
+dbus-daemon[731]: [system] Activating service name=&#39;org.freedesktop.nm_dispatcher&#39; requested by &#39;:1.2&#39; (uid=0 pid=747 comm="NetworkManager -d") (using servicehelper)
+dbus-daemon[731]: [system] Successfully activated service &#39;org.freedesktop.nm_dispatcher&#39;
+</code></pre>
+</body>
+</html>

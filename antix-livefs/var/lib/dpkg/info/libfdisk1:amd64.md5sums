@@ -1,0 +1,6 @@
+30f090e52ac5cedc0d5ade82c3a7f1ec  usr/lib/x86_64-linux-gnu/libfdisk.so.1.1.0
+1e30d61b028710436ab4de578d40b422  usr/share/doc/libfdisk1/NEWS.Debian.gz
+253f048332690f914abecc3b343c3889  usr/share/doc/libfdisk1/changelog.Debian.gz
+13a1ae4e86572f916333207a508c485f  usr/share/doc/libfdisk1/changelog.gz
+e2343d5239d28086275d9d5375c5a66f  usr/share/doc/libfdisk1/copyright
+79706830b7413831d13ce3e9e82896b2  usr/share/lintian/overrides/libfdisk1

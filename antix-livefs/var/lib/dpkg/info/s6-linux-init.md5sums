@@ -1,0 +1,12 @@
+38c959a46c52176f12d2c5814d1ff4ab  usr/bin/s6-linux-init
+639dd238840b344d45a195792c2acfb4  usr/bin/s6-linux-init-echo
+bdcd6cb508e6b2bf9ec46638f6091fe4  usr/bin/s6-linux-init-hpr
+3e43c78f75c1740fafee41704511e6c0  usr/bin/s6-linux-init-logouthookd
+26a11f4bf1b6ce718917e7ddee0978f3  usr/bin/s6-linux-init-maker
+32aaeb7dbba9c67f0498368e4d4b6352  usr/bin/s6-linux-init-nuke
+58bc53689e439db598b6a9392a5b5abf  usr/bin/s6-linux-init-shutdown
+61575bf8ff1440e8c9951a19defabab2  usr/bin/s6-linux-init-shutdownd
+bd7f4255ab4b3930e6ec6430a0b2a067  usr/bin/s6-linux-init-telinit
+ce8122398d40821dfd8bfcfaf71c9b41  usr/bin/s6-linux-init-umountall
+f8bceb7ede7dabb667ec05bb7f78cda4  usr/share/doc/s6-linux-init/changelog.Debian.gz
+24113c13dd249a2ad201b6a0ec8382ed  usr/share/doc/s6-linux-init/copyright

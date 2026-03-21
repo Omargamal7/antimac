@@ -1,0 +1,35 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Create tempory authentification files"
+Depends = ( mount-rw )
+User = ( root )
+StdOut = s6log:%%livedir%%/log/local-authfiles
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp local-authfiles -1 /dev/console configure wtmp and btmp file }
+    if -nt {
+
+        if -t {
+            execl-toc -nt -e ${ScriptFileWtmp}
+            foreground {
+                install -m0664 -o root -g utmp /dev/null ${ScriptFileWtmp}
+            }
+        }
+
+        if -t {
+            execl-toc -nt -e ${ScriptFileBtmp}
+            foreground {
+                install -m0600 -o root -g utmp /dev/null ${ScriptFileBtmp}
+            }
+        }
+
+    }
+    66-yeller -fcdp local-authfiles -1 /dev/console crashed!
+)
+
+[Environment]
+ScriptFileWtmp=!/var/log/wtmp
+ScriptFileBtmp=!/var/log/btmp

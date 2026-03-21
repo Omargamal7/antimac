@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: module service usage</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="module-service-usage">Module service usage</h1>
+<p>This documentation describe how to use <em>module</em> from an user point of view. If you want to create a <em>module</em>, refers to <a href="66-module-creation.html">service module creation</a> page.</p>
+<p>A <em>module</em> is a <a href="66-instantiated-service.html">instantiated service</a> and can be managed like any other instantiated services. For intance, to <a href="66-start.html">start</a> it</p>
+<pre><code>66 start foo@bar
+</code></pre>
+<p>where <code>foo@</code> is the name of the <em>module</em> and <code>bar</code> the name of its intance. If the <em>module</em> was never parsed before, you will get the default configuration define by the developer of the <em>module</em> service.</p>
+<p>Obviously you can <a href="66-enable.html">enable</a> it</p>
+<pre><code>66 enable foo@bar
+</code></pre>
+<p>or makes these two operations in one pass</p>
+<pre><code>66 enable -S foo@bar
+</code></pre>
+<p>The advantage of a <em>module</em> reside in the facts that you can <a href="66-configure.html">configure</a> the <em>module</em> according to your needs. To do so,</p>
+<pre><code>66 configure foo@bar
+</code></pre>
+<p>This command allow you to change the environment variable of the <em>module</em> and so, its configuration.</p>
+<p>Now, you need to apply the changes</p>
+<pre><code>66 reconfigure foo@bar
+</code></pre>
+<p>The <em>module</em> should now use your configuration. The <a href="66-reconfigure.html">reconfigure</a> command need to be called each time you change the configuration of the <em>module</em>. If you don&#8217;t use the <a href="66-reconfigure.html">reconfigure</a> command, the <em>module</em> keeps the previous configuration.</p>
+<h1 id="manage-service-within-module">Manage service within <em>module</em></h1>
+<p>As <em>module</em> is a set of services, when you start it, several services may be started. You can get the list of the services within <em>module</em> using the <a href="66-status.html">status</a> command.</p>
+<pre><code>66 status foo@bar
+</code></pre>
+<p>The command display different field notably the <code>contents</code> field corresponding to the list of the service within the <em>module</em>. You can control the state of these service like you do for any other services applying the following syntax</p>
+<pre><code>66 &#60;command&#62; &#60;module_name&#62;:&#60;service_name&#62;
+</code></pre>
+<p>For example, if <code>foo@bar</code> contain the service <code>baz</code></p>
+<pre><code>66 stop foo@bar:baz
+</code></pre>
+<p>Simply separates the name of the <em>module</em> and the name of the service by a colon <code>:</code>.</p>
+<p>A <em>module</em> can contain instantiated service. In this case use the same syntax specifying the complete name of the instantiated service. If <code>foo@bar</code> contain the instantiated service <code>bar@bou</code>, do</p>
+<pre><code>66 reload foo@bar:bar@bou
+</code></pre>
+</body>
+</html>

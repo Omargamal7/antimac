@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: remove</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="remove">remove</h1>
+<p>This command remove all components of a service. This operation <strong>cannot be</strong> undone. Process with caution.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>remove [ -h ] [ -P ] service...
+</code></pre>
+<p>This command remove all files belongs to <em>service</em> from the system even its log file. The only exception is its <a href="66-frontend.html">frontend</a> file.</p>
+<p>If the <em>service</em> is running, it will be stopped and unsupervised before removing it. This is also applied to its required-by dependencies except if the <code>-P</code> is passed.</p>
+<p>In case of <code>module</code> <em>service</em> type, all <em>services</em> declared within the <code>module</code> will be removed. The <code>-P</code> has no effect on the <em>services</em> within the <code>module</code> and only affects the module&#8217;s dependencies.</p>
+<p>If the associated tree of <em>service</em> is a part of the group <code>boot</code>, the service is not stopped and not unsupervised. The changes will occur at the next boot.</p>
+<p>This command handles <a href="66.html#handling-dependencies">interdependencies</a>.</p>
+<h2 id="options">Options</h2>
+<ul>
+<li><p><strong>-h</strong> : prints this help.</p></li>
+<li><p><strong>-P</strong>: Do not handle service dependencies. In such cases, the <em>remove</em> command, in these cases, does not delete services that depend on the specified service, treating the removal as temporary. If the service is needed by other services, any 66 command managing <a href="66.html#handling-dependencies">interdependencies</a> will re-parse the services. Use this option to ensure all components of the service are cleared before reusing it.</p></li>
+</ul>
+<h2 id="usage-example">Usage example</h2>
+<p>Removes the service <code>foo</code></p>
+<pre><code>66 remove foo
+</code></pre>
+<p>Removes the service <code>foo</code> without touching its interdependencies</p>
+<pre><code>66 remove -P foo
+</code></pre>
+</body>
+</html>

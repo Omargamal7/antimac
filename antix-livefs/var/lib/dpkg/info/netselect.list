@@ -1,0 +1,16 @@
+/.
+/usr
+/usr/bin
+/usr/bin/netselect
+/usr/share
+/usr/share/doc
+/usr/share/doc/netselect
+/usr/share/doc/netselect/README.Debian
+/usr/share/doc/netselect/README.gz
+/usr/share/doc/netselect/TODO.Debian
+/usr/share/doc/netselect/changelog.Debian.gz
+/usr/share/doc/netselect/changelog.gz
+/usr/share/doc/netselect/copyright
+/usr/share/man
+/usr/share/man/man1
+/usr/share/man/man1/netselect.1.gz

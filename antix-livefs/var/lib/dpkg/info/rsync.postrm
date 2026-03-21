@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+if [ "$1" = "purge" ] ; then
+  if [ -f /run/runit.stopit ] && [ -h /etc/service/rsync ]; then
+	rm /etc/service/rsync && rm -R /etc/sv/rsync
+  fi
+  update-rc.d rsync remove >/dev/null	
+fi

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: execl-envfile</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="execl-envfile">execl-envfile</h1>
+<p>A mix of <a href="https://skarnet.org/software/s6/s6-envdir.html">s6-envdir</a> and <a href="https://skarnet.org/software/execline/importas.html">importas</a>. Reads files containing variable assignments in the given <em>file&#47;directory</em>, adds the variables to the environment and then executes a program.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>execl-envfile [ -h ] [ -v verbosity ] [ -l ] src prog
+</code></pre>
+<p>This program expects to find a regular file or a directory in <em>src</em> containing one or multiple <code>key=value</code> pair(s). It will parse that file, import the <code>key=value</code> and then exec the given <em>prog</em> with the modified environment. In case of directory for each file found it apply the same process. <em>src</em> can be an absolute or a relative path.</p>
+<ul>
+<li><p>It opens and reads a file.</p></li>
+<li><p>It parses that file.</p></li>
+<li><p>It imports the found <code>key=value</code> pair(s).</p></li>
+<li><p>It substitutes each corresponding <em>key</em> with value from that file.</p></li>
+<li><p>It unexports the variable(s) if requested.</p></li>
+<li><p>It execs <em>prog</em> with the modified environment.</p></li>
+</ul>
+<h2 id="options">Options</h2>
+<ul>
+<li><p><strong>-h</strong>: prints this help.</p></li>
+<li><p><strong>-v</strong> <em>verbosity</em>: increases&#47;decreases the verbosity of the command.</p>
+<ul>
+<li><em>1</em>: only print error messages. This is the default.</li>
+<li><em>2</em>: also print warning messages.</li>
+<li><em>3</em>: also print tracing messages.</li>
+<li><em>4</em>: also print debugging messages.</li>
+</ul></li>
+<li><p><strong>-l</strong>: loose; do nothing and execute <em>prog</em> directly if <em>src</em> does not contain any regular file(s) or <em>src</em> does not exist.</p></li>
+</ul>
+<h2 id="file-syntax">File syntax</h2>
+<p><em>src</em> is a text file or a directory containing files with lines of pairs with the syntax being: <code>key = value</code>. If <em>src</em> is a directory, the directory is parsed by ascending alphabetical order. If there are duplicate <code>key=value</code> pairs, the pair found in the last file takes precedence.</p>
+<p>Whitespace is permitted before and after <em>key</em>, and before or after <em>value</em>.</p>
+<p>Empty lines, or lines containing only whitespace, are ignored. Lines beginning with <code>#</code> (possibly after some whitespace) are ignored (and typically used for comments). Leading and trailing whitespace is stripped from values; but a <em>value</em> can be double-quoted, which allows for inclusion of leading and trailing whitespace.</p>
+<p>Escaping double-quoted can be done with backslash <code>\</code>. For instance,</p>
+<pre><code>cmd_args=-g \"daemon off;\"
+</code></pre>
+<p>C escapes, including hexadecimal and octal sequences, are supported in quoted values. Unicode codepoint sequences are not supported.</p>
+<p>If <em>value</em> is empty, <em>key</em> is still added to the environment, with an empty value.</p>
+<p>If you do not want <em>key</em> to be added to the environment at all, prefix the <em>value</em> with an exclamation mark <code>!</code>. Whitespace <strong>are not permitted</strong> between the <code>!</code> and <code>value</code>. For instance,</p>
+<pre><code>    socket_name=!sname
+</code></pre>
+<p>In this case the <em>key</em> will be removed from the environment after the substitution.</p>
+<p>Reusing the same variable or variable from the actual environment is allowed. In such case, variable name <strong>must be</strong> between <code>${}</code> to get it value. For intance, an environment file can be declared</p>
+<pre><code>    PATH=&#47;usr&#47;local&#47;bin:${PATH}
+    socket_name=sname
+    socket_dir=dname
+    socket=${socket_dir}&#47;${socket_name}
+</code></pre>
+<p>The order of <code>key=value</code> pair declaration <strong>do not</strong> matter</p>
+<pre><code>    PATH=&#47;usr&#47;local&#47;bin:${PATH}
+    socket=${socket_dir}&#47;${socket_name}
+    socket_name=sname
+    socket_dir=dname
+</code></pre>
+<p>A variable calling itself is <strong>only</strong> allowed if the <code>key</code> name can be found at the environment of the current process. If the key of the <code>key=value</code> cannot not be found it left the pair as it. For intance,</p>
+<pre><code>    PATH=&#47;usr&#47;local&#47;bin:${PATH}
+</code></pre>
+<p>will only works if <code>PATH</code> is already define at the current environment. If not the result will literally be <code>PATH=&#47;usr&#47;local&#47;bin:${PATH}</code>.</p>
+<h3 id="limits">Limits</h3>
+<p><em>src</em> can not exceed more than <code>20</code> files. Each file can not contain more than <code>8191</code> bytes or more than <code>50</code> <code>key=value</code> pairs.</p>
+<h2 id="usage-example">Usage example</h2>
+<pre><code>    #!&#47;usr&#47;bin&#47;execlineb -P
+    fdmove -c 2 1
+    execl-envfile /etc/66/conf&#47;ntpd
+    foreground { mkdir -p  -m 0755 ${RUNDIR} }
+    execl-cmdline -s { ntpd ${CMD_ARGS} }
+
+</code></pre>
+<p>The equivalent with s6-envdir and importas would be:</p>
+<pre><code>    #!&#47;usr&#47;bin&#47;execlineb -P
+    fdmove -c 2 1
+    s6-envdir /etc/66/conf
+    importas -u RUNDIR RUNDIR
+    importas -u CMD_ARGS CMD_ARGS
+    foreground { mkdir -p  -m 0755 ${RUNDIR} }
+    execl-cmdline -s { ntpd ${CMD_ARGS} }
+</code></pre>
+<p>where <code>/etc/66/conf</code> contains two named files <code>RUNDIR</code> and <code>CMD_ARGS</code> written with <code>&#47;run&#47;openntpd</code> and <code>-d -s</code> respectively.</p>
+</body>
+</html>

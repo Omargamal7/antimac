@@ -1,0 +1,7 @@
+#!/usr/bin/execlineb -P
+
+envfile /etc/s6-rc/config/seatd.conf
+importas -sCuD "" Args Args
+
+fdmove -c 2 1
+exec -c seatd ${Args}

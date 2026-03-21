@@ -1,0 +1,25 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Volumes configuration"
+User = ( root )
+Depends = (
+    udevd
+    devices-dmraid
+    devices-mdraid
+    devices-btrfs
+    devices-lvm
+    devices-zfs
+    devices-crypttab
+)
+StdOut = s6log:%%livedir%%/log/devices-branch
+
+[Start]
+Execute = (
+    66-yeller -cdp devices-branch -1 /dev/console completed
+)
+
+[Stop]
+Execute= (
+    66-yeller -cdp devices-branch -1 /dev/console completed
+)

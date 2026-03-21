@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+
+
+case "$1" in
+	configure)
+		update-alternatives --quiet --install /usr/bin/pager pager \
+			/usr/bin/most 60 --slave /usr/share/man/man1/pager.1.gz \
+			pager.1.gz /usr/share/man/man1/most.1.gz
+		;;
+esac

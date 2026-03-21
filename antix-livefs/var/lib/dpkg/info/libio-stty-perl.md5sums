@@ -1,0 +1,7 @@
+5e5be9789f319c5ea9516bd9119415f7  usr/share/doc/libio-stty-perl/changelog.Debian.gz
+d1ab2c70b2b395b38c7c6f6d64e75d41  usr/share/doc/libio-stty-perl/changelog.gz
+e5354739b44f42cb3d1e96c8fb800319  usr/share/doc/libio-stty-perl/copyright
+3f4e2683c7fdb756638e660f8cea29f6  usr/share/lintian/overrides/libio-stty-perl
+418456fe923198ec146c95224305a885  usr/share/man/man3/IO::Stty.3pm.gz
+9a0dc6f7d75891bd2caa8e6eae2592bf  usr/share/perl5/IO/Stty.pm
+cc8c98ee2f85a7c11b717d20f2cf331d  usr/share/perl5/IO/stty.pl

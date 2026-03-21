@@ -1,0 +1,5 @@
+83279ccce52c53a02ed997946c208126  usr/share/dinit/scripts/user/dbus.sh
+9729aba8c23f850b2545872e324d5f75  usr/share/dinit/services/dbus
+614f5221909cf86fd5d93d938fa2f8b7  usr/share/dinit/services/user/dbus
+c7f403572552aadaf2bcf16d4ba72c82  usr/share/doc/dinit-service-dbus/changelog.gz
+8b92f1a9bc3cfba785bbd0a84605146a  usr/share/doc/dinit-service-dbus/copyright

@@ -1,0 +1,440 @@
+#!/usr/bin/sh
+
+## 66-yeller variable
+export PROG="${MOD_NAME}"
+export VERBOSITY="${MOD_VERBOSITY}"
+export CLOCK_ENABLED=0
+export COLOR_ENABLED="${MOD_COLOR}"
+
+## script variable
+FRONTEND_PATH="${MOD_MODULE_DIR}/frontend"
+ACTIVATED_PATH="${MOD_MODULE_DIR}/activated"
+SV_REAL=
+
+## sv_boolean_list contain keys that take yes or no as values
+sv_boolean_list="CRYPTTAB SETUPCONSOLE FSTAB SWAP LVM \
+DMRAID MDRAID BTRFS ZFS UDEV SYSCTL LOCAL CONTAINER TMPFILE MODULE_KERNEL \
+MODULE_SYSTEM RANDOMSEED MNT_PROC MNT_SYS MNT_DEV MNT_RUN MNT_TMP CGROUPS \
+MNT_PTS MNT_SHM MNT_NETFS POPULATE_SYS POPULATE_DEV POPULATE_RUN POPULATE_TMP"
+## sv_container_list contained keys for options that are disabled in a container
+sv_container_list="HARDWARECLOCK SETUPCONSOLE CRYPTTAB SWAP LVM DMRAID MDRAID BTRFS \
+ZFS UDEV UDEV_ADM SYSCTL FORCECHCK CGROUPS MODULE_SYSTEM RANDOMSEED MNT_NETFS"
+## sv_container_list is used by the check funtions and has the same contents as the
+## sv_container_list, minus UDEV_ADM
+sv_container_list_check="HARDWARECLOCK SETUPCONSOLE CRYPTTAB SWAP LVM DMRAID MDRAID BTRFS \
+ZFS UDEV SYSCTL FORCECHCK CGROUPS MODULE_SYSTEM RANDOMSEED MNT_NETFS"
+## sv_extra_list_check is used by the check functions and contains keys that need
+## to be present but are not in the previous lists
+sv_extra_list_check="HOSTNAME TZ TTY KEYMAP FONT"
+
+## Message functions. They use 66-yeller to provide three different levels of
+## messages for the script. Colors are available if 66-enabled is invoked with
+## the -z option.
+
+die(){
+	# Prints a fatal error message, in red color and exits the script.
+    fatal_error_message="$( printf '%s' "${@}" )"
+    66-yeller -f "%r $fatal_error_message %n"
+    exit 111
+}
+
+warn() {
+	# Print a warning message, non-fatal, always visible in yellow color.
+    warn_message="$( printf '%s' "${@}" )"
+    66-yeller -W "%y $warn_message %n" && warning_counter=$((warning_counter+1))
+}
+
+emit_trace() {
+	# Prints a tracing message in blue color, visible only when the 66-enable is
+	# invoced with a verbosity (-v) level of 3 or above.
+    trace_message="$( printf '%s' "${@}" )"
+    66-yeller -t "%b $trace_message %n"
+}
+
+## Detect functions. They use blkid(8) from util-linux to detect volume types
+## and 66-which to detect the needed utilities for the volume types
+
+detect_fs() {
+        # Uses blkid to detect partition TYPEs. The result is the number
+        # of detected partitions.
+        export "${1}"_detected="$(blkid -c /dev/null --match-token=TYPE="${1}" | wc -l )"
+}
+detect_swapfile() {
+        # Finds swap references in /etc/fstab.
+        swapfile_detected="$(awk '!/^(#)/' /etc/fstab | awk '$3=="swap" ' | wc -l )"
+        export swapfile_detected
+}
+detect_util() {
+        # Uses 66-which to determine if a utility exists.
+        # Output is $fs_util_exitst=0 (or 1)
+        # ${1} is the variable for the utility, in the form of "$fs_util"
+        # ${2} is the name of the executable
+        export "${1}"_exists="$(66-which "${2}" | wc -l)"
+}
+
+detect_fs btrfs
+detect_fs zfs_member
+detect_fs crypto_LUKS
+detect_fs LVM2_member
+detect_fs linux_raid_member
+# dmraid supports multiple TYPEs of *-raid-member devices.
+# find them first and add the sum of the *_detected values to
+# dmraid_detected.
+detect_fs ddf_raid_member
+detect_fs isw_raid_member
+detect_fs lsi_mega_raid_member
+detect_fs via_raid_member
+detect_fs silicon_medley_raid_member
+detect_fs nvidia_raid_member
+detect_fs promise_fasttrack_raid_member
+detect_fs hpt45x_raid_member
+detect_fs hpt37x_raid_member
+detect_fs adaptec_raid_member
+detect_fs jmicron_raid_member
+dmraid_detected=$((ddf_raid_member_detected+isw_raid_member_detected\
++lsi_mega_raid_member_detected+via_raid_member_detected\
++silicon_medley_raid_member_detected+nvidia_raid_member_detected\
++promise_fasttrack_raid_member_detected+hpt37x_raid_member_detecter\
++hpt45x_raid_member_detected+adaptec_raid_member_detected\
++jmicron_raid_member_detected))
+# swap can be detected by blkid if it is a partition or it can be a swapfile
+# declared in fstab
+detect_fs swap
+detect_swapfile
+swap_detected=$((swap_detected+swapfile_detected))
+detect_util btrfs_util btrfs
+detect_util zfs_util zfs
+detect_util luks_util cryptsetup
+detect_util lvm_util lvchange
+detect_util dmraid_util dmraid
+detect_util swap_util swapon
+detect_util mdraid_util mdadm
+
+## Check functions.
+
+check_var_existance() {
+    # ${1} is a list with key names
+    for key in ${1}
+    do
+    eval key_value="\$${key}"
+    key_value="$key_value"
+        if [ -z  "$key_value" ]; then
+        die "$key is not present or misconfigured. The process cannot continue,
+        please fix yout configuration and try again!"
+        fi
+    done
+}
+
+check_boolean_var_values() {
+    # ${1} is a list of key names
+    # ${2} and ${3} are valid values for these keys
+    for key in ${1}
+    do
+    eval key_value="\$${key}"
+    key_value="$key_value"
+    if [ "$key_value" = "${2}" ]; then
+        emit_trace "$key has a correct value of [$key_value]"
+    elif  [ "$key_value" = "${3}" ]; then
+        emit_trace "$key has a correct value of [$key_value]"
+    else
+        die " [${key_value}] is not a valid value for ${key}. The process cannot continue,
+please fix your configuration and try again!"
+    fi
+    done
+}
+
+check_volume_sanity() {
+    # ${1} is the configuration key for the volume type
+    # ${2} is the value of the relevant detect_fs function
+    # ${3} is the value of the relevant detect_util_exists function
+    # ${4} is the name of the relevant utility
+    # Check if volumes of a certain type (${2}) exist, if the utility
+    # needed for the type exists and if that volume type is enabled
+    # in the environment file.
+    eval key_value="\$${1}"
+    key_value="$key_value"
+    [ "$key_value" = "yes" ] && [ "${2}" -gt 0 ] && [ "${3}" -eq 1 ] && \
+    emit_trace "${1} is enabled and configured correctly."
+    [ "$key_value" = "yes" ] && [ "${2}" -eq 0 ] && warn "${1} is set to
+    [ $key_value ] but there are no relevant volumes present. This is\
+ a non-fatal warning, you may want to check your configuration!"
+    [ "$key_value" = "yes" ] && [ "${2}" -gt 0 ] && [ "${3}" -eq 0 ] && \
+    die "${1} is set to [$key_value], relevant volumes exist but the [${4}] program is not
+     present in the system. \
+The process cannot continue, please check your configuration and try again."
+    [ "$key_value" = "no" ] && [ "${2}" -gt 0 ] && \
+    warn "${1} is set to [$key_value], but relevant volumes exist. \
+This is a non-fatal warning but you should check your configuration!"
+}
+
+check_tty_number() {
+    # TTY should between 1 and 11. Warn if it is 0, abort with an error
+    # if it is outside of this range.
+    key_value="$TTY"
+    if [ "${key_value}" -gt 11 ]; then
+        die "TTY should have a value between 1 and 11. The current value\
+ of [$key_value] is not valid. The process cannot  continue, please fix\
+ your configuration and try again"
+    elif [ "$key_value" -lt 0 ]; then
+        die "TTY should have a value between 1 and 11. The process cannot\
+ continue, please fix your configuration and try again"
+    elif [ "$key_value" -eq 0 ]; then
+        warn "TTY has a value of [0]. That is valid, but means that the\
+ system will not have a configured tty."
+    else
+        emit_trace "TTY has a valid value. [$key_value] ttys will be\
+ configured. "
+    fi
+}
+
+check_tz() {
+    # TZ should have a timezone that exists as a value
+    execl-toc -n -X -e /usr/share/zoneinfo/"$TZ" && die "[ ${TZ} ] is not \
+a valid value for TZ. The process cannot continue, please check your configuration and try again."
+    execl-toc -X -e /usr/share/zoneinfo/"$TZ" && emit_trace "TZ is correctly configured, with a\
+ value of [${TZ}]."
+}
+
+check_keymap() {
+    # KEYMAP value is checked against a generated list of keymaps in the system
+    keymap_list=""
+    keymap_list="$(find /usr/share/kbd/keymaps/ -type f -iname "*.map.gz" -printf "%f " | sed 's|.map.gz||g')"
+    keymap_exists=
+    for keymap in $keymap_list;
+        do
+            [ "$keymap" = "${KEYMAP}" ] && export keymap_exists=1 ;
+        done
+    if [ "$keymap_exists" = "1" ] ;
+    then
+        emit_trace "KEYMAP is correctly configured with a value of [${KEYMAP}]."
+    else
+        die "[${KEYMAP}] is not a valid value for KEYMAP. The process cannot continue,\
+         please check your configuration and try again."
+    fi
+}
+check_consolefont() {
+    # FONT value is checked against a generated list of console fonts that
+    # exist in the system. Currently psf and psfu types are listed, compressed
+    # with gz. We will see if that is enough.
+    console_fontlist=""
+    console_fontlist="$(find /usr/share/kbd/consolefonts/ -type f -iname "*.psf.gz" -printf "%f " | sed 's|.psf.gz||g')"
+    console_fontlist="$console_fontlist $(find /usr/share/kbd/consolefonts/ -type f -iname "*.psfu.gz" -printf "%f " | sed 's|.psfu.gz||g')"
+    font_exists=
+    for font in $console_fontlist;
+        do
+            [ "$font" = "${FONT}" ] && export font_exists=1 ;
+        done
+    if [ "$font_exists" = "1" ] ;
+        then
+        emit_trace "FONT is correctly configured with a value of [${FONT}]."
+    else
+        die " [${FONT}] is not a valid value for FONT. The process cannot continue,\
+         please check your configuration and try again."
+    fi
+}
+
+retrieve_sv_name(){
+    # Matches the configuration key of the environment section/file to the name
+    # of the corresponding service frontend.
+    sv=${1}
+    case ${sv} in
+        HARDWARECLOCK) SV_REAL="system-hwclock" ;;
+        CRYPTTAB) SV_REAL="devices-crypttab" ;;
+        SETUPCONSOLE) SV_REAL="system-fontnkey" ;;
+        FSTAB) SV_REAL="mount-fstab" ;;
+        SWAP) SV_REAL="mount-swap" ;;
+        LVM) SV_REAL="devices-lvm" ;;
+        DMRAID) SV_REAL="devices-dmraid" ;;
+        MDRAID) SV_REAL="devices-mdraid" ;;
+        BTRFS) SV_REAL="devices-btrfs" ;;
+        ZFS) SV_REAL="devices-zfs" ;;
+        UDEV) SV_REAL="udevd" ;;
+        SYSCTL) SV_REAL="system-sysctl" ;;
+        FORCECHCK) SV_REAL="system-fsck" ;;
+        LOCAL) SV_REAL="local-rc" ;;
+        TMPFILE) SV_REAL="local-tmpfiles" ;;
+        MODULE_KERNEL) SV_REAL="modules-kernel" ;;
+        MODULE_SYSTEM) SV_REAL="modules-system" ;;
+        RANDOMSEED) SV_REAL="system-random" ;;
+        MNT_PROC) SV_REAL="mount-proc" ;;
+        MNT_SYS) SV_REAL="mount-sys" ;;
+        MNT_DEV) SV_REAL="mount-dev" ;;
+        MNT_RUN) SV_REAL="mount-run" ;;
+        MNT_TMP) SV_REAL="mount-tmp" ;;
+        CGROUPS) SV_REAL="mount-cgroups" ;;
+        MNT_PTS) SV_REAL="mount-pts" ;;
+        MNT_SHM) SV_REAL="mount-shm" ;;
+        MNT_NETFS) SV_REAL="mount-netfs" ;;
+        POPULATE_SYS) SV_REAL="populate-sys" ;;
+        POPULATE_DEV) SV_REAL="populate-dev" ;;
+        POPULATE_RUN) SV_REAL="populate-run" ;;
+        POPULATE_TMP) SV_REAL="populate-tmp" ;;
+        TTY) SV_REAL="tty-rc@" ;;
+        ## extra service not set by the environment section
+        UDEV_ADM) SV_REAL="udevadm" ;;
+    esac
+
+    unset sv
+}
+
+sv_uncomment_list() {
+    name=${1} list="$(find "${FRONTEND_PATH}" -mindepth 1 -type f)"
+
+    retrieve_sv_name "${name}"
+    66-yeller %benable%n service: "${SV_REAL}"
+    touch "${ACTIVATED_PATH}/${SV_REAL}"
+    for sv in ${list}; do
+        sed -i "s:#*${SV_REAL}:${SV_REAL}:g" "${sv}" || die "unable to sed ${sv}"
+    done
+
+    unset list
+}
+
+sv_comment_list() {
+    name=${1} list="$(find "${FRONTEND_PATH}" -mindepth 1 -type f)"
+    retrieve_sv_name "${name}"
+    66-yeller %rdisable%n service: "${SV_REAL}"
+    for sv in ${list}; do
+        sed -i "s:${SV_REAL}:#${SV_REAL}:g" "${sv}" || die "unable to sed ${sv}"
+    done
+    unset list
+}
+
+sv_uncomment_real() {
+    name=${1} list="$(find "${FRONTEND_PATH}" -mindepth 1 -type f)"
+    66-yeller %benable%n service: "${name}"
+    for sv in ${list}; do
+        sed -i "s:#*${name}:${name}:g" "${sv}" || die "unable to sed ${sv}"
+    done
+
+    unset list
+}
+
+sv_comment_real() {
+    name=${1} list="$(find "${FRONTEND_PATH}" -mindepth 1 -type f)"
+    66-yeller %rdisable%n service: "${name}"
+    for sv in ${list}; do
+        sed -i "s:${name}:#${name}:g" "${sv}" || die "unable to sed ${sv}"
+    done
+}
+
+
+# Check the configuration if CHECK_CONFIGURATION is set to "yes" in the
+# environment section/file
+if [ "${CHECK_CONFIGURATION}" = "yes" ]; then
+	warning_counter=0
+    check_var_existance "$sv_boolean_list"
+    check_var_existance "$sv_container_list_check"
+    check_var_existance "$sv_extra_list_check"
+    check_boolean_var_values "$sv_boolean_list" "yes" "no"
+    check_tty_number
+    check_tz
+    check_keymap
+    check_consolefont
+    check_volume_sanity BTRFS "$btrfs_detected" "$btrfs_util_exists" btrfs
+    check_volume_sanity ZFS "$zfs_member_detected" "$zfs_util_exists" zfs
+    check_volume_sanity CRYPTTAB "$crypto_LUKS_detected" "$luks_util_exists" cryptsetup
+    check_volume_sanity LVM "$LVM2_member_detected" "$lvm_util_exists" lvchange
+    check_volume_sanity DMRAID "$dmraid_detected" "$dmraid_util_exists" dmraid
+    check_volume_sanity SWAP "$swap_detected" "$swap_util_exists" swapon
+    check_volume_sanity MDRAID "$linux_raid_member_detected" "$mdraid_util_exists" mdadm
+    if [ "${ZFS}" = "yes" ]; then
+		check_boolean_var_values "ZFS_IMPORT" zpoolcache scan
+	fi
+	# If there are warnings, display a message and wait for a time relative
+	# to the number of warnings.
+	if [ $warning_counter -gt 0 ]; then
+	66-yeller %g ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %n
+	66-yeller %g Please see above for warnings. The proccess will continue shortly... %n
+	66-yeller %g ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ %n
+	wait_timer=$((warning_counter*3))
+	sleep "$wait_timer"
+	fi
+fi
+
+66-yeller %benable%n service: "tty-earlier@tty12"
+touch "${ACTIVATED_PATH}/tty-earlier@tty12" || die "unable to create ${ACTIVATED_PATH}/tty-earlier@tty12"
+
+for sv in ${sv_boolean_list}; do
+    if [ "${sv}" = "CONTAINER" ]; then
+        continue
+    fi
+    eval val="\$${sv}"
+    val="${val}"
+    if [ "${val}" = "yes" ]; then
+        sv_uncomment_list "${sv}"
+    else
+        sv_comment_list "${sv}"
+    fi
+done
+
+comment_udev() {
+    for sv in "udevd" "udevadm" "system-fontnkey" "devices-crypttab" \
+            "devices-dmraid" "devices-mdraid" "devices-btrfs" "devices-lvm" ; do
+        sv_comment_real ${sv}
+    done
+}
+
+comment_zfs() {
+    for sv in "devices-zfs-import-cache" "devices-zfs-import-scan"; do
+        sv_comment_real "${sv}"
+    done
+}
+
+if [ "${UDEV}" = "no" ]; then
+    comment_udev
+fi
+
+if [ "${CONTAINER}" = "yes" ]; then
+    for sv in ${sv_container_list}; do
+        sv_comment_list "${sv}"
+    done
+fi
+
+if [ "${ZFS}" = "yes" ]; then
+
+    if [ "${ZFS_IMPORT}" = "zpoolcache" ]; then
+        sv_comment_real "devices-zfs-import-scan"
+    else
+    # set default to scan
+        sv_comment_real "devices-zfs-import-cache"
+    fi
+else
+    comment_zfs
+fi
+
+if [ "${LVM}" = "no" ] && \
+[ "${DMRAID}" = "no" ] && \
+[ "${BTRFS}" = "no" ] && \
+[ "${ZFS}" = "no" ] && \
+[ "${MDRAID}" = "no" ] && \
+[ "${CRYPTTAB}" = "no" ]; then
+    sv_comment_real "devices-branch"
+fi
+
+if [ "${TTY}" -gt 0 ]; then
+    for i in $(seq "${TTY}"); do
+        [ "${i}" -lt 12 ] || break
+        66-yeller %benable%n service: "tty-rc@tty${i}"
+        touch "${ACTIVATED_PATH}/tty-rc@tty${i}" || die "unable to create ${ACTIVATED_PATH}/tty-rc@tty${i}"
+    done
+fi
+
+if execl-toc -X -V FIREWALL; then
+
+    check_var_existance "FIREWALL"
+
+    for sv in "iptables" "ip6tables" "nftables" "ebtables" "arptables"; do
+        if [ "${FIREWALL}" = "${sv}" ]; then
+            sv_uncomment_real "local-${sv}"
+        else
+            sv_comment_real "local-${sv}"
+        fi
+    done
+else
+    for sv in "local-iptables" "local-ip6tables" "local-nftables" "local-ebtables" "local-arptables"; do
+        sv_comment_real "${sv}"
+    done
+fi
+
+66-yeller "%bsuccessfully%n configured"

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66-tools Suite: 66-gnwenv</title>
+</head>
+<body>
+<p><a href="index.html">66-tools</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="66-gnwenv">66-gnwenv</h1>
+<p>66-gnwenv gets and writes the environment variables of a process name at a specific file location.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>    66-gnwenv [ -h ] [ -x ] [ -m mode ] process dir file
+</code></pre>
+<ul>
+<li><em>66-gnwenv</em> executes into <code>66-getenv -x process 66-writenv -m mode dir file</code>. It does nothing else: it is just a convenience program. <a href="66-getenv.html">66-getenv</a> read the environment variable of the process, and <a href="66-writenv.html">66-writenv</a> will write these variables into <em>dir&#47;file</em> location.</li>
+</ul>
+<h2 id="exit-codes">Exit codes</h2>
+<ul>
+<li><em>0</em> success</li>
+<li><em>100</em> wrong usage</li>
+<li><em>111</em> system call failed</li>
+</ul>
+<h2 id="options">Options</h2>
+<ul>
+<li><p><strong>-h</strong> : prints this help.</p></li>
+<li><p><strong>-x</strong> : match exactly with the process name. It can be a complete command line, in such case its must be double-quoted.</p></li>
+<li><p><strong>-m</strong> <em>mode</em> : create <em>dir</em> with mode <em>mode</em> if it doesn&#8217;t exist yet. Default is <code>0755</code>. </p></li>
+</ul>
+</body>
+</html>

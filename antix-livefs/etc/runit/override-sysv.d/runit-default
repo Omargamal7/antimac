@@ -1,0 +1,70 @@
+#!/bin/sh
+
+#called from invoke-rc.d like  "/etc/runit/override-sysv.d/runit-default servicename action [extraparam]"
+#then the return code is checked to decide whether to continue with sysv
+
+rservice="$1"
+rservice="${rservice%.sh}"
+raction="$2"
+extra="$3"
+
+# single service override
+if [ -f /etc/runit/override-sysv.d/"$rservice".block ] || [ -f /etc/runit/override-sysv.d/"$rservice".pkgblock ]; then
+    [ -e /etc/runit/verbose ] && echo "runit override: $rservice: invoke-rc.d action $raction blocked "
+    exit 1 #block invoke-rc.d, don't forward to sv
+fi
+if [ -f /etc/runit/override-sysv.d/"$rservice".runit ] || [ -f /etc/runit/override-sysv.d/"$rservice".pkgrunit ]; then
+    if [ -d /etc/service/"$rservice" ]; then
+        case "$raction" in
+          start|stop|restart|reload|status|try-restart|force-stop|force-reload|force-restart)
+            if [ "$raction" = "force-reload" ]; then
+              raction=reload #bluez force-reload dbus in postinst, restarting dbus instead of reload
+            fi
+	    [ -e /etc/runit/verbose ] && echo "runit override: $rservice: invoke-rc.d action $raction forwarded to sv "
+            sv "$raction" "$rservice" || true # forward to runit
+            exit 1 #block invoke-rc.d
+          ;;
+          *)
+            [ -e /etc/runit/verbose ] && echo "runit override: $rservice: $raction not supported by sv, forwarding to the sysv script"
+            exit 104
+          ;;
+        esac
+    fi
+    exit 1 #block invoke-rc.d
+fi
+if [ -f /etc/runit/override-sysv.d/"$rservice".sysv ]; then
+    [ -e /etc/runit/verbose ] && echo "runit override: $rservice: forwarding action $raction to sysv via invoke-rc.d "
+    exit 104 #continue with invoke-rc.d, don't forward to sv
+fi
+
+# default package policy
+
+if [ -h /etc/service/"$rservice" ]; then
+    [ -e "/usr/share/runit/meta/$rservice/installed" ] && exit 1 #dh-runit/runit-helper managed
+    [ -e "/etc/sv/$rservice/.meta/bin" ] && exit 1 # runit trigger-sv
+    [ -e "/usr/share/runit/sv.current/$rservice/.meta/bin" ] && exit 1 # runit trigger-sv
+    case "$raction" in
+      start|stop|restart|reload|status|try-restart|force-stop|force-reload|force-restart)
+        if [ "$raction" = "force-reload" ]; then
+              raction=reload #bluez force-reload dbus in postinst, restarting dbus instead of reload
+        fi
+        sv "$raction" "$rservice" || true
+        exit 1 #block invoke-rc.d
+    ;;
+      *)
+        [ -e /etc/runit/verbose ] && echo "runit override: $rservice: $raction not supported by sv, forwarding to the sysv script"
+        exit 104
+    ;;
+    esac
+else
+    [ -d "/etc/sv/$rservice" ] && exit 1 # disabled
+    [ -d "/usr/share/runit/sv.current/$rservice" ] && exit 1 # disabled
+fi
+#no runscrit found for $rservice: continue with sysvinit script
+[ -e /etc/runit/verbose ] && echo "runit override: $rservice: no runscript found, forwarding to sysv script "
+exit 104
+
+# to always block sysv do
+#exit 1 || exit 0 (any value different from 104 does the job)
+# to always continue with sysv do
+#exit 104

@@ -1,0 +1,10 @@
+404a6ba7ee4f556d67d0c2e24a65d733  usr/bin/extlinux
+114a332543d206a1884a7da2dedebb02  usr/lib/EXTLINUX/altmbr.bin
+0897ba470594ea2ea0c3dbbe4afcfbf3  usr/lib/EXTLINUX/gptmbr.bin
+8cb37afc263a219ebb7586f9c495114e  usr/lib/EXTLINUX/mbr.bin
+189a624065afeeb921c7ac83457f8c23  usr/share/doc/extlinux/README.txt.gz
+6e78fcad9c6163723b2cf69ab1a7c63f  usr/share/doc/extlinux/changelog.Debian.gz
+93ac4ba519193aaadbe35372892016d2  usr/share/doc/extlinux/changelog.gz
+f88662370d425b27712e9b6a044288a7  usr/share/doc/extlinux/copyright
+f3c43e567de50756cfe740aafffd7b0b  usr/share/lintian/overrides/extlinux
+77fb3b58dbe616217e221963452f4470  usr/share/man/man1/extlinux.1.gz

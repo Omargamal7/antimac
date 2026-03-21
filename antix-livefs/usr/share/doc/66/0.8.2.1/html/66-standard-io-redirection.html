@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: Standard IO redirection</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="standard-io-redirection">Standard IO Redirection</h1>
+<p>The control of IO (Input&#47;Output) redirection can be managed using the keys <code>StdIn</code>, <code>StdOut</code>, and <code>StdErr</code> within the <a href="66-frontend.html#section-main">[Main]</a> section.</p>
+<p>If none of the <code>StdIn</code>, <code>StdOut</code>, and <code>StdErr</code> keys are defined, the default behavior is to use the <code>s6-log</code> program. In this case, you can use the <a href="66-frontend.html#section-logger">[Logger]</a> section to modify the behavior of <code>s6-log</code> (see the <a href="66-frontend.html#section-logger">[Logger]</a> section documentation) such as log file rotation.</p>
+<p>It should be noted that administrative permissions may be required for values <code>tty</code>, <code>console</code>, and <code>syslog</code>. A service run as a regular user will not have the necessary rights to access, for example, <code>tty3</code>.</p>
+<p>Depending on the definition and combination of these keys, the behavior will be as follows:</p>
+<h2 id="stdin">StdIn</h2>
+<p>This key allows redirection of the Standard Input (file descriptor 0) of the service. As indicated in the documentation for the <a href="66-frontend.html#section-main">[Main]</a> section, this key accepts several values.</p>
+<p>If the key is not defined, it will take the value of StdOut if StdOut is set to s6log or if StdOut is not defined at all.</p>
+<h3 id="redefinition-of-stdout-and-stderr-based-on-the-value-of-stdin">Redefinition of StdOut and StdErr based on the value of StdIn</h3>
+<ul>
+<li><p>StdIn = tty:&#47;path&#47;to&#47;tty</p>
+<p>In this case, the value of StdOut will be the same as StdIn regardless of the value set for StdOut.</p></li>
+<li><p>StdIn = s6log</p>
+<p>In this case, the value of StdOut will be <code>s6log</code> and the value of StdErr will be <code>inherit</code> regardless of the values set for StdOut and StdErr.</p></li>
+<li><p>For the values null, parent, and close, the values of StdOut and StdErr will not be redefined.</p></li>
+</ul>
+<h2 id="stdout">StdOut</h2>
+<p>This key allows redirection of the Standard Output (file descriptor 1) of the service. As indicated in the documentation for the <a href="66-frontend.html#section-main">[Main]</a> section, it accepts several values.</p>
+<p>If the key is not defined, it will take the value of StdIn as follows:</p>
+<ul>
+<li>If StdIn is set to tty or s6log, the StdOut key will take the same value tty or s6log respectively.</li>
+<li>If StdIn is set to null, StdOut will take the value inherit.</li>
+<li>If StdIn is set to parent or close, StdOut will take the value parent.</li>
+</ul>
+<p>In all other cases, StdOut will take the value s6log.</p>
+<p>This key takes precedence over StdErr depending on the chosen value.</p>
+<h3 id="redefinition-of-stderr-based-on-the-value-of-stdout">Redefinition of StdErr based on the value of StdOut</h3>
+<ul>
+<li><p>If the value of StdOut is equal to StdErr, StdErr will be set to <code>inherit</code>(e.g. StdOut = tty:&#47;dev&#47;tty2 AND StdErr = tty:&#47;dev&#47;tty2).</p></li>
+<li><p>StdOut = syslog</p>
+<p>In this case, the value of StdErr will be the same as StdOut regardless of the value set for StdErr.</p></li>
+<li><p>For the values tty, file, console, s6log, inherit, null, parent, and close, StdErr will not be redefined.</p></li>
+</ul>
+<h2 id="stderr">StdErr</h2>
+<p>This key allows redirection of the Standard Error (file descriptor 2) of the service. As indicated in the documentation for the <a href="66-frontend.html#section-main">[Main]</a> section, it accepts several values.</p>
+<p>If the key is not defined, it will be set to inherit.</p>
+<p>In all other cases, no redefinition is made.</p>
+<h2 id="options-defined-on-log">Options defined on !log</h2>
+<p>If the Options key in the <a href="66-frontend.html#section-main">[Main]</a> section defines <code>!log</code>, the <a href="66-frontend.html#section-logger">[Logger]</a> section will have no effect. Additionally, if the keys StdIn, StdOut, or StdErr are set to s6log or not defined at all, StdIn, StdOut, and StdErr will take the value of parent process.</p>
+<h1 id="examples">Examples</h1>
+<p>Let&#8217;s take some examples:</p>
+<ul>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = s6log
+StdOut = s6log
+StdErr = inherit
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = s6log
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = s6log
+StdOut = s6log
+StdErr = inherit
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdOut = s6log
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = s6log
+StdOut = s6log
+StdErr = inherit
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = tty:&#47;dev&#47;tty1
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = tty:&#47;dev&#47;tty1
+StdOut = tty:&#47;dev&#47;tty1
+StdErr = inherit
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = tty:&#47;dev&#47;tty1
+StdOut = syslog
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = tty:&#47;dev&#47;tty1
+StdOut = tty:&#47;dev&#47;tty1
+StdErr = inherit
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = null
+StdOut = syslog
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = null
+StdOut = syslog
+StdErr = syslog
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = null
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = null
+StdOut = inherit
+StdErr = inherit
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = close
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = close
+StdOut = parent
+StdErr = inherit
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdOut = syslog
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = parent
+StdOut = syslog
+StdErr = syslog
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdOut = tty:&#47;dev&#47;tty1
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = parent
+StdOut = tty:&#47;dev&#47;tty1
+StdErr = inherit
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdOut = tty:&#47;dev&#47;tty1
+StdErr = file:&#47;var&#47;log&#47;connman.log
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+StdIn = parent
+StdOut = tty:&#47;dev&#47;tty1
+StdErr = file:&#47;var&#47;log&#47;connman.log
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+Options = (!log)
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+Options = (!log)
+StdIn = parent
+StdOut = parent
+StdErr = parent
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+<li><p>A frontend file with</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+Options = (!log)
+StdOut = s6log
+StdErr = file:&#47;var&#47;log&#47;connmand.log
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre>
+<p>is strictly equal to</p>
+<pre><code>[Main]
+Type = classic
+Description = "connman daemon"
+Version = 0.0.1
+User = ( root )
+Options = (!log)
+StdIn = parent
+StdOut = parent
+StdErr = file:&#47;var&#47;log&#47;connmand.log
+
+[Start]
+Execute = ( connmand -n --nobacktrace --nodnsproxy )
+</code></pre></li>
+</ul>
+</body>
+</html>

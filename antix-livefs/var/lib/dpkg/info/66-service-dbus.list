@@ -1,0 +1,12 @@
+/.
+/usr
+/usr/share
+/usr/share/66
+/usr/share/66/service
+/usr/share/66/service/dbus
+/usr/share/66/service/user
+/usr/share/66/service/user/dbus@
+/usr/share/doc
+/usr/share/doc/66-service-dbus
+/usr/share/doc/66-service-dbus/changelog.Debian.gz
+/usr/share/doc/66-service-dbus/copyright

@@ -1,0 +1,24 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Load kernel modules"
+User = ( root )
+Depends = ( mount-branch )
+StdOut = s6log:%%livedir%%/log/modules-kernel
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp modules-kernel -1 /dev/console load kernel modules }
+    if -nt {
+
+        pipeline -d { kmod static-nodes --format=devname }
+        pipeline { s6-cut -d" " -f1 }
+        forstdin -pd "\n" -- mod
+        importas -iu -D "" mod mod
+        modprobe $mod
+
+    }
+    66-yeller -fcdp modules-kernel -1 /dev/console crashed!
+)
+

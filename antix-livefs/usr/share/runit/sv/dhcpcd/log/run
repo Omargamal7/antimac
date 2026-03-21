@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+NAME=dhcpcd
+LOG="/var/log/runit/$NAME"
+
+test -d "$LOG" || mkdir "$LOG"
+exec chpst svlogd -tt "$LOG"

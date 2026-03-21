@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66-tools Suite: 66-dbus-launch</title>
+</head>
+<body>
+<p><a href="index.html">66-tools</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="66-dbus-launch">66-dbus-launch</h1>
+<p><em>66-dbus-launch</em> is a tool for launching, supervising, and reacting to <a href="https://github.com/bus1/dbus-broker">dbus-broker</a> events emitted by relevant D-Bus signals.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>    66-dbus-launch [ -h ] [ -z ] [ -v verbosity ] [ -d notif ]
+</code></pre>
+<p><em>66-dbus-launch</em> acts as a launcher for the <a href="https://github.com/bus1/dbus-broker">dbus-broker</a>, spawning and managing a D-Bus Message Bus.</p>
+<p>On receiving D-Bus or kernel signals, the launcher executes tasks based on the signal received(see <a href="#execution-tasks">Execution tasks</a>).
+Each instance of <em>66-dbus-launch</em> manages exactly one message bus. Each message bus is independent.</p>
+<p>When started by a regular user, <em>66-dbus-launch</em> will drop privileges before executing <a href="https://github.com/bus1/dbus-broker">dbus-broker</a>. The launcher only manages services and environments for the process owner, meaning a user launcher cannot manage root services or environments and vice versa.</p>
+<p>This program is only built if the <code>--enable-dbus=</code> option is passed during compilation (see <a href="#build-requirements">Build Requirements</a>).</p>
+<p>This tool is inspired by the <a href="https://github.com/st3r4g/dbus-controllers">dbus-controllers</a> project and the original <a href="https://github.com/bus1/dbus-broker">dbus-broker</a> program.</p>
+<h2 id="exit-codes">Exit codes</h2>
+<ul>
+<li><em>0</em> success</li>
+<li><em>100</em> wrong usage</li>
+<li><em>111</em> system call failed</li>
+</ul>
+<h2 id="options">Options</h2>
+<ul>
+<li><p><strong>-h</strong> : prints this help.</p></li>
+<li><p><strong>-z</strong> : enable color. If <em>66-dbus-launch</em> is not launched from a terminal, the color is automatically disabled and the option has no effect.</p></li>
+<li><p><strong>-v</strong> <em>verbosity</em>: increases&#47;decreases the verbosity of the command.</p>
+<ul>
+<li><em>0</em>: only print error messages.</li>
+<li><em>1</em>: also, print informative messages. This is the default.</li>
+<li><em>2</em>: also, print warning messages.</li>
+<li><em>3</em>: also, print tracing messages.</li>
+<li><em>4</em>: also, print function name and line code of the messages.</li>
+<li><em>5</em>: also, display the sequence of the current process function by function.
+<em>verbosity</em> are also propagated to the <em>66</em> command invocation to activate or desactivate a service.</li>
+</ul></li>
+<li><p><strong>-d</strong> <em>notif</em> : notify readiness on file descriptor <em>notif</em>. Has no effect when launched from a terminal. Notification occurs before entering the <a href="#running-time">loop</a>, ensuring that both the broker and launcher are fully synchronized.</p></li>
+</ul>
+<h2 id="execution-tasks">Execution Tasks</h2>
+<h3 id="start-time">Start Time</h3>
+<p>At startup, 66-dbus-launch performs the following tasks:</p>
+<ul>
+<li><p>Creates, binds, and listens to a socket at <code>&#47;run&#47;dbus&#47;system_bus_socket</code> or <code>&#47;run&#47;user&#47;UID&#47;dbus</code>, depending on the process owner. The socket name can be customized at compile time with <code>--with-dbus-system-name=NAME</code> and <code>--with-dbus-session-name=NAME</code>.</p></li>
+<li><p>Sets the <code>DBUS_SYSTEM_BUS_ADDRESS=unix:path=&#47;run&#47;dbus&#47;system_bus_socket</code> and <code>DBUS_SESSION_BUS_ADDRESS=unix:path=&#47;run&#47;user&#47;UID&#47;dbus</code> environment variables according to the owner of the process.</p></li>
+<li><p>For each D-Bus service file found in <code>/usr/share/dbus-1/system-services</code> or <code>/usr/share/dbus-1/services</code>, it reads, parses, translates, and writes a corresponding 66 frontend file. An example:</p>
+<pre><code>[Main]
+Type = classic
+Description "org.freedesktop.Consolekit.dbus dbus service"
+User = ( root )
+Version = 0.0.1
+InTree = dbus
+MaxDeath = 5
+TimeoutStart = 3000
+TimeoutStop = 3000
+
+[Start]
+Execute = (
+    execl-envfile -l ${ImportFile}
+    &#47;usr&#47;bin&#47;console-kit-daemon --nodaemon
+)
+
+[Environment]
+ImportFile=&#47;etc&#47;66&#47;environment&#47;0000-dbus
+</code></pre></li>
+</ul>
+<p>It ensures that you use the latest <em>D-Bus</em> file declarations by overwriting any existing frontend files with the same name.</p>
+<ul>
+<li><p>Creates an unbound socket pair and forks the command <code>&#47;usr&#47;bin&#47;dbus-broker --controller FD --machine-id MachineId</code>, with <em>FD</em> being the file descriptor of the connected socket&#8217;s standard input. If <code>&#47;etc&#47;machine-id</code> is unreadable, it defaults to <code>00000000000000000000000000000001</code>. For regular users, privileges are dropped before execution.</p></li>
+<li><p>Notifies readiness (if -<code>d</code> is used) and enters a loop, listening and supervising the broker.</p></li>
+</ul>
+<h3 id="running-time">Running time</h3>
+<p><em>66-dbus-launch</em> responds to kernel signals:</p>
+<p>A <code>SIGHUP</code> signal triggers a reading, parsing, translating and writting process.
+Synchronization of services can also be manually triggered via <code>66 reload dbus</code> or <code>66 signal -s HUP dbus</code>.
+It also synchronizes the available list of services between the launcher and the broke as follows:</p>
+<ul>
+<li>If a <em>D-Bus</em> service file is removed, the launcher deactivates from the broker, executes <code>66 remove &#60;service&#62;</code>, and erases the corresponding <em>66</em> frontend file.</li>
+<li>If a new <em>D-Bus</em> service is found, the launcher triggers the reading, parsing, translating and writting process, and activates the service in the broker.</li>
+<li>For an existing service with the same name, the launcher executes <code>66 parse -f &#60;service&#62;</code> to ensure the latest <em>D-Bus</em> service declaration is used. Note that the service need to be restarted for any changes to take effect.</li>
+</ul>
+<p><em>66-dbus-launch</em> reacts on D-Bus signals:</p>
+<ul>
+<li><p>Activation requested invoke a <code>66 start &#60;service&#62;</code> command.</p></li>
+<li><p>A <code>org.freedesktop.DBus.UpdateActivationEnvironment()</code> request trigger the update environment variables, writing them by default to <code>&#47;etc&#47;66&#47;environment&#47;0000-dbus</code> or <code>$HOME&#47;.66&#47;environment&#47;0000-dbus</code>, depending on ownership. The file is overwritten for each update. You can also use the <a href="https://dbus.freedesktop.org/doc/dbus-update-activation-environment.1.html">dbus-update-activation-environment</a> program to trigger this update. Note that you may need to define the <code>DBUS_SESSION_BUS_ADDRESS</code> before launching the <em>dbus-update-activation-environment</em> program. For root, use <code>DBUS_SESSION_BUS_ADDRESS=unix:path=&#47;run&#47;dbus&#47;system_bus_socket</code>, and for regular user, use <code>DBUS_SESSION_BUS_ADDRESS=unix:path=&#47;run&#47;user&#47;UID&#47;dbus</code>.</p></li>
+<li><p>A <code>org.freedesktop.DBus.ReloadConfig()</code> request triggers the same process as a <code>SIGHUP</code> signal.</p></li>
+</ul>
+<h3 id="stop-time">Stop time</h3>
+<p>Stopping the launcher invokes a <code>66 tree free dbus</code> command, as each service frontend file declares <a href="#start-time"><code>InTree=dbus</code></a>.</p>
+<p>As the frontend file of each service declare <code>InTree=dbus</code>, stopping the launcher invoke a <code>66 tree free dbus</code> command. This behavior may change in the future. For now, this reduce the surface of attack and guarantee you to always use a fresh installation of the service.</p>
+<h2 id="example-of-66-dbus-launch-frontend-file-for-66">Example of 66-dbus-launch frontend file for 66</h2>
+<p>The following frontend file can be used to start a 66-dbus-launch daemon, either as root or as a regular user, by setting <code>User=(root)</code> or <code>User=(user)</code> in the example below:</p>
+<pre><code>[Main]
+Type=classic
+Description="Dbus-broker launcher for @U account"
+User=(root)
+Version=0.0.1
+TimeoutStart=3000
+TimeoutStop=3000
+MaxDeath=5
+Notify=3
+
+[Start]
+Execute=(66-dbus-launch -d3 -v${Verbosity})
+
+[Environment]
+Verbosity=!3
+</code></pre>
+<p>By default, the frontend file can be installed at <code>/usr/share&#47;66&#47;service</code> (for root) and <code>/usr/share&#47;66&#47;service&#47;user</code> (for regular users).</p>
+<h2 id="build-requirements">Build requirements</h2>
+<ul>
+<li><p>The <code>--enable-dbus=</code> option is required at compile time, with either <code>basu</code> or <code>elogind</code> as the provider of <code>sd_bus</code> functions. The use of the <code>sd_bus</code> library may change at any time without warning.</p></li>
+<li><p>For the runtime, the system must have <a href="https://github.com/bus1/dbus-broker">dbus-broker</a> installed for <em>66-dbus-launch</em> to function properly.</p></li>
+</ul>
+<h2 id="caveats">Caveats</h2>
+<p><a href="https://github.com/bus1/dbus-broker">dbus-broker</a>&#8217;s policy API isn&#8217;t yet stable, allowing broad access for now.
+Currently, <em>66-dbus-launch</em> doesn&#8217;t handle configuration files for D-Bus (e.g., <code>&#47;usr&#47;share&#47;dbus-1&#47;{system,session}.conf</code>).</p>
+</body>
+</html>

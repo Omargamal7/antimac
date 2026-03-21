@@ -1,0 +1,3 @@
+elevated-privileges 2755 root/mail [usr/bin/mail-lock]
+elevated-privileges 2755 root/mail [usr/bin/mail-touchlock]
+elevated-privileges 2755 root/mail [usr/bin/mail-unlock]

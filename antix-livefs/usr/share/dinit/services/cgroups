@@ -1,0 +1,4 @@
+type = scripted
+command = /bin/sh /etc/dinit.d/scripts/cgroups.sh
+restart = false
+depends-on = pseudofs

@@ -1,0 +1,14 @@
+#!/usr/bin/execlineb -P
+
+envfile /etc/s6-rc/config/dbus.conf
+importas -sCuD "n3 s2000000 T" DIRECTIVES DIRECTIVES
+
+backtick -n UID { id -u }
+importas -S UID
+
+ifelse { test -w /var/tmp } {
+        foreground { mkdir -p /var/tmp/log/${UID}/dbus }
+	exec -c s6-log -d3 -b -- ${DIRECTIVES} /var/tmp/log/${UID}/dbus
+}
+foreground { mkdir -p /tmp/log/${UID}/dbus }
+exec -c s6-log -d3 -b -- ${DIRECTIVES} /tmp/log/${UID}/dbus

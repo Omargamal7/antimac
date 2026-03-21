@@ -1,0 +1,2 @@
+# upstream only has HTML documents(in s6-doc package) for every binary
+no-manual-page

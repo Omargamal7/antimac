@@ -1,0 +1,39 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Activate encrypted devices"
+User = ( root )
+Depends = ( udevd devices-dmraid devices-lvm devices-mdraid )
+StdOut = s6log:%%livedir%%/log/devices-crypttab
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp devices-crypttab -1 /dev/console decrypt volumes }
+    ifelse { blkid -c /dev/null --match-token=TYPE="crypto_LUKS" }
+
+    {
+    ifelse { execl-toc -X -e ${ScriptConf} }
+        { if -nt {
+            if { execl-cmdline -s { 66-olexec awk -f ${ScriptFile} ${ScriptConf} } }
+            foreground {
+
+            if { blkid --match-token=TYPE="LVM2_member" }
+            if { 66-which -q vgchange }
+            if { 66-yeller -cdp devices-crypttab -1 /dev/console Activating LVM devices for dm-crypt... }
+            if -nt {
+
+                vgchange --sysinit -a ay
+            }
+            66-yeller -cdp devices-crypttab -1 /dev/console unable to activate LVM devices
+        }
+    }
+    66-yeller -fcdp devices-crypttab -1 /dev/console crashed! }
+    if { 66-yeller -cdp device-crypttab -1 /dev/console no ${ScriptConf} available, check your installation and configuration! } exit 0 }
+
+    66-yeller -cdp device-crypttab -1 /dev/console no encrypted volumes available!
+)
+
+[Environment]
+ScriptFile=!%%scripts%%/crypt.awk
+ScriptConf=!/etc/crypttab

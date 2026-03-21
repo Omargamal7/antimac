@@ -1,0 +1,9 @@
+interest-noawait /usr/sbin
+interest-noawait /usr/bin
+interest-noawait /etc/init.d
+interest-noawait /lib/systemd/system
+# Duplicate trigger interest according to DEP17-M12, keep
+# until forky is released. see #1043419
+interest-noawait /usr/lib/systemd/system
+interest-noawait /sbin
+interest-noawait /bin

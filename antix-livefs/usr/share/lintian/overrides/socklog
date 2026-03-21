@@ -1,0 +1,2 @@
+# False positive
+hardening-no-fortify-functions [usr/*bin/*]

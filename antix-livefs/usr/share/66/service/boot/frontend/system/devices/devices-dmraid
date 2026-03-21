@@ -1,0 +1,19 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Active dmraid devices"
+User = ( root )
+Depends = ( udevd )
+StdOut = s6log:%%livedir%%/log/dmraid
+
+[Start]
+Execute =
+(
+	if { 66-yeller -cdp devices-dmraid -1 /dev/console activate raid volumes }
+	ifelse -n { 66-which -q dmraid }
+		{ if { 66-yeller -cdp device-dmraid -1 /dev/console No dmraid program available, check your configuration! } exit 0 }
+		if -nt {
+			dmraid -vv -i -ay
+			}
+	66-yeller -Wcdp devices-dmraid -1 /dev/console crached - no raid volumes found!
+)

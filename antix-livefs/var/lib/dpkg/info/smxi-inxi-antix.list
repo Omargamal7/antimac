@@ -1,0 +1,17 @@
+/.
+/etc
+/etc/inxi.conf
+/usr
+/usr/bin
+/usr/bin/inxi
+/usr/bin/sgfxi
+/usr/bin/smxi
+/usr/bin/svmi
+/usr/share
+/usr/share/doc
+/usr/share/doc/smxi-inxi-antix
+/usr/share/doc/smxi-inxi-antix/changelog.gz
+/usr/share/doc/smxi-inxi-antix/copyright
+/usr/share/man
+/usr/share/man/man1
+/usr/share/man/man1/inxi.1.gz

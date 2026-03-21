@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: upgrade</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="changelog-for-66">Changelog for 66</h1>
+<h1 id="in-0.8.2.1">In 0.8.2.1</h1>
+<h2 id="overview">Overview</h2>
+<p>This is an hot fix release and only concern a build make by the Meson build system. Compilation with the previous build system is not affected.</p>
+<h2 id="bug-fixes">Bug Fixes</h2>
+<ul>
+<li><p><strong>66-shutdownd installation</strong> (d75acc6):</p>
+<p>Fixed the path installation of the <code>66-shutdownd</code> program to <code>&#47;usr&#47;bin</code> instead of <code>&#47;usr&#47;libexec</code>.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.8.2.0">In 0.8.2.0</h1>
+<ul>
+<li>Adaptation to <code>oblibs</code> <code>0.3.4.0</code></li>
+</ul>
+<h2 id="overview-1">Overview</h2>
+<p>This document outlines the changes, new features, and bug fixes introduced in the <em>66</em> service management system from version <code>0.8.1.1</code> to <code>0.8.2.0</code>. It is intended for users and administrators upgrading their systems to version <code>0.8.2.0</code>. Please read these notes carefully to understand the changes.</p>
+<h3 id="new-features">New Features</h3>
+<ul>
+<li><p><strong>Introduction of the <code>[Execute]</code> Section</strong> (30647e8):</p>
+<p>A new <code>[Execute]</code> section has been added to configure tasks executed just before calling <code>exec</code> for a service’s start and stop processes. This section enhances service configuration flexibility.</p>
+<ul>
+<li>New Keys in <code>[Execute]</code> Section:
+<ul>
+<li><code>ChangeDirectory</code> (a6f4bfa): Sets the working directory via <code>chdir()</code>.</li>
+<li><code>Nice</code> (de8aefc): Configures CPU scheduling priority via <code>setpriority()</code>.</li>
+<li><code>UMask</code> (b0e24b4): Sets the file creation mask via <code>umask()</code>.</li>
+<li><code>BlockPrivileges</code> (edfa67d): Restricts privileges via <code>prctl()</code>.</li>
+<li><code>LimitXXX</code> (de8bccd): A family of keys (e.g., <code>LimitNICE</code>, <code>LimitNOFILE</code>, <code>LimitRTPRIO</code>) to configure resource limits via <code>setrlimit()</code>.</li>
+<li><code>CapsBound</code> and <code>CapsAmbient</code> (9e9fd64): Sets bounding set and ambient capabilities without requiring <code>libcap</code> dependencies.</li>
+</ul></li>
+</ul></li>
+<li><p><strong>New <code>Conflict</code> Key in <code>[Main]</code> Section</strong> (731f708):</p>
+<p>A new <code>Conflict</code> key allows the declaration of conflicting services, improving service dependency management.</p></li>
+<li><p><strong>Non-Mandatory Keys in Service Files</strong> (d3fbcee):</p>
+<p>The <code>Description</code>, <code>User</code>, and <code>Version</code> keys are no longer mandatory.</p>
+<p>Defaults are:</p>
+<ul>
+<li><code>Description</code>: Set to &#8220; service&#8221;.</li>
+<li><code>User</code>: Set to the name of the process owner.</li>
+<li><code>Version</code>: Set to the installed version of 66.</li>
+</ul></li>
+<li><p><strong>Tree Creation with Enable Option</strong> (dceeb88):</p>
+<p>Trees can now be enabled at creation time, streamlining tree administration.</p></li>
+<li><p><strong>Meson Build System Adoption</strong> (1f68ff1):</p>
+<p>The project has transitioned to the Meson build system, offering improved cross-platform support and build efficiency. The traditional <code>configure</code> and <code>make</code> system remains functional during the transition. Users are encouraged to test the Meson system and provide feedback. See <a href="https://git.obarun.org/Obarun/66/-/blob/master/INSTALL_MESON.md?ref_type=heads"><code>INSTALL_MESON.md</code></a> for details.</p></li>
+</ul>
+<h3 id="bug-fixes-1">Bug Fixes</h3>
+<ul>
+<li><p><strong>Logger Destination Ownership</strong> (Critical) (6079cf7):</p>
+<p>Fixed a significant bug introduced in version <code>0.8.0.0</code> that incorrectly set the logger destination owner to <code>root</code> for <code>s6log</code> type loggers and removed the <code>runas</code> field during migration. This release fix the ownership of the logger destination during the migration phase but only for service logger of type <code>StdOut=s6log</code>.</p></li>
+<li><p><strong>Service Crash Handling</strong> (c035a94):</p>
+<p>Ensured a fatal error is triggered when a service crashes, improving reliability.</p></li>
+<li><p><strong>Compiler Warnings</strong> (c440c4d, cd9a0c2):</p>
+<ul>
+<li>Removed GCC&#47;Clang warning messages.</li>
+<li>Fixed a compiler warning message.</li>
+</ul></li>
+<li><p><strong>Migration Process Fixes</strong> (96d4b49, 6a3aae7, 9e8d6c9):</p>
+<ul>
+<li>Ignored unknown logger directories during migration.</li>
+<li>Fixed handling of <code>Master</code> resolve file during migration.</li>
+</ul></li>
+<li><p><strong>File Descriptor and Resource Handling</strong> (e028da2, fe7f14e):</p>
+<ul>
+<li>Fixed reading and writing of <code>uint64_t</code> values.</li>
+<li>Fixed log file display with <code>status</code> command for <code>StdOut=file:&#47;path&#47;to&#47;file</code> redirection type.</li>
+</ul></li>
+<li><p><strong>Memory Leak Prevention</strong> (7a36e5a):</p>
+<p>Addressed a memory leak issue.</p></li>
+<li><p><strong>Miscellaneous Fixes</strong> (b8a963b, 2d96003, b138e98, 6ab8a36, a04c574):</p>
+<ul>
+<li>Fixed option name and removed invalid key destination in examples.</li>
+<li>Fixed headers and reorganized display order fields.</li>
+<li>Fixed typo and ensured Linux-specific compatibility.</li>
+<li>Removed useless header file.</li>
+</ul></li>
+</ul>
+<h3 id="enhancements">Enhancements</h3>
+<ul>
+<li><p><strong>CI&#47;CD Enhancements</strong> (1afbec5, 3677099):</p>
+<ul>
+<li>Switched CI&#47;CD pipeline to use the Meson build system.</li>
+</ul></li>
+<li><p><strong>New Boolean Syntax</strong> (67de347):</p>
+<p>A new boolean syntax has been introduced, documented for the <code>BlockPrivileges</code> key.</p></li>
+<li><p><strong>Version Comparison API</strong> (044d4ff):</p>
+<p>Adapted to the new <code>version_compare</code> API interface and added tests for the function.</p></li>
+</ul>
+<h3 id="migration-notes">Migration Notes</h3>
+<ul>
+<li><p><strong>Migration Process for 0.8.2.0</strong> (9e8d6c9):</p>
+<p>A dedicated migration process has been provided to ensure a smooth transition to version <code>0.8.2.0</code>. Please, consider the introduced bug below. The migration try its best to fix this issue by itself but it may impact your migration process as the migration process only handle with service logger of type <code>StdOut=s6log</code>. If after a restart of a service logger you get a down process, ensure that your loggers directories have the correct permissions. The error should be visible at the <code>&#47;run&#47;66&#47;log&#47;0&#47;current</code> uncaught-logs file.</p></li>
+<li><p><strong>Logger Destination Ownership</strong> (6079cf7):</p>
+<p>If you are upgrading from version <code>0.8.0.0</code> or <code>0.8.1.1</code>, verify the ownership of logger destinations for <code>s6log</code> type loggers, as the bug fix may affect existing configurations and upgrade process.</p></li>
+<li><p><strong>Meson Build System</strong> (1f68ff1):</p>
+<p>Users are encouraged to switch to the Meson build system and to consider the old build system as deprecated. The old <code>configure</code> and <code>make</code> system remains supported during the transition. Refer to <code>INSTALL_MESON.md</code> for setup instructions.</p></li>
+</ul>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>For detailed documentation on new keys and features, refer to the <a href="https://web.obarun.org/software/66/latest">documentation</a>.</li>
+</ul>
+<hr/>
+<h1 id="in-0.8.1.1">In 0.8.1.1</h1>
+<h2 id="bug-fixes-2">Bug Fixes</h2>
+<ul>
+<li>Adapt correctly <code>reconfigure</code> command to the new graph API and respect <code>-P</code> option.</li>
+</ul>
+<hr/>
+<h1 id="in-0.8.1.0">In 0.8.1.0</h1>
+<ul>
+<li>Adaptation to <code>oblibs</code> 0.3.3.0</li>
+</ul>
+<h2 id="overview-2">Overview</h2>
+<p>This release of the 66 project includes several bug fixes, new features, and improvements to enhance the functionality and maintainability of the service management system. Below is a summary of the key changes introduced in this release.</p>
+<h2 id="new-features-1">New Features</h2>
+<ul>
+<li>Service Alias Support (a36a4fad): Added a new <code>Provide</code> key to allow defining aliases for service names, improving service management flexibility.</li>
+<li>Environment File Import (4426ab70): Introduced a new <code>ImporFile</code> field in the [Environment] section to support importing environment files.</li>
+<li>Simplified Execute Field Writing (099872e0): Enhanced the <code>Execute</code> field to permit spaces, tabs, carriage returns, and newlines (removed during processing) for custom builds, improving readability and usability.</li>
+<li>Sanitize Resolve Function (c91ff167): Added a new sanitize_resolve function to ensure the validity of resolve files for trees and services for the targeted version.</li>
+<li>Tree Graph Build System (afb18e68): Implemented a new <code>tree_graph_build_system</code> function to improve system graph generation.</li>
+<li>Split Info Walk Functions (a058225c): Separated info_walk into <code>service_info_walk</code> and <code>tree_info_walk</code> for better modularity and clarity.</li>
+<li>Enum and Macro Enhancements (ddc04da2): Split enum definitions and introduced macros to automate enum, string table, and struct generation. This reduces error-prone code, improves readability, and simplifies maintenance. Added an enum test suite.</li>
+</ul>
+<h2 id="bug-fixes-3">Bug Fixes</h2>
+<ul>
+<li>Dependency Cleanup (e2b2c539): Fixed unnecessary entries from the dependency field of the requiredby dependency for the service to remove.</li>
+<li>Empty Field Values (b4be03f2): Fixed handling of empty values for fields like contents, dependencies, requiredby, optional depends, and regex fields for directories, files, and infiles, allowing modules to set empty strings (e.g., when services are commented out).</li>
+<li>Frontend Field in Modules (a9e7ce23): Corrected the setting of the frontend field for services inside modules.</li>
+<li>Frontend Dependencies Preservation (7bc3cab2): Ensured that dependencies declared in the <code>frontend</code> file for a module are always retained.</li>
+<li>Tree Name Respect (2b306df2): Fixed an issue where the previous tree name was not respected for services in a selection when the <code>-t</code> option was not used.</li>
+<li>Scandir Symlink (df68b262): Added support to remake the service scandir symlink, ensuring its presence.</li>
+</ul>
+<h2 id="improvements">Improvements</h2>
+<ul>
+<li><p>Migration Support:</p>
+<ul>
+<li>Continued support for <code>0.7.2.1</code> version migration (1cb94c73).</li>
+<li>Provided migration processes for version <code>0.8.1.0</code> (d2288e73) and <code>hiercopy</code> field changes (958ee60c).</li>
+<li>Ensured snapshots are created in all migration cases (0270ebda).</li>
+</ul></li>
+<li><p>Code Maintenance:</p>
+<ul>
+<li>Renamed <code>hiercopy</code> to <code>copyfrom</code> internally (3411e29f) for consistency.</li>
+<li>Adapted to a new enum interface (cf8359c2) and graph algorithm (33287ebd) with new structures, functions, and macros.</li>
+<li>Made the <code>set_info</code> function public (958a0964) for broader usability.</li>
+<li>Removed redundant <code>graph_remove_deps</code> function (10c83ba7) and moved hash functionality to oblibs (7c491133).</li>
+<li>Cleaned up header files (a83db505) and removed unnecessary parameters (8ea7f830) for cleaner code.</li>
+</ul></li>
+<li><p>Documentation:</p>
+<ul>
+<li>Fixed typos and improved documentation (5f5c8ee9, 89ef88d8).</li>
+<li>Updated the project roadmap (fc97c4e3) to reflect current plans.</li>
+</ul></li>
+<li><p>Miscellaneous</p>
+<ul>
+<li>Minor Changes (4767cdc4, 89ef88d8): Addressed typos and minor code adjustments with no significant user-facing impact.</li>
+</ul></li>
+</ul>
+<h2 id="notes-1">Notes</h2>
+<ul>
+<li><p>This release ensures that users upgrading from previous versions will have an operational system without manual intervention. Migration processes for <code>hiercopy</code> internal field changes and version <code>0.8.1.0</code> are handled automatically.</p></li>
+<li><p>For detailed information on new fields and functions, refer to the updated documentation.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.8.0.2">In 0.8.0.2</h1>
+<ul>
+<li>Adaptation to <code>oblibs</code> 0.3.2.1</li>
+</ul>
+<h2 id="bug-fixes-4">Bug Fixes</h2>
+<ul>
+<li>Different documentation typo and bugs fix.</li>
+<li>Restart command: explicitly call stop and start command separately to avoid notification readiness issues. Retrieve the exact same services states for interdependences services after a restart command.</li>
+<li>Frontend parsing: handle all possible cases on &#8216;()&#8217; format.</li>
+<li>reconfigure command: respect <code>-p</code> option.</li>
+<li>66-execute: respect exclamation mark to avoid polluting the environment variable.</li>
+<li>status command: avoid to crash reading status of service just after using a <code>66 remove -P</code> command.</li>
+<li>scandir command: fix stack overflow at <code>create</code> command.</li>
+</ul>
+<hr/>
+<h1 id="in-0.8.0.1">In 0.8.0.1</h1>
+<h2 id="bug-fixes-5">Bug Fixes</h2>
+<ul>
+<li>Always update state of <code>fdholder</code> and <code>oneshotd</code> daemon even in case of crash.</li>
+<li>Avoid badly formatted environment variables coming from EFI.</li>
+<li>Clean the algorithm of the shutdown procedure to avoid killing <code>fdholder</code> and <code>oneshotd</code> before the very end of the process.</li>
+<li>Fix <code>connection refused</code> error at fdholder connection.</li>
+<li>Prevent extra characters during the parse process of the <code>init.conf</code>.</li>
+</ul>
+<hr/>
+<h1 id="in-0.8.0.0">In 0.8.0.0</h1>
+<ul>
+<li>Adaptation to <code>oblibs</code> 0.3.1.0</li>
+</ul>
+<h2 id="synthesized-release-notes">Synthesized Release Notes</h2>
+<ul>
+<li><p>Nearing the End of Breaking Changes: This release marks a major step towards the end of planned breaking changes for version 66. Version <code>0.7.0.0</code> introduced stability in the directory hierarchy of the 66 ecosystem, and version <code>0.8.0.0</code> solidified the stability of frontend file keys. While the implementation of events may happen in version <code>0.9.0.0</code>, this can potentially occur without breaking existing 66 components(see <a href="readme.html#roadmap">roadmap</a>).</p></li>
+<li><p>Introduction of Snapshot Command: A new <a href="66-snapshot.html">snapshot</a> command has been added, offering a comprehensive backup solution for the 66 ecosystem. This feature guarantees that you can restore the exact state of the ecosystem before any changes. It also enables the replication of ecosystems across different hosts to maintain consistent states and behaviors. Importantly, using snapshots <strong>does not alter the state of running services</strong>.</p></li>
+<li><p>Transparent Upgrade Process: The release includes a new <a href="66-upgrade-process.html">upgrade process</a> that is fully transparent to the user. Whether a migration involves changes to the resolve file or other components, 66 automatically detects version upgrades and makes the necessary adjustments, ensuring continuity with the new version. This process <strong>does not affect the state of running services</strong>, and an automatic snapshot is created during the migration to facilitate easy recovery if needed.</p></li>
+</ul>
+<h2 id="new-features-2">New features</h2>
+<ul>
+<li>New keys for <a href="66-standard-io-redirection.html">Input&#47;Output redirection</a> (<code>StdIn</code>, <code>StdOut</code>, <code>StdErr</code>) have been added to control the behavior of standard input, output, and error, respectively.</li>
+<li>A new <a href="66-snapshot.html"><code>66 snapshot</code></a> command allows users to create, remove, list, and restore snapshots, providing enhanced backup and reliability management.</li>
+<li>An <a href="66-upgrade-process.html">automatic migration process</a> is now available, ensuring seamless upgrades. This process is completely transparent to the user and is triggered by any 66 command following an upgrade of the 66 program.</li>
+</ul>
+<h2 id="frontend-files">Frontend files</h2>
+<ul>
+<li>Key Name Formatting Changes: The <code>@</code> prefix in key names has been removed, and key names now start with a capital letter. Additionally, the <code>-</code> character has been removed from composite names and also replaced by a capital letter. 66 will automatically migrate the frontend files present on your system, but this will only apply to active services(i.e., those listed when running <code>66 tree status</code> with the field <code>contents</code>). You may need to manually translate your own frontend files.</li>
+</ul>
+<p>To help with this, use the script below by running:
+<code>.&#47;migration_service.sh &#47;path&#47;to&#47;my&#47;&#60;FrontendFile&#62;</code></p>
+<pre><code>#!&#47;bin&#47;sh
+
+service="${1}"
+
+sed -e "s:\[main\]:\[Main\]:g" \
+    -e "s:@type:Type:g" \
+    -e "s:@description:Description:g" \
+    -e "s:@version:Version:g" \
+    -e "s:@depends:Depends:g" \
+    -e "s:@requiredby:RequiredBy:g" \
+    -e "s:@optsdepends:OptsDepends:g" \
+    -e "s:@options:Options:g" \
+    -e "s:@flags:Flags:g" \
+    -e "s:@notify:Notify:g" \
+    -e "s:@user:User:g" \
+    -e "s:@timeout-kill:TimeoutStart:g" \
+    -e "s:@timeout-up:TimeoutStart:g" \
+    -e "s:@timeout-finish:TimeoutStop:g" \
+    -e "s:@timeout-down:TimeoutStop:g" \
+    -e "s:@maxdeath:MaxDeath:g" \
+    -e "s:@down-signal:DownSignal:g" \
+    -e "s:@hiercopy:CopyFrom:g" \
+    -e "s:@intree:InTree:g" \
+    -e "s:\[start\]:\[Start\]:g" \
+    -e "s:@build:Build:g" \
+    -e "s:@runas:RunAs:g" \
+    -e "s:@execute:Execute:g" \
+    -e "s:\[stop\]:\[Stop\]:g" \
+    -e "s:\[logger\]:\[Logger\]:g" \
+    -e "s:@destination:Destination:g" \
+    -e "s:@backup:Backup:g" \
+    -e "s:@maxsize:MaxSize:g" \
+    -e "s:@timestamp:Timestamp:g" \
+    -e "s:\[environment\]:\[Environment\]:g" \
+    -e "s:\[regex\]:\[Regex\]:g" \
+    -e "s:@configure:Configure:g" \
+    -e "s:@directories:Directories:g" \
+    -e "s:@files:Files:g" \
+    -e "s:@infiles:InFiles:g" \
+    -i ${service}
+</code></pre>
+<p>See <a href="66-rosetta.html##keyword-table-convertion">Rosetta Stone</a> for the list of keyword name changes.</p>
+<h3 id="behavior-enhancements">Behavior enhancements</h3>
+<ul>
+<li>The <a href="66-status.html"><code>66 status</code></a> command now provides an overview of all system services, organized by tree, when no specific service is specified.</li>
+<li>The <a href="66-identifier.html">Identifier</a> feature has been expanded: in addition to <code>@I</code>, 66 now recognizes seven new identifiers to facilitate the creation of more generic frontend files.</li>
+<li>Module configuration: Two more news variables are exported at execution time of the <code>configure</code> script called <code>MOD_ENVIRONMENT_ADMDIR=/etc/66/environment</code> and <code>MOD_ENVIRONMENT_USERDIR=.66/environment</code>.</li>
+<li>The <a href="66-remove.html"><code>66 remove</code></a> command is designed to always succeed, ensuring that no service becomes impossible to remove.</li>
+</ul>
+<h3 id="deprecated-and-obsolete-keywords">Deprecated and Obsolete keywords</h3>
+<p>The deprecated key <code>@shebang</code> has been completely removed and is no longer recognized by the parser.</p>
+<p>The <code>Destination</code> key (previously <code>@destination</code>) in the <code>[Logger]</code> section is now deprecated and replaced by new <code>StdIn</code>, <code>StdOut</code>, and <code>StdErr</code> keywords. For compatibility, the parser will automatically handle the conversion.</p>
+<p>Removal of Deprecated Options:</p>
+<ul>
+<li>For the <code>disable</code> command: <code>-F</code>, <code>-R</code> options are removed.</li>
+<li>For the <code>parse</code> command: <code>-F</code>, -C<code>,</code>-c<code>,</code>-m` options are removed.</li>
+<li>For the <code>stop</code> command: <code>-X</code>, <code>-K</code> options are removed.</li>
+</ul>
+<h2 id="bug-fixes-6">Bug Fixes</h2>
+<ul>
+<li>Command line-defined timeouts now take precedence.</li>
+<li>Do not create finish script if section [Stop] doesn&#8217;t exist.</li>
+<li>Proper handling of errno during signal reception.</li>
+<li>Fixed the resolution of the source frontend file in a module&#8217;s resolve file for a service.</li>
+<li>Prevented crashes when encountering an empty field in a seed file.</li>
+<li>Corrected parsing errors when an unknown key is found at the end of the frontend file.</li>
+<li>The <code>66 tree status</code> command now only displays services associated with a specific tree.</li>
+<li>Fixed behavior of the <code>-l</code> option at execl-envfile program.</li>
+<li>Always deal with logger at disable time.</li>
+</ul>
+<hr/>
+<h1 id="in-0.7.2.1">In 0.7.2.1</h1>
+<ul>
+<li><p>Bugs fix:</p>
+<ul>
+<li>Respect the VERBOSITY during the whole boot process.</li>
+<li>Fix importation of the kernel command line environment variables.</li>
+<li>Fix order of precedence for the build of the environment variable used during the whole boot process.</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.7.2.0">In 0.7.2.0</h1>
+<ul>
+<li><p>Adapt to <code>oblibs</code> 0.3.0.1`</p></li>
+<li><p>Bugs fix:</p>
+<ul>
+<li>Logger destination directory for a oneshot or logger destination directory for a service inside a module are now properly deleted at <code>remove</code> subcommand invocation.</li>
+<li>Allow empty modules.</li>
+<li>Respect the associated tree of a service at <code>enable</code> process time if it were already enabled.</li>
+</ul></li>
+<li><p>Behavior changes:</p>
+<ul>
+<li>The <code>-s</code> and <code>-c</code> options to the <code>configure</code> subcommand are now mutually exclusive.</li>
+<li>Service inside module cannot be reconfigured alone. The whole module must be reconfigured instead.</li>
+<li>To be consistent between subcommand, the <code>scandir reload</code> subcommand was renamed to <code>scandir reconfigure</code>. The old subcommand invocation still work.</li>
+<li>The configuration directory used to build a module is not kept anymore after a parse process. A temporary is used instead.</li>
+</ul></li>
+<li><p>New features:</p>
+<ul>
+<li>The contains of the %%environment<em>adm%% or %%environment</em>user%% for root and regular user respectively is imported by default at <code>scandir start</code> command invocation.
+Although this can be changed at compile time by passing the <code>--with-sysadmin-environment=DIR</code>, <code>--with-user-environment=DIR</code> for root and regular user respectively</li>
+</ul></li>
+<li><p>Enhancement:</p>
+<ul>
+<li>Avoid to crash at <code>unsupervise</code> process with a corrupted service. This allows to avoid to be stuck at <code>remove</code> command invocation for a corrupted service or a corrupted state service within module.</li>
+<li>Avoid to crash at <code>stop</code> process if the service is already unsupervised.</li>
+<li>Earn rapidity at <code>unsupervise</code> process by sending only one signal for all services to the <code>fdholder</code> service.</li>
+<li>Use temporary directory for the creation of a the module configuration directories.</li>
+<li>Complete review of the <em>struct enum</em> ecosystem and passing from an O(n*m) algorithm to O(1). This also serves as preparation for future releases that will include new sections and key fields.</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.7.1.1">In 0.7.1.1</h1>
+<ul>
+<li><p>Bugs fix:</p>
+<ul>
+<li>corrected environment computation and string cleanup from the frontend key.</li>
+<li>fixed the value of the intree key.</li>
+<li>ensured sufficient space for renaming interdependencies.</li>
+<li>fixed the use of parse_list functions, even in the case of multiple lines.</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.7.1.0">In 0.7.1.0</h1>
+<ul>
+<li><p>Adapt to <code>oblibs</code> 0.3.0.0</p></li>
+<li><p>Bugs fix:</p>
+<ul>
+<li>make exclusive <code>-s</code> and <code>-c</code> options at <em>configure</em> command.</li>
+<li>respect <code>-s</code> option for edition at <em>configure</em> command.</li>
+<li>provide <em>wall</em> command documentation. This command was added from 0.7.0.0 tag but the documentation wasn&#8217;t.</li>
+<li>fix closing string at parse time.</li>
+<li>typo fix.</li>
+</ul></li>
+<li><p>Complete review of the <em>execl-envfile</em> program. Adapting it to the new lexer and environ familly functions make it faster and easier to debug and use less HEAP memory.</p></li>
+<li><p>Remove deprecated <em>env</em> key of the <code>@options</code> field.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.7.0.2">In 0.7.0.2</h1>
+<ul>
+<li><p>Hot fix:</p>
+<ul>
+<li>Always build the graph with the service associated to a module.</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.7.0.1">In 0.7.0.1</h1>
+<ul>
+<li><p>Bug fix:</p>
+<ul>
+<li>Fix buffer overflow at tree administration</li>
+<li>Typo fix</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.7.0.0">In 0.7.0.0</h1>
+<ul>
+<li>Adaptation to <code>skalibs</code> 2.14.1.0</li>
+<li>Adaptation to <code>execline</code> 2.9.4.0</li>
+<li>Adaptation to <code>s6</code> 2.12.0.3</li>
+<li>Adaptation to <code>oblibs</code> 0.2.1.0</li>
+</ul>
+<p>This release marks a significant rewrite of <code>66</code>, introducing a new UI and serving as a comprehensive service supervision suite and independent service manager.</p>
+<p>Primarily, expect no compatibility with previous versions due to:</p>
+<ul>
+<li>The removal of <code>s6-rc</code> support. <code>66</code> is now a complete independent service management based on s6 for init and service supervision.</li>
+<li>A complete overhaul of the folder structure for storage and runtime directories, simplifying it considerably.</li>
+<li>An overhaul of tree behavior. Trees now function as services, and a complete tree dependency graph has been implemented.</li>
+<li>Services can now depend on each other regardless of whether the service is declared on the same tree or the declaration order of the tree. For instance, if service <code>Sb</code> depends on service <code>Sa</code> and <code>Sa</code> is within <code>TreeB</code> while service <code>Sb</code> is within <code>TreeA</code>, and <code>TreeB</code> depends on <code>TreeA</code>, launching <code>TreeA</code> will start <code>Sa</code> even if <code>TreeB</code> isn&#8217;t started first. When <code>TreeB</code> is executed, <code>Sb</code> will find <code>Sa</code> already started and commence directly.</li>
+</ul>
+<p>For UI changes, frontend file convertion and clean of the <code>66</code> architecture, a <a href="66-rosetta.html">Rosetta stone</a> is available.</p>
+<h2 id="frontend-files-1">Frontend Files</h2>
+<h3 id="new-fields-have-been-added">New fields have been added:</h3>
+<ul>
+<li><code>@requiredby</code>: Specifies which service is required-by another service. For example, if service Sa declares service Sb as required-by Sa&#8217;s dependency, Sb won&#8217;t start until Sa does. This allows building complex graph structures without modifying every frontend file of each service.</li>
+<li><code>@earlier</code>: Declares any service as an earlier one, starting as soon as the scandir is running, similar to tty12. This field is mandatory for services intended to start earlier.</li>
+<li><code>@intree</code>: Specifies the tree to use at enable&#47;start time.</li>
+</ul>
+<p>The following field has been removed:</p>
+<ul>
+<li><code>@extdepends</code>: No longer necessary as services can depend on any service regardless of the tree used.</li>
+</ul>
+<p>Frontend files for regular account <strong>must be</strong> now localized at <code>/usr/share/66/service&#47;user</code>, <code>/etc/66/service&#47;user</code> or <code>${HOME}&#47;.66/service</code>.</p>
+<h3 id="behavioral-changes">Behavioral changes:</h3>
+<ul>
+<li><p><code>@options</code>:
+<ul>
+<li><code>pipeline</code>: This option was removed. It was only present for <code>s6-rc</code>.</li>
+<li><code>env</code>: This option was removed. The simple declaration of the [environment] section is sufficient to activate the options.</li>
+</ul></p></li>
+<li><p><code>@shebang</code>: Deprecated but kept for compatibility reasons. Declare your shebang directly within the <code>@execute</code> field. Refers to <a href="66-frontend.html#a-word-about-the-@execute-key">frontend</a> documentation for futhers information.</p></li>
+<li><p><code>@build</code>: Not mandatory anymore, as it will be declared &#8216;auto&#8217; by default.</p></li>
+<li><p><code>@addservices</code>: This options was removed from the <code>[regex]</code> section.</p></li>
+</ul>
+<p>The <code>classic</code> type now accepts the fields <code>@depends</code> and <code>@requiredby</code>. The <code>classic</code> type replaces the <code>longrun</code> type.</p>
+<p>Logger destinations for <code>oneshot</code> type services can now be declared on a <strong>tmpfs</strong> directory, particularly useful during boot time.</p>
+<p>Services can be started without being enabled first. In this case, the service won&#8217;t start on the next reboot.</p>
+<p>The <code>bundle</code> and <code>longrun</code> types have been removed, replaced by <code>classic</code>, <code>oneshot</code>, and <code>module</code> types. For compatibility reasons, if your old <code>frontend</code> file declares the service as a <code>longrun</code> type, the parser will convert it to a <code>classic</code> type automatically. No automatic conversion is made for services of type <code>bundle</code>.</p>
+<h2 id="environment-section">[Environment] Section</h2>
+<p>This section now allows reusing the same variable from the actual environment. For instance:</p>
+<pre><code>socket_name=!&#47;run&#47;dbus&#47;system_bus_socket
+cmd_args=!--system --address=unix:path=${socket_name}
+PATH=&#47;usr&#47;local&#47;bin:${PATH}
+</code></pre>
+<p>The order of key-value pair declaration <strong>doesn&#8217;t matter</strong>:</p>
+<pre><code>cmd_args=!--system --address=unix:path=${socket_name}
+socket_name=!&#47;run&#47;dbus&#47;system_bus_socket
+</code></pre>
+<p>Variable name <strong>must be</strong> between <code>${}</code> to get it value. For instance, <code>$var</code> is not replaced by its value.</p>
+<p>Double-quote within <em>value</em> <strong>must be</strong> escaped with backslash <code>\</code>. Refers to the updated documentation of <a href="execl-envfile.html">execl-envfile</a> for futhers information.</p>
+<h2 id="module-changes">Module Changes</h2>
+<p>The <code>module</code> directory structure has been completely redesigned for better intuitiveness and comprehensiveness. Expect no compatibility with the previous version; a rewrite is required if you use <code>module</code> on your system.</p>
+<p>A <code>module</code> cannot contain another <code>module</code>; instead, you can declare it as a dependency via <code>@depends</code> or <code>@requiredby</code>. These can also be specified through the <code>configure</code> <code>module</code> script.</p>
+<p>Refer to the specific <a href="66-module-creation.html">module</a> page for furthers information.</p>
+<h2 id="trees">Trees</h2>
+<p>Trees now react as services regarding graph dependencies. You can declare a <code>tree</code> depending on or required-by others.</p>
+<p>A default named <code>global</code> <code>tree</code> is provided. Services without their localization defined or users not specifying a <code>tree</code> to use will be defined within that <code>tree</code>.</p>
+<p>A <code>seed</code> file can be provided for automatic <code>tree</code> configuration at creation time. For example, it defines <code>depends&#47;requiredby</code> dependencies of the <code>tree</code>.</p>
+<p>If a service declares a non-existing <code>tree</code>, the <code>tree</code> will be created automatically with a default configuration, but without any <code>depends&#47;requiredby</code> dependencies. To configure the <code>tree</code> with specific requirements at creation time, provide and install <code>seed</code> file with your service.</p>
+<h2 id="configure-script">Configure Script</h2>
+<p>Removed flags:
+- <code>--with-system-module=DIR</code>
+- <code>--with-sysadmin-module=DIR</code>
+- <code>--with-user-module=DIR</code></p>
+<p>Added flags:
+- <code>--with-default-tree-name=NAME</code>
+- <code>--max-path-size=KB</code>
+- <code>--max-service-size=KB</code>
+- <code>--max-tree-name-size=KB</code>
+- <code>--with-system-seed=DIR</code>
+- <code>--with-sysadmin-seed=DIR</code>
+- <code>--with-user-seed=DIR</code></p>
+<p>The slashpackage convention was removed.</p>
+<h2 id="skeleton-files">Skeleton files</h2>
+<p>The skeleton files <code>shudown</code>, <code>reboot</code>, <code>poweroff</code> and <code>halt</code> are removed and replaced by <code>66 reboot</code>, <code>66 poweroff</code>, <code>66 halt</code> command respectively.</p>
+<h2 id="code-changes">Code Changes</h2>
+<p>The code has been largely rewritten and simplified, offering more features with approximately the same number of code lines. Additionally, the code now uses less <code>HEAP</code> memory, although this optimization is ongoing.</p>
+<p>The parser was completely rewritten and heavily optimized, significantly reducing the time to parse a service(by three times).</p>
+<p>The start process was rewritten due to the removal of <code>s6-rc</code>. <code>Oblibs</code> now provide general functions to build any <em>Acyclic graph</em>.</p>
+<p>The code for the module part was revamped and greatly simplified.</p>
+<hr/>
+<h1 id="in-0.6.2.0">In 0.6.2.0</h1>
+<ul>
+<li><p><strong>WARNING</strong>: <code>66-update</code> is no longer compatible with 66 version under 0.5.0.0.</p></li>
+<li><p>Adapt to skalibs 2.11.0.0</p></li>
+<li><p>Adapt to execline 2.8.1.0</p></li>
+<li><p>Adapt to s6 2.11.0.0</p></li>
+<li><p>Adapt to s6-rc 0.5.2.3</p></li>
+<li><p>Adapt to oblibs 0.1.4.0</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.6.1.3">In 0.6.1.3</h1>
+<ul>
+<li><p>Adapt to skalibs 2.10.0.3.</p></li>
+<li><p>Adapt to execline 2.8.0.1.</p></li>
+<li><p>Adapt to s6 2.10.0.3.</p></li>
+<li><p>Adapt to s6-rc 0.5.2.2.</p></li>
+<li><p>Bugs Fix:</p>
+<ul>
+<li>66-boot: fix call of 66-scandir -c option.</li>
+<li>configure script: fix installation of skel&#47;init.conf file.</li>
+</ul></li>
+<li><p>Configure script: remove the slashpackage convention.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.6.1.2">In 0.6.1.2</h1>
+<ul>
+<li>Bugs fix:
+<ul>
+<li>Avoid segmentation fault if 66-init is used without arguments. Thanks Timothy Murphy.</li>
+<li>Fix the build of man pages.</li>
+<li>Documentation fix.</li>
+</ul></li>
+<li>66-env:
+<ul>
+<li>Bug fix:
+<ul>
+<li>Create the user configuration file at <strong>-r</strong> option if it doesn&#8217;t exist yet.</li>
+<li>Fix <strong>-c</strong> option.</li>
+</ul></li>
+</ul></li>
+<li>66-inservice
+<ul>
+<li>Do not output warn message from upstream configuration file at contents display.</li>
+<li>Bug fix:
+<ul>
+<li>Respect the number passed by <strong>-p</strong> options.</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.6.1.1">In 0.6.1.1</h1>
+<ul>
+<li>Bugs fix:
+<ul>
+<li>remove the exclamation mark from variable at module parse time before passing it to the script configure</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.6.1.0">In 0.6.1.0</h1>
+<ul>
+<li>Bugs fix:
+<ul>
+<li>Avoid to crash if no tree is enabled yet.</li>
+<li>Documentation fix.</li>
+<li>Handle correctly the return value of s6<em>rc</em>servicedir_manage.</li>
+<li>Fix <code>66-all</code> command at s6-svscan control file of a regular user scandir creation.</li>
+<li>Handle correctly a same(or commented) <code>key=value</code> pair on multiple service configuration file.</li>
+</ul></li>
+<li><em>execl-envfile</em>:
+<ul>
+<li>new option:
+<ul>
+<li><strong>-v</strong>: allows verbosity changes.</li>
+</ul></li>
+<li>Bug fix:
+<ul>
+<li>Handle correctly a same(or commented) <code>key=value</code> pair on multiple service configuration file.</li>
+</ul></li>
+</ul></li>
+<li><em>66-env</em>:
+<ul>
+<li>new option:
+<ul>
+<li><strong>-e</strong> <em>editor</em>: Allows to choose the editor to use for the edition of the configuration file.</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.6.0.1">In 0.6.0.1</h1>
+<ul>
+<li>Bugs fix:
+<ul>
+<li>Respect variables value from kernel command line.</li>
+<li>Fix release number at 66-upgrade.html file.</li>
+<li>Fix string lenght at regex replacement time.</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.6.0.0">In 0.6.0.0</h1>
+<ul>
+<li><p>Adapt to skalibs 2.10.0.0</p></li>
+<li><p>Adapt to execline 2.7.0.0</p></li>
+<li><p>Adapt to s6 2.10.0.0</p></li>
+<li><p>Adapt to s6-rc 0.5.2.1</p></li>
+<li><p>Adapt to oblibs 0.1.2.0</p></li>
+<li><p>Bugs fix:</p>
+<ul>
+<li>66-tee -c: check if backup is empty.</li>
+<li>parse_module: avoid infinite loop at dependencies resolution on sub-module.</li>
+<li>66-disable: do not crash if the service is not enabled at state check.</li>
+<li>execl-envfile: fix parse process for a configuration file.</li>
+</ul></li>
+<li><p><em>66-disable</em>:</p>
+<ul>
+<li>new options:
+<ul>
+<li><strong>-R</strong>: removes configuration files and logger directory of the service. So, no components of the service is kept.</li>
+</ul></li>
+</ul></li>
+<li><p><em>66-env</em>:</p>
+<ul>
+<li><strong>-r</strong> can be passed multiple time</li>
+</ul></li>
+<li><p><em>66-tree</em>:</p>
+<ul>
+<li><strong>-U</strong> option is now deprecated and passed to <em>66-all</em>.</li>
+</ul></li>
+<li><p><em>66-all</em>:</p>
+<ul>
+<li>new argument:
+<ul>
+<li><em>unsupervise</em>: unsupervise all services of a tree. This argument replace the <code>66-tree -U</code> command.</li>
+</ul></li>
+</ul></li>
+<li><p><em>66-inservice</em>:</p>
+<ul>
+<li>It displays the absolute path of the file at <code>Environment file</code> field.</li>
+<li>The <strong>-c</strong> option is now no longer available.</li>
+</ul></li>
+<li><p><em>66-update</em>:</p>
+<ul>
+<li>the <strong>-c</strong> option is now no longer available.</li>
+</ul></li>
+<li><p><em>66-env</em>:</p>
+<ul>
+<li>the <strong>-d</strong> option is now no longer available.</li>
+</ul></li>
+<li><p><em>66-enable</em>:</p>
+<ul>
+<li>the -c|m|C|i is now deprecated. The configuration file is handled automatically (see <a href="66-service-configuration-file.html">Service configuration file</a> for further information.)</li>
+<li><strong>-I</strong>: new options to avoid the copy of a modified configuration file.</li>
+</ul></li>
+<li><p><em>66-parser</em>:</p>
+<ul>
+<li>deprecated the -c|m|C to follow changes about the <em>66-enable</em> tool.</li>
+</ul></li>
+<li><p><em>66-scandir</em>: the <strong><em>interface change</em></strong>.</p>
+<ul>
+<li>The <em>owner</em> argument is now an option(<strong>-o</strong>) and the arguments are <em>create|remove</em>.</li>
+<li>The <em>up</em> option is passed to <em>66-scanctl</em>.</li>
+<li>The <strong>-e</strong> option is passed to <em>66-scanctl</em>.</li>
+<li>New options:
+<ul>
+<li><strong>-B</strong>: specifies to create a scandir for a container. In this case, a <code>&#47;run&#47;66&#47;scandir&#47;container&#47;halt</code> file is created(see <a href="66-66-boot.html">66-boot</a> for further information).</li>
+<li><strong>-c</strong>: do not set the <code>catch-all</code> logger.</li>
+</ul></li>
+</ul></li>
+<li><p><em>skeleton file</em>: (see <a href="66-66-boot.html">66-boot</a> for further information).</p>
+<ul>
+<li><em>init.conf</em>:
+<ul>
+<li>New variables:
+<ul>
+<li><em>CONTAINER</em>: specifies to boot inside a container.</li>
+<li><em>RCINIT_CONTAINER</em>: absolute path to the init file used to boot inside a container.</li>
+<li><em>CATCHLOG</em>: create or not the <code>catch-all</code> logger.</li>
+</ul></li>
+<li>Variable removed:
+<ul>
+<li><em>ISHELL</em>.</li>
+</ul></li>
+</ul></li>
+<li><em>rc.init.container</em>: file used in case of boot inside a container.</li>
+<li><em>ishell</em>: not longer available.</li>
+</ul></li>
+<li><p><em>66-scanctl</em>: the <strong><em>interface change</em></strong>.</p>
+<ul>
+<li>arguments signal are now: <em>start|stop|reload|nuke|zombies</em>.</li>
+<li>New options: this two options are only valid for a <em>start</em> signal.
+<ul>
+<li><strong>-d</strong>: file descriptor to use for readiness notification.</li>
+<li><strong>-t</strong>: perform a scan every rescan milliseconds.</li>
+</ul></li>
+</ul></li>
+<li><p><em>66-boot</em>:</p>
+<ul>
+<li>New option:
+<ul>
+<li><strong>-z</strong>: to use color</li>
+</ul></li>
+</ul></li>
+<li><p><em>66-shutdownd</em>:</p>
+<ul>
+<li>swicth <strong>-B</strong> and <strong>-C</strong> (which is renamed to -c) to be consistent with the <em>66-scandir</em> tool.</li>
+</ul></li>
+<li><p>frontend:</p>
+<ul>
+<li><strong>nosetsid</strong> value at <code>@flags</code> key is deprecated and have no effects if it defined.</li>
+<li>new format for the <code>@options</code> key:
+<ul>
+<li><strong>log</strong>: the logger is automatically created even if the value <strong>log</strong> is not set. If you don&#8217;t want a logger at all prefix the value <em>log</em> with an exclamation mark as it: <code>!log</code>.</li>
+<li><strong>env</strong>: if the environment section is defined, the <strong>env</strong> value is not mandatory. Also, the old behavior is always valid: if the <strong>env</strong> value is set, the <code>[envrionment]</code> must be set.</li>
+</ul></li>
+</ul></li>
+<li><p>html documentation: documentation is now versionned.</p></li>
+<li><p>New tool:</p>
+<ul>
+<li><em>66-nuke</em>: this tool is a strict copy of the <a href="https://skarnet.org/software/s6-linux-init/s6-linux-init-nuke.html">s6-linux-init-nuke</a> tool.</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.5.1.0">In 0.5.1.0</h1>
+<ul>
+<li>Bugs fix:
+<ul>
+<li>Avoid to parse twice a service coming from a service of type module.</li>
+</ul></li>
+<li><em>66-disable</em>:
+new options:
+    - <strong>-F</strong>: forces the <em>service</em> to be disabled even if it&#8217;s already marked disabled. See the <code>66-disable</code> documentation page for further information.</li>
+</ul>
+<hr/>
+<h1 id="in-0.5.0.1">In 0.5.0.1</h1>
+<ul>
+<li>Bugs fix:
+<ul>
+<li>Handle old service format where the version directory doesn&#8217;t exist. This is last release handling this case.</li>
+<li><em>66-tree</em>:
+Remove the live tree state directory in any case even if the directory is empty.</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.5.0.0">In 0.5.0.0</h1>
+<p>This is a <strong><em>Major release</em></strong>, you need to update your <em>trees</em> with <em>66-update</em> tool. If you skip from a version earlier than 0.4.0.1, the <em>66-update</em> will not work. In this case, you need to reconstruct your trees manually.
+Downgrading to a previous version will not work either, due to the new format of the <em>resolve</em> inner files.</p>
+<ul>
+<li><p>Adapt to oblibs v0.1.0.0</p></li>
+<li><p>Pass the writing of the <em>resolve</em> files to a <code>CDB</code> format. From that point onward the <code>66-update</code> will no longer be mandatory, even after major version release.</p></li>
+<li><p>Adapt <code>66-update</code> to the new <code>CDB</code> format where applicable.</p></li>
+<li><p>Bugs fix:</p>
+<ul>
+<li>Write the dependencies of the <code>contents</code> file for a module in the proper order as to avoid multiple repeated names.</li>
+<li><em>66-update</em>:
+<ul>
+<li>Get the correct exit status at tree contents process.</li>
+<li>Fix segmentation fault when a crash occur at enable time.</li>
+</ul></li>
+<li>Compilation <code>configure</code> script improvements and bugs fix.</li>
+<li>Fix the location of the modules directory service at enable time. The place of the module frontend file determines the place of the result process for the service module directory.</li>
+<li>Fix the creation of the logger directory when field <code>@build</code> is not set.</li>
+<li>Fix <strong>-r</strong> signal and <strong>-R</strong> signal behavior at <em>66-start</em> tool.</li>
+</ul></li>
+<li><p>The <code>rc.init</code> skeleton file does not launch the <code>ISHELL</code> script anymore during a crash at stage2. It&#8217;s the responsability of the sysadmin to deal with this error at his convenience.</p></li>
+<li><p><code>@destination</code> field in section <code>[logger]</code> is no longer mandatory at the use of <code>@build</code> with value <code>custom</code>.</p></li>
+<li><p><em>66-env</em>:</p>
+<ul>
+<li><strong>-e</strong> is now the default option.</li>
+<li><strong>-L</strong> displays now all <code>key=value</code> pair from all files found at the configuration directory.
+new options:
+<ul>
+<li><strong>-c</strong>: changes the current symlink to the specified version.</li>
+<li><strong>-V</strong>: displays available version.</li>
+<li><strong>-i</strong>: import an extra configuration file from one version to another.</li>
+<li><strong>-s</strong>: handle a specific version for command <strong>-L|V|e|r</strong>.</li>
+</ul></li>
+</ul></li>
+<li><p>All <code>key=value</code> pairs from <code>init.conf</code> skeleton file can be now passed to the kernel command line. Also, variables from <code>init.conf</code> are now passed to the <code>rc.init</code> skeleton file as arguments.</p></li>
+<li><p><code>@version</code> field is now <strong>mandatory</strong>.</p></li>
+<li><p>The version symlink of the configuration file points now to the configuration directory instead of the configuration file. This allows overwriting a same <code>key=value</code> with the writing of an extra configuration file instead of changing the upstream file.</p></li>
+<li><p><em>66-in{resolve,state}</em>: field <code>Real logger name</code> name is renamed <code>Real_logger_name</code>.</p></li>
+<li><p><em>66-enable</em>:</p>
+<ul>
+<li>Allow the use of a different version of a configuration file than the frontend service file, if any of -c&#47;m&#47;C options are used.
+new option:
+<ul>
+<li><strong>-i</strong>: import extra configuration files from a previous version.</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.4.0.1">In 0.4.0.1</h1>
+<ul>
+<li>Hot fix: <code>@build</code> is no longer mandatory even for <code>[stop]</code> section.</li>
+</ul>
+<hr/>
+<h1 id="in-0.4.0.0">In 0.4.0.0</h1>
+<p>This is a <strong><em>Major release</em></strong>, you need to update your <em>trees</em> with <em>66-update</em> tool.</p>
+<ul>
+<li><p>new extra-tools:
+<ul>
+<li>execl-envfile: this tool come from <a href="https://framagit.org/obarun/66-tools.git">66-tools</a> software and was incorporated inside the 66 software.
+<ul>
+<li>It parses now all files found at a directory by alphabetical order.</li>
+</ul></li>
+</ul></p></li>
+<li><p>Documentation is now written in markdown format. Lowdown software it necessary to build in html and manpages format.</p></li>
+<li><p>Bugs fix:</p>
+<ul>
+<li><em>66-update</em>: respect the tree start order.</li>
+<li><em>66-tree</em>: fix behavior when we have only one tree enabled.</li>
+<li><em>66-inservice</em>: do not crash in case of empty log file.</li>
+<li>Fix reverse dependencies search for a service with type <code>module</code>.</li>
+<li>Respect timestamp format given at compile time for the uncaught-logs.</li>
+<li>Accept empty environment file.</li>
+</ul></li>
+<li><p>Configuration service files: These files is now automatically versioned in function of the field <code>@version</code> declared on the frontend service file e.g. <code>&#47;etc&#47;66&#47;conf&#47;&#60;service&#62;&#47;version&#47;&#60;file&#62;</code>. A symlink called <code>version</code> is created or updated at <code>&#47;etc&#47;66&#47;conf&#47;&#60;service&#62;&#47;version</code>. This symlink point to the configuration file currently in use.
+Also, you can now write and save your own configuration file for a service inside the configuration service directory. All files found on that directory will be parsed and exported to the environment of the service at start time. The parse process is made on alphabetical order.</p></li>
+<li><p><code>@hiercopy</code> field accept now relative path.</p></li>
+<li><p><code>@build</code> field is no longer mandatory. If it not set, <code>auto</code> is the default.</p></li>
+<li><p><code>@version</code> field <strong>must</strong> be in the form digit.digit.digit e.g. 0.10.2.</p></li>
+<li><p><code>module</code> service type:</p>
+<ul>
+<li>General code improvement and evolve.</li>
+<li>Add <code>@addservices</code> field at <code>[regex]</code> section.</li>
+<li>Disabling a service contained inside a module is not possible. This break entirely the module operation.</li>
+<li>Sub module directories is no longer mandatory. <em>66-enable</em> will create it if it doesn&#8217;t exist.</li>
+<li><em>66-enable</em> export some variable environment at configure script runtime-see modules-service documentation page.</li>
+<li>Fix cyclic dependency: a module cannot call it itself.</li>
+<li>Redesign of the inner directories structure: instantiated service service <strong>must</strong> be define at <code>service@&#47;</code> sub-directory where other type go to <code>service&#47;</code> sub-directory. <code>.configure&#47;</code> is now named <code>configure</code>.</li>
+<li>All configuration files for each service contained inside the module is written inside the versioned directory of the module e.g. <code>&#47;etc&#47;66&#47;conf&#47;&#60;module&#62;&#47;&#60;version&#62;&#47;&#60;service&#62;&#47;&#60;service_version&#62;&#47;file</code>. This allows to have multiple module using a same service with a specific configuration for each service.</li>
+</ul></li>
+<li><p><em>66-inresolve</em>: add field Real<em>exec</em>run,Real<em>exec</em>finish for the service and logger associated to display the exact contain of the <code>run&#47;up</code> and <code>finish&#47;down</code> files respectively.</p></li>
+<li><p><em>66-enable</em>: The absolute path of the frontend service can also be set but <strong>must</strong> contain the primary path of the path define at compile time by &#8211;with-system-service or &#8211;with-sysadm-service or &#8211;with-user-service e.g. <code>&#47;etc&#47;66&#47;service&#47;lamp&#47;httpd</code>.</p></li>
+<li><p><em>66-env</em>:</p>
+<ul>
+<li>General code improvement.</li>
+<li>Follow the change about the versioned configuration service file.</li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.3.0.3">In 0.3.0.3</h1>
+<ul>
+<li>Hot fix: Avoids overwriting the current file</li>
+</ul>
+<hr/>
+<h1 id="in-0.3.0.2">In 0.3.0.2</h1>
+<ul>
+<li><p>Fix check and installation of user configuration file directory.</p></li>
+<li><p>Add missing <em>66-inresovle</em> and 66-instate* documentation.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.3.0.1">In 0.3.0.1</h1>
+<ul>
+<li><p>Fix <code>@optsdepends</code> and <code>@extdepends</code> behavior:
+These two fields now respect correctly the start order of the service&#8217;s dependencies.</p></li>
+<li><p><em>66-inservice</em> change:
+The field <code>Optional dependencies</code> and <code>External dependencies</code> displays now the name of the tree where the service is currently enabled after the <code>:</code> colon mark if any:</p>
+<pre><code>External dependencies : dbus-session@obarun:base gvfsd:desktop
+Optional dependencies : picom@obarun:desktop
+</code></pre></li>
+</ul>
+<hr/>
+<h1 id="in-0.3.0.0">In 0.3.0.0</h1>
+<p>This is a <strong><em>Major release</em></strong>, you need to update your <em>trees</em> with <em>66-update</em> tool.</p>
+<ul>
+<li><p>Bugs fix</p></li>
+<li><p><a href="https://skarnet.org/software/skalibs">skalibs</a> dependency bumped to <strong>2.9.2.1</strong></p></li>
+<li><p><a href="https://skarnet.org/software/execline">exeline</a> dependency bumped to <strong>2.6.0.1</strong></p></li>
+<li><p><a href="https://skarnet.org/software/s6">s6</a> dependency bumped to <strong>2.9.1.0</strong></p></li>
+<li><p><a href="https://skarnet.org/software/s6-rc">s6-rc</a> dependency bumped to <strong>0.5.1.2</strong></p></li>
+<li><p><a href="https://framagit.org/oblibs">oblibs</a> dependency bumped to <strong>0.0.6.0</strong></p></li>
+<li><p>Add <strong>-z</strong> to all tools to enable colorization:</p>
+<ul>
+<li><em>66-in{service,tree}</em> and <em>66-update</em> tools change the <em>-c</em> option to <em>-z</em> option to be consistent between all tools.</li>
+</ul></li>
+<li><p><em>66-start</em> and <em>66-stop</em> exit 0 instead of 110 if the service is not enabled.</p></li>
+<li><p><em>Frontend</em> service file change:</p>
+<ul>
+<li><p>The field <code>@type</code> accepts a new kind of service called <em>module</em>. A <em>module</em> can be considered as an instantiated service. It works the same way as a service <em>frontend</em> file but allows to configure a set of different kind of services before executing the enable process. Also, the set of the services can be configured with the conjunction of a script called <code>configure</code> which can be written on any language.</p></li>
+<li><p><em>module</em> also comes with a new section named <code>[regex]</code> which contains the following field:</p>
+<ul>
+<li><code>@configure</code></li>
+<li><code>@directories</code></li>
+<li><code>@files</code></li>
+<li><code>@infiles</code></li>
+</ul>
+<p>Please see the <em>frontend</em> documentation for futher information.</p></li>
+<li><p>Allow commenting out of a service inside <em>@contents</em>, <em>@depends</em>, <em>@optdepends</em>, <em>@extdepends</em> field with the <code>#</code> character. The service name <strong>must</strong> begin with a <code>#</code> character without any space between the <code>#</code> and the name of the service, so it can be ignored.</p>
+<pre><code>@depends = ( foo #bar fooB )
+</code></pre></li>
+<li><p>Add <code>@version</code> field:
+This field is currently not mandatory to allow time to adapt the existing service files on your system, but it <strong>will be mandatory</strong> in a future release.</p></li>
+<li><p>Comments in the <code>[environment]</code> section is now kept at parsing process and written to the final service configuration file. This is useful to explain the use of a variable without the need to look on the executable script.</p></li>
+</ul></li>
+<li><p><em>66-in{service,tree}</em> display now <em>up</em>,<em>down</em> or <em>unintialized</em> on status and graph dependencies field for <em>oneshot</em>, <em>bundle</em>, <em>module</em> services. This allows us to know if e.g an <em>oneshot</em> service is currently <em>up</em> or <em>down</em>.</p></li>
+<li><p><em>66-enable</em> now accepts the new option <strong>-m</strong>. This option reacts the same as the <strong>-c</strong> option for new <em>key=value</em> pair but overwrites the change of the admin on existing <em>key=value</em> pair. A <em>key=value</em> pair which doesn&#8217;t exist on the frontend file remains untouched.</p></li>
+<li><p><em>Oneshot</em> now accepts the option <em>log</em> at the field <code>@options</code>. This allows a <em>oneshot</em> to have its own logger. As any other service the log file can be seen with the <em>66-inservice</em> tool. The log destination can be controlled by the <code>@destination</code> field at the <code>[logger]</code> section. Default is set at compile time by the <em>&#8211;with-system-log</em> or <em>&#8211;with-user-log</em> flag.</p></li>
+<li><p>New debug tools:</p>
+<ul>
+<li><em>66-inresolve</em>: This tool allows to read the contents of the <code>resolve</code> file.</li>
+<li><em>66-instate</em>: This tool allows to read the contents of the <code>state</code> file.</li>
+</ul></li>
+<li><p><em>&#8211;disable-s6-log-notification</em> was added on the <em>configure</em> script to disable logger&#8217;s <a href="https://skarnet.org/software/s6/notifywhenup.html">readiness notification</a>. By default it use the file descriptor number 3.</p></li>
+<li><p><em>&#8211;with-s6-log-timestamp</em> flag was added on the <em>configure</em> script to set the default output date format for a logger at the compile time. See <code>configure --help</code> command.</p></li>
+<li><p><em>&#8211;with-system-module</em>, <em>&#8211;with-sysadmin-module</em>, <em>&#8211;with-user-module</em> flags was added on the <em>configure</em> script to set the default <em>system</em>, <em>sysadmin</em> and <em>user</em> module directory respectively.</p></li>
+<li><p><em>&#8211;with-system-script</em>, <em>&#8211;with-user-script</em> flags was added on the <em>configure</em> script to set the default <em>system</em> and <em>user</em> script directory respectively.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.2.5.2">In 0.2.5.2</h1>
+<ul>
+<li>Fix build: Remove bytes.h oblibs header file</li>
+</ul>
+<hr/>
+<h1 id="in-0.2.5.1">In 0.2.5.1</h1>
+<ul>
+<li><p>Bugs fix</p></li>
+<li><p>66-tree -S options: if after_tree and tree have the same name, tree is considered as the very first tree to start.</p></li>
+<li><p>66-unmountall: do not umount SS_LIVE</p></li>
+<li><p>Add SIGPWR control file at creation of .s6-svscan directory</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.2.5.0">In 0.2.5.0</h1>
+<ul>
+<li><p>Bugs Fix: Bad memory allocation</p></li>
+<li><p>66-tree: add -S option which allows to order the start tree process even after it creation.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.2.4.1">In 0.2.4.1</h1>
+<ul>
+<li>Hot fix: fix html documentation</li>
+</ul>
+<hr/>
+<h1 id="in-0.2.4.0">In 0.2.4.0</h1>
+<ul>
+<li><p>Bugs fix: Bad memory allocation.</p></li>
+<li><p>Enable again RB<em>DISABLE</em>CAD but don&#8217;t crash if its not available and warn user</p>
+<ul>
+<li><p>Add @optsdepends and @extdepends field at [main] section:</p>
+<ul>
+<li><p>@optsdepends can be considere as: &#8220;enable one on this service or none&#8221;</p></li>
+<li><p>@extdepends can be considere as: &#8220;enable the service if it is not already declared on a tree&#8221;</p></li>
+</ul></li>
+<li><p>66-in{tree,service}:</p>
+<ul>
+<li><p>in case of empty value the tools return None</p></li>
+<li><p>add -n option: this avoids to display the name of the field.</p></li>
+<li><p>add field at 66-intree:</p>
+<ul>
+<li><p>start: displays the list of tree(s) started before</p></li>
+<li><p>allowed: displays a list of allowed user to use the tree</p></li>
+<li><p>symlinks: displays the target of tree&#8217;s symlinks</p></li>
+</ul></li>
+<li><p>add field at 66-inservice:</p>
+<ul>
+<li><p>optsdepends: displays the service&#8217;s optional dependencies</p></li>
+<li><p>extdepends: displays the service&#8217;s external dependencies</p></li>
+</ul></li>
+</ul></li>
+<li><p>66-shutdown skeleton: be safier and check if options are past</p></li>
+<li><p>New tool:</p>
+<ul>
+<li>66-update: The 66-update program makes a complete transition of trees and the live directory using a old 66 format (the one being replaced) with the new 66 format.</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.2.3.2">In 0.2.3.2</h1>
+<ul>
+<li><p>Fix bad annoucement at 66-svctl</p></li>
+<li><p>Warn in case of bad key at parenthesis parsing process</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.2.3.1">In 0.2.3.1</h1>
+<ul>
+<li><p>Bugs fix: bad allocation memory</p></li>
+<li><p>Makefile: remove creation of empty directories. 66-tree will check all directories and create it if it missing.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.2.3.0">In 0.2.3.0</h1>
+<ul>
+<li><p>Adapt to oblibs 0.0.4.0</p></li>
+<li><p>Remove RB<em>DISABLE</em>CAD at 66-boot by default and allow to enable it with -c option. Starting on virtual system like lxc crash with this option. Well be safe on every case.</p></li>
+<li><p>Use of new function log_? familly from oblibs:</p>
+<ul>
+<li><p>standardization of the exit code</p></li>
+<li><p>standardization of the verbosity output</p></li>
+<li><p>allow verbosity to 4 to display debug message</p></li>
+</ul></li>
+<li><p>Doc typo fix</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.2.2.2">In 0.2.2.2</h1>
+<ul>
+<li><p>Adapt to skalibs 2.9.1.0</p></li>
+<li><p>Remove insta_? deprecated function</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.2.2.1">In 0.2.2.1</h1>
+<ul>
+<li><p>Typo fix at html documentation</p></li>
+<li><p>Fix 66-intree without options</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.2.2.0">In 0.2.2.0</h1>
+<ul>
+<li><p>Bugs fix: Always check the existing of the 66 heart directories</p></li>
+<li><p>66-info is now deprecated and splitted into two differents API:</p>
+<ul>
+<li><p>66-intree give informations about tree</p></li>
+<li><p>66-inservice give informations about services</p></li>
+</ul></li>
+</ul>
+<hr/>
+<h1 id="in-0.2.1.2">In 0.2.1.2</h1>
+<ul>
+<li>Hot fix: fix 66-info graph display.</li>
+</ul>
+<hr/>
+<h1 id="in-0.2.1.1">In 0.2.1.1</h1>
+<ul>
+<li>Hot fix: fix the build of the service dependencies graph.</li>
+</ul>
+<hr/>
+<h1 id="in-0.2.1.0">In 0.2.1.0</h1>
+<ul>
+<li><p>Bugs fix.</p></li>
+<li><p>A synchronization is now made on reboot even with force option.</p></li>
+<li><p>The field @name has no effects except for instantiated service but can be omitted. The name of the frontend file is took as name. In case of instantiated service, the field @name must contain the complete name of the frontend service file &#8211; Refer to the frontend documentation page.</p></li>
+<li><p>New skeleton file: rc.shutdown.final. This skeleton file will be run at the very end of the shutdown procedure, after all processes have been killed and all filesystems have been unmounted, just before the system is rebooted or the power turned off. This script normally remains empty.</p></li>
+<li><p>Extra tools has removed and provided as an independent programs at ttps:&#47;&#47;framagit.org&#47;Obarun&#47;66-tools.git except for 66-echo and 66-unmountall program which are a dependent part of 66.</p></li>
+<li><p>The account to run the s6-log program at the associate service logger can be set at compilation time by the &#8211;with-s6-log-user=USER options. The default is root. Obviously, the @runas field at the [logger] section overwritte it. This options set the account to run the uncaught-logs too. Also, this option can be overwritten with the &#8216;-l&#8217; option at 66-boot invocation and the &#8216;-L&#8217; option at 66-scandir invocation.</p></li>
+</ul>
+<hr/>
+<p>In 0.2.0.4</p>
+<ul>
+<li><p>Bugs fix on memory allocation</p></li>
+<li><p>Respect policies decision of user:</p>
+<ul>
+<li>Remove -m option from 66-boot on init file</li>
+</ul></li>
+<li><p>Add -d feature to 66-scandir</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.2.0.3">In 0.2.0.3</h1>
+<ul>
+<li>66-parser: Fix write of configuration file, add -c|C features</li>
+</ul>
+<hr/>
+<h1 id="in-0.2.0.2">In 0.2.0.2</h1>
+<ul>
+<li><p>Fix the written of user configuration file</p></li>
+<li><p>Fix oneshot and bundle status check</p></li>
+<li><p>Add -l features to 66-tree, rewrite tree_unsupervise function</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.2.0.0">In 0.2.0.0</h1>
+<ul>
+<li><p>New tools:</p>
+<ul>
+<li><p>66-boot.</p></li>
+<li><p>66-scanctl.</p></li>
+<li><p>66-shutdown.</p></li>
+<li><p>66-shutdownd.</p></li>
+<li><p>66-hpr.</p></li>
+<li><p>66-env.</p></li>
+<li><p>66-parser.</p></li>
+<li><p>66-which.</p></li>
+<li><p>66-echo.</p></li>
+<li><p>66-unmountall.</p></li>
+<li><p>execl-subuidgid.</p></li>
+</ul></li>
+<li><p>New @key field and change on frontend file:</p>
+<ul>
+<li><p>[Logger] section accept a @depends field, @timestamp accept none as value, readiness notification is a default.</p></li>
+<li><p>@hiercopy in [main] allow to copy any file or directory coming from the directory of the service.</p></li>
+</ul></li>
+<li><p>66-envfile is now deprecated, use execl-envfile in replacement.</p></li>
+<li><p>66-enable: add -F, -c, -C features.</p></li>
+<li><p>66-svctl is now asynchrone to launch services.</p></li>
+<li><p>Man pages are available.</p></li>
+<li><p>Environment variables limitation: maximum 100 files by directory, each file cannot contain more than 4096 bytes or 50 variables.</p></li>
+<li><p>Syntax to unexport variable with execl-envfile change: the exclamation mark &#8216;!&#8217; need to be placed at begin of value instead of key.</p></li>
+<li><p>Bugs fix</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.1.0.1">In 0.1.0.1</h1>
+<ul>
+<li><p>Bugs fix</p></li>
+<li><p>Add 66-getenv,66-writenv and 66-gnwenv extra-tools</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.1.0.0">In 0.1.0.0</h1>
+<ul>
+<li><p>Logger for nested tree at scandir creation time is disabled.</p></li>
+<li><p>Pass graph function to new ss<em>resolve</em>graph_? function.</p></li>
+<li><p>Split resolve file and state flags.</p></li>
+<li><p>Add ss<em>state</em>? function.</p></li>
+<li><p>Really unsupervise rc service, add rc<em>manage, rc</em>unsupervise function.</p></li>
+<li><p>Fix -U option for 66-tree.</p></li>
+<li><p>Fix 66-info, add -c option.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.0.2.2">In 0.0.2.2</h1>
+<ul>
+<li>Hot fix, do not stop an empty db.</li>
+</ul>
+<hr/>
+<p>In 0.0.2.1</p>
+<ul>
+<li>Hot fix, do not append inner bundle with empty word.</li>
+</ul>
+<hr/>
+<h1 id="in-0.0.2.0">In 0.0.2.0</h1>
+<ul>
+<li><p>Bugs fix.</p></li>
+<li><p>Add 66-tree -U options to unsupervise a tree from a scandir.</p></li>
+<li><p>Rewrite 66-info to provide color and more informations.</p></li>
+<li><p>Empty database cannot be initialized.</p></li>
+<li><p>Respect &#47;etc&#47;66&#47;sysadmin&#47;service even for user.</p></li>
+</ul>
+<hr/>
+<h1 id="in-0.0.1.1">In 0.0.1.1</h1>
+<ul>
+<li>Bugs fix at rc_init function.</li>
+</ul>
+</body>
+</html>

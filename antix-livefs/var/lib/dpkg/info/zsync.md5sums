@@ -1,0 +1,8 @@
+98ea0c07d00571ec8511b27f04fedf59  usr/bin/zsync
+dbcb5ccaab2aabb466e093930d5c5a28  usr/bin/zsyncmake
+449048301e28cc13ae7ec6f96ffde130  usr/share/doc/zsync/NEWS.gz
+da21bc8b1af27703566a04df3dd3d9c3  usr/share/doc/zsync/README.gz
+fe79524d34af2d885c43f02518a81d3f  usr/share/doc/zsync/changelog.Debian.gz
+873c9d50c286d8bd4ab53bf1167d19e4  usr/share/doc/zsync/copyright
+5453527756c82a77164f61ee0230d898  usr/share/man/man1/zsync.1.gz
+ac5d19abfd6843d70e2c8ce826367be3  usr/share/man/man1/zsyncmake.1.gz

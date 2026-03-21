@@ -1,0 +1,17 @@
+/.
+/usr
+/usr/local
+/usr/local/bin
+/usr/local/bin/live-kernel-updater
+/usr/share
+/usr/share/applications
+/usr/share/applications/live-kernel-updater.desktop
+/usr/share/doc
+/usr/share/doc/live-kernel-updater
+/usr/share/doc/live-kernel-updater/changelog.gz
+/usr/share/doc/live-kernel-updater/copyright
+/usr/share/man
+/usr/share/man/man1
+/usr/share/man/man1/live-kernel-updater.1.gz
+/usr/share/pixmaps
+/usr/share/pixmaps/live-usb-kernel-updater.png

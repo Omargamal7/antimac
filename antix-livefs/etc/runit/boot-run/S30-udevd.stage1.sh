@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/udevd.stage1.sh

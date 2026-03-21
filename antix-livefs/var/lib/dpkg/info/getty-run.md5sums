@@ -1,0 +1,12 @@
+142af394500309aac516e0feba2c5a64  usr/share/doc/getty-run/NEWS.Debian.gz
+f773163085a4a7d79ef29ea01b1c4417  usr/share/doc/getty-run/changelog.Debian.gz
+ca8c44b300ff897b943f63c0601c43e8  usr/share/doc/getty-run/copyright
+d41d8cd98f00b204e9800998ecf8427e  usr/share/runit/meta/getty-hvc0/installed
+d41d8cd98f00b204e9800998ecf8427e  usr/share/runit/meta/getty-tty1/installed
+d41d8cd98f00b204e9800998ecf8427e  usr/share/runit/meta/getty-tty2/installed
+d41d8cd98f00b204e9800998ecf8427e  usr/share/runit/meta/getty-tty3/installed
+d41d8cd98f00b204e9800998ecf8427e  usr/share/runit/meta/getty-tty4/installed
+d41d8cd98f00b204e9800998ecf8427e  usr/share/runit/meta/getty-tty5/installed
+d41d8cd98f00b204e9800998ecf8427e  usr/share/runit/meta/getty-tty6/installed
+d41d8cd98f00b204e9800998ecf8427e  usr/share/runit/meta/getty-ttyS0/installed
+d41d8cd98f00b204e9800998ecf8427e  usr/share/runit/meta/getty-ttyv0/installed

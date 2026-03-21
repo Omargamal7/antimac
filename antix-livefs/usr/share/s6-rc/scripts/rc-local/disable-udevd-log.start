@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# This script stops udevd-log in effort to save some system resources
+# It is safe to delete this script on systems that prefer the udevd-log running
+
+echo "Stopping udevd-log"
+s6-svc -d /run/service/udevd-log

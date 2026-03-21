@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/mount-tmpfs.stage1.sh

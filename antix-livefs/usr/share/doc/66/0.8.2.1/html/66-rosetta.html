@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: rosetta</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<p>This documentation explains the differences in options and interface changes between versions.</p>
+<h1 id="changes-between-and-">Changes between <code>0.7.2.1</code> and <code>0.8.0.0</code></h1>
+<p>Futhers information can be found to the <a href="66-upgrade.html">upgrade</a> page concerning behavior changes, frontend keyword changes and more.</p>
+<h2 id="converting-service-frontend-file">Converting service frontend file</h2>
+<p>The <a href="66-upgrade-process.html">upgrade process</a> will take about the frontend file convertion but uniquely active services (i.e., those listed when running <code>66 tree status</code> with the field <code>contents</code>)</p>
+<p>So, you may need to convert manually inactive frontend file. This following little script can be used by calling <code>.&#47;migrate_service.sh &#47;path&#47;to&#47;my&#47;&#60;FrontendFile&#62;</code>.</p>
+<pre><code>#!&#47;bin&#47;sh
+
+service="${1}"
+
+sed -e "s:\[main\]:\[Main\]:g" \
+    -e "s:@type:Type:g" \
+    -e "s:@description:Description:g" \
+    -e "s:@version:Version:g" \
+    -e "s:@depends:Depends:g" \
+    -e "s:@requiredby:RequiredBy:g" \
+    -e "s:@optsdepends:OptsDepends:g" \
+    -e "s:@options:Options:g" \
+    -e "s:@flags:Flags:g" \
+    -e "s:@notify:Notify:g" \
+    -e "s:@user:User:g" \
+    -e "s:@timeout-kill:TimeoutStart:g" \
+    -e "s:@timeout-up:TimeoutStart:g" \
+    -e "s:@timeout-finish:TimeoutStop:g" \
+    -e "s:@timeout-down:TimeoutStop:g" \
+    -e "s:@maxdeath:MaxDeath:g" \
+    -e "s:@down-signal:DownSignal:g" \
+    -e "s:@hiercopy:CopyFrom:g" \
+    -e "s:@intree:InTree:g" \
+    -e "s:\[start\]:\[Start\]:g" \
+    -e "s:@build:Build:g" \
+    -e "s:@runas:RunAs:g" \
+    -e "s:@execute:Execute:g" \
+    -e "s:\[stop\]:\[Stop\]:g" \
+    -e "s:\[logger\]:\[Logger\]:g" \
+    -e "s:@destination:Destination:g" \
+    -e "s:@backup:Backup:g" \
+    -e "s:@maxsize:MaxSize:g" \
+    -e "s:@timestamp:Timestamp:g" \
+    -e "s:\[environment\]:\[Environment\]:g" \
+    -e "s:\[regex\]:\[Regex\]:g" \
+    -e "s:@configure:Configure:g" \
+    -e "s:@directories:Directories:g" \
+    -e "s:@files:Files:g" \
+    -e "s:@infiles:InFiles:g" \
+    -i ${service}
+</code></pre>
+<h2 id="keyword-table-convertion">Keyword table convertion</h2>
+<p>The table below give you the keyword convertion between versions</p>
+<table>
+<thead>
+<tr>
+<th>0.7.2.1</th>
+<th>0.8.0.0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[main]</td>
+<td>[Main]</td>
+</tr>
+<tr>
+<td>@type</td>
+<td>Type</td>
+</tr>
+<tr>
+<td>@description</td>
+<td>Description</td>
+</tr>
+<tr>
+<td>@version</td>
+<td>Version</td>
+</tr>
+<tr>
+<td>@depends</td>
+<td>Depends</td>
+</tr>
+<tr>
+<td>@requiredby</td>
+<td>RequiredBy</td>
+</tr>
+<tr>
+<td>@optsdepends</td>
+<td>OptsDepends</td>
+</tr>
+<tr>
+<td>@options</td>
+<td>Options</td>
+</tr>
+<tr>
+<td>@flags</td>
+<td>Flags</td>
+</tr>
+<tr>
+<td>@notify</td>
+<td>Notify</td>
+</tr>
+<tr>
+<td>@user</td>
+<td>User</td>
+</tr>
+<tr>
+<td>@timeout-kill</td>
+<td>TimeoutStart</td>
+</tr>
+<tr>
+<td>@timeout-up</td>
+<td>TimeoutStart</td>
+</tr>
+<tr>
+<td>@timeout-finish</td>
+<td>TimeoutStop</td>
+</tr>
+<tr>
+<td>@timeout-down</td>
+<td>TimeoutStop</td>
+</tr>
+<tr>
+<td>@maxdeath</td>
+<td>MaxDeath</td>
+</tr>
+<tr>
+<td>@down-signal</td>
+<td>DownSignal</td>
+</tr>
+<tr>
+<td>@hiercopy</td>
+<td>CopyFrom</td>
+</tr>
+<tr>
+<td>@intree</td>
+<td>InTree</td>
+</tr>
+<tr>
+<td>[start]</td>
+<td>[Start]</td>
+</tr>
+<tr>
+<td>@build</td>
+<td>Build</td>
+</tr>
+<tr>
+<td>@runas</td>
+<td>RunAs</td>
+</tr>
+<tr>
+<td>@execute</td>
+<td>Execute</td>
+</tr>
+<tr>
+<td>[stop]</td>
+<td>[Stop]</td>
+</tr>
+<tr>
+<td>[logger]</td>
+<td>[Logger]</td>
+</tr>
+<tr>
+<td>@destination</td>
+<td>Destination</td>
+</tr>
+<tr>
+<td>@backup</td>
+<td>Backup</td>
+</tr>
+<tr>
+<td>@maxsize</td>
+<td>MaxSize</td>
+</tr>
+<tr>
+<td>@timestamp</td>
+<td>Timestamp</td>
+</tr>
+<tr>
+<td>[environment]</td>
+<td>[Environment]</td>
+</tr>
+<tr>
+<td>[regex]</td>
+<td>[Regex]</td>
+</tr>
+<tr>
+<td>@configure</td>
+<td>Configure</td>
+</tr>
+<tr>
+<td>@directories</td>
+<td>Directories</td>
+</tr>
+<tr>
+<td>@files</td>
+<td>Files</td>
+</tr>
+<tr>
+<td>@infiles</td>
+<td>InFiles</td>
+</tr>
+</tbody>
+</table>
+<h1 id="changes-between-and-.">Changes between <code>v0.6.1.3</code> and <code>0.7.0.0</code>.</h1>
+<p>Futhers information can be found to the <a href="66-upgrade.html">upgrade</a> page concerning behavior changes, frontend keyword changes and more.</p>
+<h2 id="general-interface-changes">General Interface changes</h2>
+<p>Generally, the prefix is removed from commands, for example, <code>66-enable</code> becomes <code>66 enable</code>, <code>66-start</code> becomes <code>66 start</code>, and so on except for a few special commands &#8211; see below.</p>
+<h2 id="debug-command">Debug command</h2>
+<table>
+<thead>
+<tr>
+<th>Old command</th>
+<th>New command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-parser</code></td>
+<td><code>66 parse</code></td>
+</tr>
+<tr>
+<td><code>66-inresolve</code></td>
+<td><code>66 resolve</code></td>
+</tr>
+<tr>
+<td><code>66-instate</code></td>
+<td><code>66 state</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="admin-command">Admin command</h2>
+<table>
+<thead>
+<tr>
+<th>Old command</th>
+<th>New command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-boot</code></td>
+<td><code>66 boot</code></td>
+</tr>
+<tr>
+<td><code>66-scandir</code></td>
+<td><code>66 scandir</code></td>
+</tr>
+<tr>
+<td><code>66-scanctl</code></td>
+<td>incorporate into <code>66 scandir</code></td>
+</tr>
+<tr>
+<td><code>66-init</code></td>
+<td><code>66 init</code></td>
+</tr>
+<tr>
+<td><code>66-svctl</code></td>
+<td><code>66 signal</code></td>
+</tr>
+<tr>
+<td><code>66-dbctl</code></td>
+<td>removed</td>
+</tr>
+<tr>
+<td><code>66-hpr</code></td>
+<td><code>66-hpr</code>. This command should not be used directly. Prefer using <code>66 poweroff</code>, <code>66 reboot</code>, <code>66 halt</code> to power off, reboot and halt the machine respectively</td>
+</tr>
+<tr>
+<td><code>66-shutdownd</code></td>
+<td><code>66-shutdownd</code></td>
+</tr>
+<tr>
+<td><code>66-update</code></td>
+<td>removed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="user-command">User command</h2>
+<table>
+<thead>
+<tr>
+<th>Old command</th>
+<th>New command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-all</code></td>
+<td><code>66 tree</code></td>
+</tr>
+<tr>
+<td><code>66-tree</code></td>
+<td><code>66 tree</code></td>
+</tr>
+<tr>
+<td><code>66-enable</code></td>
+<td><code>66 enable</code></td>
+</tr>
+<tr>
+<td><code>66-disable</code></td>
+<td><code>66 disable</code></td>
+</tr>
+<tr>
+<td><code>66-start</code></td>
+<td><code>66 start</code></td>
+</tr>
+<tr>
+<td><code>66-stop</code></td>
+<td><code>66 stop</code></td>
+</tr>
+<tr>
+<td><code>66-intree</code></td>
+<td><code>66 tree status</code></td>
+</tr>
+<tr>
+<td><code>66-inservice</code></td>
+<td><code>66 status</code></td>
+</tr>
+<tr>
+<td><code>66-env</code></td>
+<td><code>66 configure</code></td>
+</tr>
+<tr>
+<td><code>66-shutdown</code></td>
+<td><code>66-shutdown</code>. This command should not be used directly. Prefer using <code>66 poweroff</code>, <code>66 reboot</code>, <code>66 halt</code> to power off, reboot and halt the machine respectively</td>
+</tr>
+</tbody>
+</table>
+<h2 id="extra-tools">Extra tools</h2>
+<table>
+<thead>
+<tr>
+<th>Old command</th>
+<th>New command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-echo</code></td>
+<td><code>66-echo</code></td>
+</tr>
+<tr>
+<td><code>66-nuke</code></td>
+<td><code>66-nuke</code></td>
+</tr>
+<tr>
+<td><code>66-umountall</code></td>
+<td><code>66-umountall</code></td>
+</tr>
+<tr>
+<td><code>execl-envfile</code></td>
+<td><code>execl-envfile</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="new-command">New command</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66 reload</code></td>
+<td>reload a service</td>
+</tr>
+<tr>
+<td><code>66 restart</code></td>
+<td>restart a service</td>
+</tr>
+<tr>
+<td><code>66 free</code></td>
+<td>unsupervise a service</td>
+</tr>
+<tr>
+<td><code>66 reconfigure</code></td>
+<td>parse again a service</td>
+</tr>
+<tr>
+<td><code>66 remove</code></td>
+<td>remove a service</td>
+</tr>
+<tr>
+<td><code>66 poweroff</code></td>
+<td>poweroff the system</td>
+</tr>
+<tr>
+<td><code>66 reboot</code></td>
+<td>reboot the system</td>
+</tr>
+<tr>
+<td><code>66 halt</code></td>
+<td>halt the system</td>
+</tr>
+<tr>
+<td><code>66 version</code></td>
+<td>get the version of 66</td>
+</tr>
+</tbody>
+</table>
+<h2 id="general-options-changes">General options changes</h2>
+<p>Previous tools accepted the options <code>-h</code>, <code>-z</code>, <code>-l</code>, <code>-T</code> and <code>-t</code>. These options are now integrated into the general <code>66</code> command. Let&#8217;s take an examples:</p>
+<table>
+<thead>
+<tr>
+<th>Old command</th>
+<th>New command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-enable</code> -t root consolekit</td>
+<td><code>66</code> -t root <code>enable</code> consolekit</td>
+</tr>
+<tr>
+<td><code>66-start</code> -l &#47;run&#47;66 sshd</td>
+<td><code>66</code> -l &#47;run&#47;66 <code>start</code> sshd</td>
+</tr>
+</tbody>
+</table>
+<h2 id="help-accessibility">Help accessibility</h2>
+<p>All commands and subcommands accept the <code>-h</code> option to access their respective help.</p>
+<ul>
+<li><code>66</code> -h: get the help of the general command</li>
+<li><code>66</code> tree -h: get the help of the tree subcommand</li>
+<li><code>66</code> tree resolve -h: get the help of <code>resolve</code> subcommand of the <code>tree</code> subcommand</li>
+</ul>
+<h2 id="general-exit-codes">General exit codes</h2>
+<p>All commands and subcommands return:</p>
+<ul>
+<li>0 success</li>
+<li>100 wrong usage</li>
+<li>111 system call failed</li>
+</ul>
+<h2 id="interface-and-options-changes-by-command">Interface and Options changes by command</h2>
+<p>If not specified, the interface (except for the name itself &#8211; see <a href="#General-Interface-changes">General Interface changes</a>) or the options do not change.</p>
+<h3 id="66-scandir">66-scandir</h3>
+<hr/>
+<p><code>66-scandir</code> and <code>66-scanctl</code> was combined together into the command <code>66 scandir</code>.</p>
+<table>
+<thead>
+<tr>
+<th>old options</th>
+<th>new options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-scanctl</code> interrupt</td>
+<td><code>66</code> scandir stop</td>
+</tr>
+<tr>
+<td><code>66-scanctl</code> reload</td>
+<td><code>66</code> scandir reconfigure</td>
+</tr>
+<tr>
+<td><code>66-scanctl</code> reboot</td>
+<td>removed</td>
+</tr>
+<tr>
+<td><code>66-scanctl</code> poweroff</td>
+<td>removed</td>
+</tr>
+</tbody>
+</table>
+<p>New subcommands was integrated to <code>66 scandir</code> to avoid using options from <code>s6-svscanctl</code>.</p>
+<table>
+<thead>
+<tr>
+<th><code>66</code> scandir</th>
+<th><code>s6-svscanctl</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66</code> scandir rescan</td>
+<td><code>s6-svscanctl</code> -a</td>
+</tr>
+<tr>
+<td><code>66</code> scandir abort</td>
+<td><code>s6-svscanctl</code> -b</td>
+</tr>
+<tr>
+<td><code>66</code> scandir nuke</td>
+<td><code>s6-svscanctl</code> -n</td>
+</tr>
+<tr>
+<td><code>66</code> scandir annihilate</td>
+<td><code>s6-svscanctl</code> -N</td>
+</tr>
+<tr>
+<td><code>66</code> scandir zombies</td>
+<td><code>s6-svscanctl</code> -z</td>
+</tr>
+</tbody>
+</table>
+<h3 id="66-init">66-init</h3>
+<hr/>
+<p>As <code>s6-rc</code> was dropped, the specification of the type of the service is not needed anymore. This program was integrated to <code>66 tree</code> command &#8211; see <a href="66-tree.html#init">66 tree init</a> documentation for futhers information.</p>
+<table>
+<thead>
+<tr>
+<th>old argument</th>
+<th>new argument</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-init</code> classic</td>
+<td><code>66</code> tree init <em>treename</em></td>
+</tr>
+<tr>
+<td><code>66-init</code> database</td>
+<td><code>66</code> tree init <em>treename</em></td>
+</tr>
+<tr>
+<td><code>66-init</code> both</td>
+<td><code>66</code> tree init <em>treename</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="66-svctl">66-svctl</h3>
+<hr/>
+<p>This tool previously deals only with <code>classic</code> service whereas <code>66 signal</code> deals with all kind of services type.</p>
+<table>
+<thead>
+<tr>
+<th>old options</th>
+<th>new options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-svctl</code> -n</td>
+<td>removed</td>
+</tr>
+<tr>
+<td><code>66-svctl</code> -X</td>
+<td><code>66</code> signal -x -d</td>
+</tr>
+<tr>
+<td><code>66-svctl</code> -K</td>
+<td><code>66</code> signal -k -d</td>
+</tr>
+</tbody>
+</table>
+<h3 id="66-all">66-all</h3>
+<hr/>
+<p>This tool previously handles all services for trees, the new command handles all <strong>enabled</strong> services for trees.</p>
+<table>
+<thead>
+<tr>
+<th>old argument</th>
+<th>new argument</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-all</code> up</td>
+<td><code>66</code> tree start</td>
+</tr>
+<tr>
+<td><code>66-all</code> down</td>
+<td><code>66</code> tree stop</td>
+</tr>
+<tr>
+<td><code>66-all</code> unsupervise</td>
+<td><code>66</code> tree free</td>
+</tr>
+</tbody>
+</table>
+<h3 id="66-tree">66-tree</h3>
+<hr/>
+<table>
+<thead>
+<tr>
+<th>old options</th>
+<th>new options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-tree</code> -n</td>
+<td><code>66</code> tree create</td>
+</tr>
+<tr>
+<td><code>66-tree</code> -a</td>
+<td><code>66</code> tree admin -o allow=<em>user</em>,<em>user</em>,&#8230; or at creation with <code>66</code> tree create -o allow=<em>user</em>,<em>user</em>,&#8230;</td>
+</tr>
+<tr>
+<td><code>66-tree</code> -d</td>
+<td><code>66</code> tree admin -o deny=<em>user</em>,<em>user</em>,&#8230; or at creation with <code>66</code> tree create -o deny=<em>user</em>,<em>user</em>,&#8230;</td>
+</tr>
+<tr>
+<td><code>66-tree</code> -c</td>
+<td><code>66</code> tree current</td>
+</tr>
+<tr>
+<td><code>66-tree</code> -S</td>
+<td><code>66</code> tree admin -o depends=<em>tree</em>,<em>tree</em>,&#8230; or at creation with <code>66</code> tree create -o depends=<em>tree</em>,<em>tree</em>,&#8230;</td>
+</tr>
+<tr>
+<td><code>66-tree</code> -E</td>
+<td><code>66</code> tree enable</td>
+</tr>
+<tr>
+<td><code>66-tree</code> -D</td>
+<td><code>66</code> tree disable</td>
+</tr>
+<tr>
+<td><code>66-tree</code> -R</td>
+<td><code>66</code> tree remove</td>
+</tr>
+<tr>
+<td><code>66-tree</code> -C</td>
+<td>removed</td>
+</tr>
+</tbody>
+</table>
+<h3 id="66-enable">66-enable</h3>
+<hr/>
+<p>With the previous version, services must be enabled to be able to start the service. It is not mandatory anymore with the new version. A service can be started without enabling it first. As result, the enable process is not responsible of the parse process even if it parse the service if the service was never parsed before.</p>
+<table>
+<thead>
+<tr>
+<th>old options</th>
+<th>new options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-enable</code> -f</td>
+<td><code>66</code> enable</td>
+</tr>
+<tr>
+<td><code>66-enable</code> -F</td>
+<td><code>66</code> reconfigure</td>
+</tr>
+<tr>
+<td><code>66-enable</code> -I</td>
+<td><code>66</code> parse -I</td>
+</tr>
+<tr>
+<td><code>66-enable</code> -S</td>
+<td><code>66</code> enable -S</td>
+</tr>
+</tbody>
+</table>
+<h3 id="66-disable">66-disable</h3>
+<hr/>
+<table>
+<thead>
+<tr>
+<th>old options</th>
+<th>new options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-disable</code> -S</td>
+<td><code>66</code> disable -S</td>
+</tr>
+<tr>
+<td><code>66-disable</code> -F</td>
+<td>removed</td>
+</tr>
+<tr>
+<td><code>66-disable</code> -R</td>
+<td><code>66</code> remove</td>
+</tr>
+</tbody>
+</table>
+<h3 id="66-start">66-start</h3>
+<hr/>
+<table>
+<thead>
+<tr>
+<th>old options</th>
+<th>new options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-start</code> -r</td>
+<td><code>66</code> reload</td>
+</tr>
+<tr>
+<td><code>66-start</code> -R</td>
+<td><code>66</code> restart</td>
+</tr>
+</tbody>
+</table>
+<h3 id="66-stop">66-stop</h3>
+<hr/>
+<table>
+<thead>
+<tr>
+<th>old options</th>
+<th>new options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>66-stop</code> -u</td>
+<td><code>66</code> free</td>
+</tr>
+<tr>
+<td><code>66-stop</code> -X</td>
+<td><code>66</code> signal -x</td>
+</tr>
+<tr>
+<td><code>66-stop</code> -K</td>
+<td><code>66</code> signal -k -d</td>
+</tr>
+</tbody>
+</table>
+<h2 id="converting-service-frontend-file-1">Converting service frontend file</h2>
+<p>Manual intervention is required to upgrade the frontend file to version 0.7.0.0, as both the <code>longrun</code> and <code>bundle</code> types have been eliminated. Additionally, certain fields have been altered, deprecated, or removed.</p>
+<ul>
+<li><p>The <code>longrun</code> type should be converted to the <code>classic</code> type. To achieve this, simply replace <code>@type=longrun</code> with <code>@type=classic</code>. This conversion is performed by 66 during the parse process, but the change is not applied to the frontend file.</p></li>
+<li><p>The <code>@extdepends=</code> field has been removed and has no effect. To address this, switch the service definition in this field to the <code>@depends=</code> field. For example, a service declaring <code>@depends=(consolekit)</code> and <code>@extdepends=(dbus)</code> should be converted by removing the <code>@extdepends</code> field and appending dbus to the <code>@depends=(dbus consolekit)</code> field.</p></li>
+<li><p>The <code>@shebang</code> field is deprecated and will be removed in a future release. To define the shebang for our script, place it at the beginning of the <code>@execute</code> field <strong>right after</strong> the opened parentheses, <strong>without</strong> any space, new line, or other characters. For example, for an sh script, the beginning of the @execute field must be</p>
+<pre><code>@execute = (!#&#47;usr&#47;bin&#47;sh
+echo myscript
+....
+)
+</code></pre>
+<p>The incorret way is</p>
+<pre><code>@execute = (
+#!&#47;usr&#47;bin&#47;sh
+echo myscript
+    ....
+)
+</code></pre>
+<p>The following is also incorrect</p>
+<pre><code>@execute = ( #!&#47;usr&#47;bin&#47;sh
+echo myscript
+    ....
+)
+</code></pre>
+<p>Failure to adhere to the correct syntax will result in an <code>Error format</code> during the execution of the service.</p></li>
+<li><p>The <code>bundle</code> type no longer exists. To achieve a similar behavior, you can emulate the functionality of a <code>bundle</code> by using a <code>oneshot</code> type. Define the <code>@depends=</code> field with the service name previously defined in your <code>bundle</code> type under the <code>@contents</code> field. The <code>@execute</code> field of the <code>oneshot</code> service should simply be defined as <code>true</code>. For instance, the following bundle</p>
+<pre><code>[main]
+@type=bundle
+@version=0.0.1
+@description="launch network"
+@user=(root)
+@contents=(connmand openntpd)
+</code></pre>
+<p>will be converted to following <code>oneshot</code> service</p>
+<pre><code>[main]
+@type=oneshot
+@version=0.0.1
+@description="launch network"
+@user=(root)
+@depends=(connmand openntpd)
+
+[start]
+@execute=(true)
+</code></pre>
+<p>Certainly, you can replace the <code>bundle</code> type with the <code>module</code> type. However, depending on your specific cases, the <code>module</code> type might overcomplicate the service itself.</p></li>
+<li><p>The <code>module</code> type must be redefined from scratch due to significant changes in the directory <code>module</code> structure. Refers to the <a href="66-module-creation.html">module-creation</a> documentation for detailed information.</p></li>
+</ul>
+<h2 id="cleaning-the-66-directories-and-files">Cleaning the 66 directories and files</h2>
+<p>The heart structure of <code>66</code> has been reframed, resulting in a simplified directory architecture. Clean unused files and directories from the previous release by following the instructions below. Additionally, refer to the <a href="66-deeper.html">deeper understanding</a> documentation about the <code>66</code> architecture.</p>
+<h3 id="system_dir">%%system_dir%%</h3>
+<p>You can safely remove the following directories and files:</p>
+<ul>
+<li><p><code>%%system_dir%%&#47;current</code> directory.</p></li>
+<li><p><code>%%system_dir%%&#47;system&#47;</code>:</p>
+<p>Any other directories and files <strong><em>except</em></strong> for the <code>%%system_dir%%&#47;.resolve</code> and <code>%%system_dir%%&#47;service</code> directories from this directory.</p></li>
+</ul>
+<p>The exact same task applies to the <code>${HOME}&#47;.66</code> directory. Also, you can remove the <code>${HOME}&#47;.66&#47;module</code> directory.</p>
+<h3 id="skel">/etc/66</h3>
+<p>You can safely remove the following <code>/etc/66&#47;module</code> directory.</p>
+</body>
+</html>

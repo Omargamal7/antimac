@@ -1,0 +1,2 @@
+liburing-ffi 2 liburing2 (>= 2.9)
+liburing 2 liburing2 (>= 2.9)

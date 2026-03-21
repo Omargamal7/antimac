@@ -1,0 +1,12 @@
+[Main]
+Type = classic
+Version = 0.0.2
+Description = "seatd daemon"
+User = ( root )
+Notify = 3
+
+[Start]
+Execute = (  execl-cmdline -s { seatd ${Args} } )
+
+[Environment]
+Args=!-n 3 -g video seat -l error

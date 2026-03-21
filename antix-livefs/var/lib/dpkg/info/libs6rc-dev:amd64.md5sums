@@ -1,0 +1,9 @@
+d069750c92aeb4bf424e84ab7a4a3fac  usr/include/s6-rc/config.h
+fbf6f438ee8f74f05c12ed0423af8d26  usr/include/s6-rc/s6rc-constants.h
+db606b07f72ad26c73d61def38c4a0f7  usr/include/s6-rc/s6rc-db.h
+24bddb94f7dfbdf7f508d7807dbe3ab6  usr/include/s6-rc/s6rc-servicedir.h
+d7a46712214cde746517383e5f59ca00  usr/include/s6-rc/s6rc-utils.h
+fc5cd7e5867e425f2dfdce59de79faff  usr/include/s6-rc/s6rc.h
+69120691290b311e08150bf3d4673e4f  usr/lib/x86_64-linux-gnu/libs6rc.a
+0092cee8a6283245aac778a2c1057381  usr/share/doc/libs6rc-dev/changelog.Debian.gz
+16cd6a6fab0328cfdec94c5ce2070adb  usr/share/doc/libs6rc-dev/copyright

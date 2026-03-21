@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/kmod-static-nodes.stage1.sh

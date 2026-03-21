@@ -1,0 +1,31 @@
+#!/bin/sh
+set -e
+if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] || [ "$1" = "abort-deconfigure" ] || [ "$1" = "abort-remove" ] ; then
+ if [ -f /sbin/runit ]; then
+  if [ -d /etc/sv ] && [ ! -d "/etc/sv/anacron" ]; then
+    cp -r /usr/share/runit/sv/anacron /etc/sv/
+    echo "Copying to /etc/sv"
+  fi
+ fi
+
+ if [ -f /sbin/runit ]; then  
+  #remove /etc/init.d/anacron if it exists since we are using runit
+  if [ -f /etc/init.d/anacron ]; then 
+      rm /etc/init.d/anacron
+  fi 
+  if [ ! -h "/etc/service/anacron" ]; then
+    ln -s /etc/sv/anacron/ /etc/service/
+  fi  
+ else
+  if [ -x /etc/init.d/anacron ]; then
+    update-rc.d anacron defaults >/dev/null 2>&1
+		if [ -n "$2" ]; then
+			_dh_action=restart
+		else
+			_dh_action=start
+		fi
+		invoke-rc.d --skip-systemd-native anacron $_dh_action || exit 1
+  fi
+ fi
+
+fi

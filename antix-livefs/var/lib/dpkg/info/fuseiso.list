@@ -1,0 +1,16 @@
+/.
+/usr
+/usr/bin
+/usr/bin/fuseiso
+/usr/share
+/usr/share/doc
+/usr/share/doc/fuseiso
+/usr/share/doc/fuseiso/README
+/usr/share/doc/fuseiso/changelog.Debian.gz
+/usr/share/doc/fuseiso/changelog.gz
+/usr/share/doc/fuseiso/copyright
+/usr/share/man
+/usr/share/man/man1
+/usr/share/man/man1/fuseiso.1.gz
+/usr/bin/fuseiso9660
+/usr/share/man/man1/fuseiso9660.1.gz

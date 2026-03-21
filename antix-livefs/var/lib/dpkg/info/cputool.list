@@ -1,0 +1,14 @@
+/.
+/usr
+/usr/bin
+/usr/bin/cputool
+/usr/share
+/usr/share/doc
+/usr/share/doc/cputool
+/usr/share/doc/cputool/changelog.Debian.amd64.gz
+/usr/share/doc/cputool/changelog.Debian.gz
+/usr/share/doc/cputool/changelog.gz
+/usr/share/doc/cputool/copyright
+/usr/share/man
+/usr/share/man/man8
+/usr/share/man/man8/cputool.8.gz

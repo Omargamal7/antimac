@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/hwclock.stage1.sh

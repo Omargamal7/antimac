@@ -1,0 +1,22 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount /dev directory"
+User = ( root )
+Depends = ( mount-sys )
+StdOut = s6log:%%livedir%%/log/mount-dev
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp mount-dev -1 /dev/console mount /dev directory }
+    if -nt {
+
+        execl-cmdline -s { execl-toc -X -m /dev ${Args} }
+
+    }
+    66-yeller -fcdp mount-dev -1 /dev/console crashed!
+)
+
+[Environment]
+Args=!-o mode=0755,nosuid -t devtmpfs -d dev

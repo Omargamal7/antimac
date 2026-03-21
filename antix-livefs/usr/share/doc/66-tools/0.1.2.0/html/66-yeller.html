@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66-tools Suite: 66-yeller</title>
+</head>
+<body>
+<p><a href="index.html">66-tools</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="66-yeller">66-yeller</h1>
+<p><em>66-yeller</em> is a powerful, specialized echo tool.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>    66-yeller [ -h ] [ -d ] [ -s|S ] [ -1 file ] [ -2 file ] [ -z ] [ -n ] [ -c ] [ -p prog ] [ -v verbosity ] [ -i|w|W|t|T|f|F ] msg...
+</code></pre>
+<p><em>66-yeller</em> writes the current system time, the name of the program, a colorized informative message (<em>msg</em>), depending on the options passed to one or two streams. By default, <em>stream_1</em> points to <strong>stdout</strong> and <em>stream_2</em> points to <strong>stderr</strong>. The <em>\a</em>, <em>\b</em>, <em>\t</em>, <em>\n</em>, <em>\v</em>, <em>\f</em>, and <em>\r</em> sequences are recognized in quoted strings, and are converted to the ASCII numbers 7, 8, 9, 10, 11, 12 and 13 respectively.</p>
+<h2 id="exit-codes">Exit codes</h2>
+<ul>
+<li><em>0</em> success</li>
+<li><em>100</em> wrong usage</li>
+<li><em>111</em> system call failed</li>
+</ul>
+<h2 id="options">Options</h2>
+<ul>
+<li><p><strong>-h</strong> : prints this help.</p></li>
+<li><p><strong>-d</strong> : double-output. It writes on <em>stream_1</em> and <em>stream_2</em>.</p></li>
+<li><p><strong>-s</strong> : switches streams. <em>Stream_1</em> becomes <em>stream_2</em> and <em>stream_2</em> becomes <em>stream_1</em>.</p></li>
+<li><p><strong>-S</strong> : reads <em>msg</em> from stdin.</p></li>
+<li><p><strong>-1</strong> <em>file</em> : redirects <em>stream_1</em> to <em>file</em>. The file is opened for appending and created if it doesn&#8217;t exist.</p></li>
+<li><p><strong>-2</strong> <em>file</em> : redirects <em>stream_2</em> to <em>file</em>. The file is opened for appending and created if it doesn&#8217;t exist.</p></li>
+<li><p><strong>-z</strong> : enable color. If the <em>stream_1</em> does not point to a terminal, the color is automatically disabled and the option has no effects.</p></li>
+<li><p><strong>-n</strong> : does not output a trailing newline.</p></li>
+<li><p><strong>-c</strong> : does not write the current sytem time. By default the current system time as an <em>ISO</em> timestamp. It can be set to a <em>TAIN64</em>(see <a href="66-yeller.html#Environment%20variables">Environment variable</a>).</p></li>
+<li><p><strong>-p</strong> <em>prog</em> : use <em>prog</em> as the program name to display. By default <em>66-yeller</em> tries to find the name of the calling process by reading and parsing the <code>&#47;proc&#47;&#60;pid&#62;&#47;comm</code> file. This option tells to <em>66-yeller</em> to use <em>prog</em> as the default program name to display.</p></li>
+<li><p><strong>-v</strong> <em>verbosity</em>: increases&#47;decreases the verbosity of the command.</p>
+<ul>
+<li><em>0</em>: only print error messages.</li>
+<li><em>1</em>: also, print informative messages. This is the default.</li>
+<li><em>2</em>: also, print warning messages.</li>
+<li><em>3</em>: also, print tracing messages.</li>
+<li><em>4</em>: also, print function name and line code of the messages.</li>
+<li><em>5</em>: also, display the sequence of the current process function by function.</li>
+</ul></li>
+<li><p><strong>-i</strong> : does not write the informative message.</p></li>
+<li><p><strong>-w</strong> : prints a warning message.</p></li>
+<li><p><strong>-W</strong> : prints a warning message regardless the verbosity level. <em>66-yeller</em> follows the exact same verbosity rule as any other 66 tools. A <em>verbosity</em> set to <code>1</code> will not write a warning message. This option forces <em>66-yeller</em> to write a warning message even if the <em>verbosity</em> is less than <code>2</code>.</p></li>
+<li><p><strong>-t</strong> : prints a tracing message.</p></li>
+<li><p><strong>-T</strong> : prints a tracing message regardless the verbosity level. <em>66-yeller</em> follows the exact same verbosity rule as any other 66 tools. A <em>verbosity</em> set to <code>2</code> will not write a tracing message. This option forces <em>66-yeller</em> to write a tracing message even if the <em>verbosity</em> is less than <code>3</code>.</p></li>
+<li><p><strong>-f</strong> : prints a fatal message and dies with an <code>111</code> as exit code.</p></li>
+<li><p><strong>-F</strong> : prints a fatal message without dying.</p></li>
+</ul>
+<h2 id="msg-color-options">msg color options</h2>
+<ul>
+<li><strong>%w</strong> : set color to white</li>
+<li><strong>%b</strong> : set color to blue</li>
+<li><strong>%g</strong> : set color to green</li>
+<li><strong>%y</strong> : set color to yellow</li>
+<li><strong>%r</strong> : set color to red</li>
+<li><strong>%l</strong> : enable blinking</li>
+<li><strong>%n</strong> : reset color to normal</li>
+</ul>
+<h2 id="default-informative-message-format">Default informative message format</h2>
+<ul>
+<li><p>A <code>info</code>(default) message will be:</p>
+<pre><code>    &#60;sytem time&#62; &#60;prog&#62;: info: &#60;msg&#62;
+</code></pre>
+<p>where <code>info</code> is written in green color.</p></li>
+<li><p>A <code>warning</code> message will be:</p>
+<pre><code>    &#60;sytem time&#62; &#60;prog&#62;: warning: &#60;msg&#62;
+</code></pre>
+<p>where <code>warning</code> is written in yellow color.</p></li>
+<li><p>A <code>tracing</code> message will be:</p>
+<pre><code>    &#60;sytem time&#62; &#60;prog&#62;: tracing: &#60;msg&#62;
+</code></pre>
+<p>where <code>tracing</code> is written in white color.</p></li>
+<li><p>A <code>fatal</code> message will be:</p>
+<pre><code>    &#60;sytem time&#62; &#60;prog&#62;: fatal: &#60;msg&#62;
+</code></pre>
+<p>where <code>fatal</code> is written in red color.</p></li>
+</ul>
+<h2 id="environment-variables">Environment variables</h2>
+<p>The following environment variable can be set to configure the default <em>66-yeller</em> behavior. The corresponding options set at commandline overwrite the environment variable.</p>
+<ul>
+<li><h3 id="prog">PROG</h3>
+<p>Corresponds to the <strong>-p</strong> option. Specifies the name of the program to display.</p></li>
+<li><h3 id="verbosity">VERBOSITY</h3>
+<p>Corresponds to the <strong>-v</strong> option. Specifies the verbosity level to use.</p></li>
+<li><h3 id="color_enabled">COLOR_ENABLED</h3>
+<p>Corresponds to the <strong>-z</strong> option. Tells to <em>66-yeller</em> to use color. A value of <code>1</code> enable the color, where <code>0</code> disable it.</p></li>
+<li><h3 id="double_output">DOUBLE_OUTPUT</h3>
+<p>Corresponds to the <strong>-d</strong> option. Tells to <em>66-yeller</em> to use double-output. A value of <code>1</code> switches on the double-output, where <code>0</code> switches off the double-output.</p></li>
+<li><h3 id="clock_enabled">CLOCK_ENABLED</h3>
+<p>Corresponds to the <strong>-c</strong> option. Tells to <em>66-yeller</em> to output the current system time. A value of <code>1</code> outputs the system time where <code>0</code> does not.</p></li>
+<li><h3 id="clock_timestamp">CLOCK_TIMESTAMP</h3>
+<p>Specifies the timestamp to use for the system time display. A value of <code>1</code> output the system time as <em>ISO</em> timestamp where <code>0</code> outputs the system time as <em>TAIN64</em> timestamp.</p></li>
+<li><h3 id="redirfd_1">REDIRFD_1</h3>
+<p>Corresponds to the <strong>-1</strong> option. Redirects the <em>stream_1</em> to its value(e.g. REDIRFD_1=&#47;dev&#47;console). A value of <code>0</code> resets the <code>stream_1</code> to its default value.</p></li>
+<li><h3 id="redirfd_2">REDIRFD_2</h3>
+<p>Corresponds to the <strong>-2</strong> option. Redirects the <em>stream_2</em> to its value(e.g. REDIRFD_2=&#47;dev&#47;null). A value of <code>0</code> resets the <code>stream_2</code> to its default value.</p></li>
+</ul>
+<h2 id="usage-examples">Usage examples</h2>
+<p>Call 66-yeller from a terminal where the shell is <code>zsh</code>:</p>
+<pre><code>    % 66-yeller this is an info message
+    2020-05-06 10:49:02.71 zsh: info: this is an info message
+</code></pre>
+<p>Same things but specifying the name of the program to print:</p>
+<pre><code>    % 66-yeller -p MyProg this is a warning message
+    2020-05-06 10:49:02.71 MyProg: info: this is a info message
+</code></pre>
+<p>This following message will not be displayed:</p>
+<pre><code>    % 66-yeller -p MyProg -w this following message will not be displayed
+</code></pre>
+<p>Where this one will be:</p>
+<pre><code>    % 66-yeller -p MyProg -W this following message will be displayed
+    2020-05-06 10:49:02.71 MyProg: warning: this following message will be displayed
+</code></pre>
+<p>Also, it can be:</p>
+<pre><code>    % 66-yeller -v2 -p MyProg -w this following message will be displayed
+    2020-05-06 10:49:02.71 MyProg: warning: this following message will be displayed
+</code></pre>
+<p>Do not display the system time:</p>
+<pre><code>    % 66-yeller -c -p MyProg what time is it\?
+    MyProg: info: what time is it?
+</code></pre>
+<p>Also do not display the informative message:</p>
+<pre><code>    % 66-yeller -ic -p MyProg what time is it\?
+    what time is it?
+</code></pre>
+<p>Colorize the output where <code>what</code> will be displayed in red color and <code>time</code> in yellow color:</p>
+<pre><code>    % 66-yeller -ic %r what %y time %n is it\?
+    what time is it?
+</code></pre>
+<p>Alos, it can be:</p>
+<pre><code>    % 66-yeller -ic %rwhat%y time%n is it\?
+    what time is it?
+</code></pre>
+<p>Append a trailing newline and a tabulation:</p>
+<pre><code>    % 66-yeller -ic what "time\nis\tit?"
+    what time
+    is  it?
+</code></pre>
+<p>Use the double-output and redirects <em>stream_2</em> to <code>myfile</code> file:</p>
+<pre><code>    % 66-yeller -d -2 myfile -p MyProg reads myfile to see again this message
+    2020-05-18 09:33:16.47 MyProg: info: reads myfile to see again this message
+</code></pre>
+<p>Reads <em>msg</em> from stdin:</p>
+<pre><code>    % ls -la &#47;tmp | 66-yeller -p MyProg -S
+    2020-05-18 09:37:59.15 MyProg: info: total 840K
+    2020-05-18 09:37:59.15 MyProg: info: drwxrwxrwt  6 root   root   220 May 18 09:07 .&#47;
+    2020-05-18 09:37:59.15 MyProg: info: drwxr-xr-x 19 root   root  4.0K May 16 09:13 ..&#47;
+    2020-05-18 09:37:59.15 MyProg: info: drwxr-xr-t  2 root   root    40 May 18 06:57 .ICE-unix&#47;
+    2020-05-18 09:37:59.15 MyProg: info: drwxrwxrwt  2 root   root    60 May 18 06:57 .X11-unix&#47;
+
+</code></pre>
+<p>Reads message from stdin. Does not display informative message and the system time. Uses double output and redirects <em>stream_2</em> to <code>myfile</code></p>
+<pre><code>    % ls -la &#47;tmp | 66-yeller -cdi2 &#47;tmp&#47;myfile -S &#47;tmp contents "-&#62;"
+    &#47;tmp contents -&#62; total 844K
+    &#47;tmp contents -&#62; drwxrwxrwt  6 root   root   240 May 18 09:40 .&#47;
+    &#47;tmp contents -&#62; drwxr-xr-x 19 root   root  4.0K May 16 09:13 ..&#47;
+    &#47;tmp contents -&#62; drwxr-xr-t  2 root   root    40 May 18 06:57 .ICE-unix&#47;
+    &#47;tmp contents -&#62; drwxrwxrwt  2 root   root    60 May 18 06:57 .X11-unix&#47;
+</code></pre>
+<p>Use <em>66-yeller</em> in a <code>sh</code> script called <code>script.sh</code> with a pre-defined behavior set by the environment variables:</p>
+<pre><code>    #!&#47;bin&#47;sh
+    export PROG=my_awesome_script
+    export VERBOSITY=2
+    export DOUBLE_OUTPUT=1
+    export REDIRFD_2=&#47;tmp&#47;my_awesome_script.log
+
+    set -e
+
+    if ! [ -e &#47;etc&#47;66&#47;init.conf ]; then
+        66-yeller -f "file &#47;etc&#47;66&#47;init.conf doesn&#39;t exist"
+    else
+        cat &#47;etc&#47;66&#47;init.conf | 66-yeller -Sic "%y-&#62;%n "
+    fi
+
+    if ! [ -e &#47;etc&#47;66&#47;toto.conf ]; then
+        66-yeller -f "file &#47;etc&#47;66&#47;toto.conf doesn&#39;t exist"
+    else
+        cat &#47;etc&#47;66&#47;toto.conf | 66-yeller -Sic "%y-&#62;%n "
+    fi
+    66-yeller you will never see this message
+</code></pre>
+<pre><code>    % .&#47;script.sh
+    -&#62; VERBOSITY=0
+    -&#62; LIVE=&#47;run&#47;66
+    -&#62; PATH=&#47;usr&#47;bin:&#47;usr&#47;sbin:&#47;bin:&#47;sbin:&#47;usr&#47;local&#47;bin
+    -&#62; TREE=boot
+    -&#62; RCINIT=&#47;etc&#47;66&#47;rc.init
+    -&#62; RCSHUTDOWN=&#47;etc&#47;66&#47;rc.shutdown
+    -&#62; RCSHUTDOWNFINAL=&#47;etc&#47;66&#47;rc.shutdown.final
+    -&#62; UMASK=0022
+    -&#62; RESCAN=0
+    -&#62; ISHELL=&#47;etc&#47;66&#47;ishell
+    2020-05-18 09:57:16.83 my_awesome_script: fatal: file &#47;etc&#47;66&#47;toto.conf doesn&#39;t exist
+
+    % cat &#47;tmp&#47;my_awesome_script
+    cat &#47;tmp&#47;my_awesome_script.log
+    -&#62; VERBOSITY=0
+    -&#62; LIVE=&#47;run&#47;66
+    -&#62; PATH=&#47;usr&#47;bin:&#47;usr&#47;sbin:&#47;bin:&#47;sbin:&#47;usr&#47;local&#47;bin
+    -&#62; TREE=boot
+    -&#62; RCINIT=&#47;etc&#47;66&#47;rc.init
+    -&#62; RCSHUTDOWN=&#47;etc&#47;66&#47;rc.shutdown
+    -&#62; RCSHUTDOWNFINAL=&#47;etc&#47;66&#47;rc.shutdown.final
+    -&#62; UMASK=0022
+    -&#62; RESCAN=0
+    -&#62; ISHELL=&#47;etc&#47;66&#47;ishell
+    2020-05-18 10:03:28.94 my_awesome_script: fatal: file &#47;etc&#47;66&#47;toto.conf doesn&#39;t exist
+
+</code></pre>
+</body>
+</html>

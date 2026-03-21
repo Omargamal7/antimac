@@ -1,0 +1,42 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Launch all trees enabled of root user"
+User = ( root )
+Depends = ( local-branch )
+StdOut = s6log:%%livedir%%/log/runtime-branch
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp runtime-branch -1 /dev/console launch every enabled trees }
+    if -nt {
+
+        execl-envfile ${ConfFile}
+        66 -v${Verbosity} -T ${Timeout} -l ${LIVE} tree start
+
+    }
+    execl-envfile ${ConfFile}
+    66-yeller -Fcdp runtime-branch -1 /dev/console crashed! -- Your machine is operational but some runtime service failed to start correctly. Please see the complete boot log at ${LIVE}/log/0/runtime-branch/current file for further information.
+)
+
+[Stop]
+Execute =
+(
+    if { 66-yeller -cdp runtime-branch -1 /dev/console stops every trees }
+    if -nt {
+
+        execl-envfile ${ConfFile}
+        66 -v${Verbosity} -T ${Timeout} -l ${LIVE} tree stop
+
+    }
+    ## use -F here, we don't want to crash to avoid to
+    ## not bring down properly the rest of the service
+    66-yeller -Fcdp runtime-branch -1 /dev/console crashed!
+)
+
+[Environment]
+ConfFile=!%%initconf%%
+## Time to wait to bring up and down services in milliseconds
+Timeout=!60000
+Verbosity=3

@@ -1,0 +1,7 @@
+## [STARTWARN]
+## DO NOT MODIFY THIS FILE, IT OVERWRITTEN AT UPGRADE TIME.
+## Uses '66 configure boot@system:mount-tmp' command instead.
+## Or make a copy of this file at /etc/66/conf/boot@system/version/boot@system:mount-tmp/3.8.1/boot@system:mount-tmp and modify it.
+## [ENDWARN]
+Args=!-o noatime,nodev,nosuid -t tmpfs -d tmp
+

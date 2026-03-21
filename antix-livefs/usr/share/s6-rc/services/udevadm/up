@@ -1,0 +1,5 @@
+#!/usr/bin/execlineb -P
+
+foreground { redirfd -w 1 /dev/null /bin/udevadm trigger --action=add --type=subsystems }
+foreground { redirfd -w 1 /dev/null /bin/udevadm trigger --action=add --type=devices }
+foreground { redirfd -w 1 /dev/null /bin/udevadm settle }

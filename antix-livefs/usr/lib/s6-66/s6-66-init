@@ -1,0 +1,3 @@
+#!/usr/lib/execline/bin/execlineb -P
+66 boot -m -e /etc/66/environment
+

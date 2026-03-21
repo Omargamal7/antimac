@@ -1,0 +1,31 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount and configure every pseudo filesystem"
+User = ( root )
+Depends = (
+    system-hostname
+    mount-run
+    populate-run
+    mount-tmp
+    populate-tmp
+    mount-proc
+    mount-sys
+    populate-sys
+    mount-dev
+    mount-pts
+    mount-shm
+    populate-dev
+    mount-cgroups
+)
+StdOut = s6log:%%livedir%%/log/mount-branch
+
+[Start]
+Execute = (
+    66-yeller -cdp mount-branch -1 /dev/console completed
+)
+
+[Stop]
+Execute= (
+    66-yeller -cdp mount-branch -1 /dev/console completed
+)

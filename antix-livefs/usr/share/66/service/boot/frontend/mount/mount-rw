@@ -1,0 +1,22 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "remount rw '/' directory"
+User = ( root )
+Depends = ( system-branch )
+StdOut = s6log:%%livedir%%/log/mount-rw
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp mount-rw -1 /dev/console remount root directory as rw }
+    if -nt {
+
+        execl-cmdline -s { s6-mount ${Args} }
+
+    }
+    66-yeller -fcdp mount-rw -1 /dev/console crashed!
+)
+
+[Environment]
+Args=!-o remount,rw / /

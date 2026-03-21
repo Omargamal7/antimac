@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="firmware">
+  <id>org.debian.packages.firmware_carl9170</id>
+  <name>Firmware for carl9170</name>
+  <summary>Opensource version of the firmware for carl9170 wifi devices. It was previously offered via firmware-linux-free.</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <provides>
+    <firmware type="runtime">carl9170-1.fw</firmware>
+    <modalias>usb:v0409p0249d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0409p02B4d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v04BBp093Fd*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v057Cp8401d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v057Cp8402d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0586p3417d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v07D1p3A09d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v07D1p3A0Fd*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v07D1p3C10d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v083ApF522d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0846p9001d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0846p9010d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0846p9040d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0ACEp1221d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0CDEp0023d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0CDEp0026d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0CDEp0027d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0CF3p1001d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0CF3p1002d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0CF3p1010d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0CF3p1011d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v0CF3p9170d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v1435p0326d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v1435p0804d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v1668p1200d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v1B75p9170d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:v2019p5304d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+    <modalias>usb:vCACEp0300d*dc*dsc*dp*ic*isc*ip*in*</modalias>
+  </provides>
+</component>

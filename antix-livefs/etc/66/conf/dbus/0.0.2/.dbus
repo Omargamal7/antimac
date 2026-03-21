@@ -1,0 +1,8 @@
+## [STARTWARN]
+## DO NOT MODIFY THIS FILE, IT OVERWRITTEN AT UPGRADE TIME.
+## Uses '66 configure dbus' command instead.
+## Or make a copy of this file at /etc/66/conf/dbus/0.0.2/dbus and modify it.
+## [ENDWARN]
+Args=!--system --print-pid=4 --nofork --nopidfile --address=unix:path=${Socket}
+Socket=!/run/dbus/system_bus_socket
+

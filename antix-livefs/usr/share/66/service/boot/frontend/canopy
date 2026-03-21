@@ -1,0 +1,19 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Launch every services of the system"
+User = ( root )
+Depends = (
+    mount-branch system-branch local-branch runtime-branch
+)
+StdOut = s6log:%%livedir%%/log/canopy
+
+[Start]
+Execute = (
+    66-yeller -cdp canopy -1 /dev/console completed
+)
+
+[Stop]
+Execute= (
+    66-yeller -cdp canopy -1 /dev/console completed
+)

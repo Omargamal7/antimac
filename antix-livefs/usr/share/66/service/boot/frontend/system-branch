@@ -1,0 +1,30 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount /tmp directory"
+User = ( root )
+Depends = (
+    mount-branch
+    system-hwclock
+    modules-kernel
+    system-random
+    modules-system
+    system-sysctl
+    udevd
+    udevadm
+    system-fontnkey
+    devices-branch
+    system-fsck
+    mount-fstab
+)
+StdOut = s6log:%%livedir%%/log/system-branch
+
+[Start]
+Execute = (
+    66-yeller -cdp system-branch -1 /dev/console completed
+)
+
+[Stop]
+Execute= (
+    66-yeller -cdp system-branch -1 /dev/console completed
+)

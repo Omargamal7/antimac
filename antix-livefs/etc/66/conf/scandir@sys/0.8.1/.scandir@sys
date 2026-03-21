@@ -1,0 +1,19 @@
+## [STARTWARN]
+## DO NOT MODIFY THIS FILE, IT OVERWRITTEN AT UPGRADE TIME.
+## Uses '66 configure scandir@sys' command instead.
+## Or make a copy of this file at /etc/66/conf/scandir@sys/0.8.1/scandir@sys and modify it.
+## [ENDWARN]
+## Run the scandir at LIVE_DIRECTORY.
+## Need to be an absolute path.
+## If commented the default is /run/66
+#LIVE_DIRECTORY=/run/66
+## Create an associated logger [yes|no]
+LOGGER=!yes
+## Launch the scandir with a environment [yes|no].
+## The environment directory is: $HOME/.66/conf/svscan@sys
+USE_ENVIRONMENT=!no
+## Use notification [yes|no]
+NOTIFY=!yes
+## Level of verbosity [0-5]
+VERBOSITY_LEVEL=!3
+

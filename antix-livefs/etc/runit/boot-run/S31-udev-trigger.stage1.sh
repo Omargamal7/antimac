@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/udev-trigger.stage1.sh

@@ -1,0 +1,8 @@
+## [STARTWARN]
+## DO NOT MODIFY THIS FILE, IT OVERWRITTEN AT UPGRADE TIME.
+## Uses '66 configure boot@system:local-dmesg' command instead.
+## Or make a copy of this file at /etc/66/conf/boot@system/version/boot@system:local-dmesg/3.8.1/boot@system:local-dmesg and modify it.
+## [ENDWARN]
+Args=!-T
+LogFile=!/var/log/dmesg.log
+

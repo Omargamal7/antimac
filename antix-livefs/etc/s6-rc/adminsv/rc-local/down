@@ -1,0 +1,4 @@
+#!/usr/bin/execlineb -P
+elglob -0 scripts /etc/s6-rc/scripts/rc-local/*.stop
+forx -E script { ${scripts} }
+	sh -c "${script}"

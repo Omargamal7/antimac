@@ -1,0 +1,5 @@
+/etc/66/init.conf
+/etc/66/rc.init
+/etc/66/rc.init.container
+/etc/66/rc.shutdown
+/etc/66/rc.shutdown.final

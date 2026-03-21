@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component>
+  <id>org.kernel.drivers.firmware-b43-installer</id>
+  <metadata_license>MIT</metadata_license>
+  <name>firmware-b43-installer</name>
+  <summary>Firmware installer for the b43 driver</summary>
+  <description>
+    <p>This package downloads and installs the firmware needed by the b43
+    kernel driver for some Broadcom 43xx wireless network cards.</p>
+    <p>Supported chipsets:</p>
+    <ul>
+      <li>BCM4306/3 (chip revision 3 only);</li>
+      <li>BCM4311 (NOT PCI Id 14e4:4313);</li>
+      <li>BCM4312;</li>
+      <li>BCM43131;</li>
+      <li>BCM4318;</li>
+      <li>BCM4321 (only partial support, not all versions tested);</li>
+      <li>BCM43217;</li>
+      <li>BCM4322 (only partial support for some versions, not all versions tested);</li>
+      <li>BCM43222 (not all versions tested);</li>
+      <li>BCM43224 (not all versions tested);</li>
+      <li>BCM43225;</li>
+      <li>BCM43227;</li>
+      <li>BCM43228;</li>
+      <li>BCM4331;</li>
+      <li>BCM47xx (detection not reliable, may not support all versions).</li>
+    </ul>
+  </description>
+  <url type="homepage">https://wireless.wiki.kernel.org/en/users/drivers/b43</url>
+  <provides>
+    <modalias>pci:v000014E4d00004306sv*</modalias>
+    <modalias>pci:v000014E4d0000432[04]sv*</modalias>
+    <modalias>pci:v000014E4d00004307sv*</modalias>
+    <modalias>pci:v000014E4d0000431[59]sv*</modalias>
+    <modalias>pci:v000014E4d0000432[1289BC]sv*</modalias>
+    <modalias>pci:v000014E4d00004331sv*</modalias>
+    <modalias>pci:v000014E4d0000435[03789]sv*</modalias>
+    <modalias>pci:v000014E4d000043A[9A]sv*</modalias>
+    <modalias>pci:v000014E4d00004716sv*</modalias>
+    <modalias>pci:v000014E4d0000A8D8sv*</modalias>
+    <modalias>pci:v000014E4d0000A8DBsv*</modalias>
+    <modalias>pci:v000014E4d00005354sv*</modalias>
+    <modalias>pci:v000014E4d0000431[12]sv*</modalias>
+    <modalias>pci:v000014E4d00004318sv*</modalias>
+  </provides>
+</component>

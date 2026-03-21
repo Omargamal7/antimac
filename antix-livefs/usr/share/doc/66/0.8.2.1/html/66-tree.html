@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: tree</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="tree">tree</h1>
+<p>This command handles a <em>tree</em> containing a set of <em>services</em>.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>tree [ -h ] create|admin|remove|enable|disable|current|status|resolve|init|start|stop|free tree
+</code></pre>
+<p>The <code>tree</code> command functions similarly to services, wherein each <em>tree</em> can have dependencies or be required-by another <em>tree</em>. These subcommands facilitate various actions such as creating, managing, activating, and checking the status of trees, among other functionalities, within the system. Additionally, it manages dependencies between different trees, enabling effective control and organization of <em>tree</em> structures.</p>
+<p>The default tree named <code>global</code> is provided. This <em>tree</em> is automatically created using <a href="#basic-creation-configuration">basic creation configuration</a>, with the key difference that this <em>tree</em> is enabled by default. The default name can also be changed at compile time by passing the <code>--with-default-tree-name=</code> option to <code>configure</code>. If the <code>global</code> is removed, a simple invocation of a <code>66</code> command will create it again.</p>
+<p>Configuration of the <em>tree</em> during its creation can be managed through a configuration file called <code>seed</code>.—see <a href="#seed-files">Seed files</a>.</p>
+<p>Services within <em>tree</em> need to be <em>enabled</em>, with the <a href="66-enable.html">66 enable</a> command, to be managed by the <code>start</code> subcommand. The <code>stop</code> and <code>free</code> subcommand manages any running services within <em>tree</em>.</p>
+<p>A non-existing <em>tree</em> can also be created automatically when invocating of the <code>66 -t</code> option with commands that accept it. For example, the <code>66 -t treefoo enable foo</code> call automatically creates the tree <code>treefoo</code> if it doesn&#8217;t exist yet, applying the <a href="#basic-creation-configuration">basic creation configuration</a> or utilizing the <code>seed</code> file configuration if such file exists.</p>
+<h2 id="why-trees">Why trees?</h2>
+<p>The usefulness of having several trees with different services can be explained with a simplified example:</p>
+<pre><code>tree named network contains services dhcpcd and ntpd
+tree named print contains services cups and nfs
+tree named graphic contains services xorg, notification-daemon, gvfsd and dbus
+</code></pre>
+<p>When booting your machine and opting for console-only usage, your concern might solely be a working internet connection, disregarding xorg or cups. Initially, you would only enable <code>network</code> at the base level. Upon every boot, this <em>tree</em> and all its <em>enabled</em> services will automatically start.</p>
+<p>Later, when you need to print a document stored on another server, you&#8217;d typically start <code>cups</code> and then <code>nfs</code>. By leveraging the <em>tree</em> concept, you can start <code>print</code>, making all necessary services available. After finishing the printing task, instead of individually stopping the required services, you can simply stop <code>print</code>, and all services within it will cease automatically.</p>
+<p>The functionality extends further: say, you now wish to watch a video, requiring an active X server and potentially other services. Enter <code>graphics</code>, specifically designed for such purposes.</p>
+<h2 id="options">Options</h2>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h2 id="subcommands">Subcommands</h2>
+<ul>
+<li><strong>create</strong>: creates a new <em>tree</em>.</li>
+<li><strong>admin</strong>: manages <em>tree</em>.</li>
+<li><strong>remove</strong>: removes <em>tree</em></li>
+<li><strong>enable</strong>: activates <em>tree</em> for the next boot.</li>
+<li><strong>disable</strong>: deactivates <em>tree</em> for the next boot.</li>
+<li><strong>current</strong>: mark <em>tree</em> as current.</li>
+<li><strong>status</strong>: displays information about <em>tree</em></li>
+<li><strong>resolve</strong>: displays resolve file of <em>tree</em></li>
+<li><strong>init</strong>: initiate all services marked enabled from <em>tree</em></li>
+<li><strong>start</strong>: bring up all enabled services from <em>tree</em></li>
+<li><strong>stop</strong>: bring down all services from <em>tree</em></li>
+<li><strong>free</strong>: bring down and unsupervise all services from <em>tree</em></li>
+</ul>
+<h3 id="usage-examples">Usage examples</h3>
+<p>Create a non-existing <em>tree</em> named <code>network</code></p>
+<pre><code>66 tree create network
+</code></pre>
+<p>Create a non-existing <em>tree</em> named <code>print</code> which depends on <em>tree</em> <code>network</code> and associated to the <code>admin</code> group</p>
+<pre><code>66 tree create -o depends=network:groups=admin print
+</code></pre>
+<p>Create a non-existing <em>tree</em> named <code>graphics</code> which depends on <em>tree</em> <code>network</code></p>
+<pre><code>66 tree create -o depends=network graphics
+</code></pre>
+<p>Enables a <em>tree</em> called <code>network</code></p>
+<pre><code>66 tree enable network
+</code></pre>
+<p>Starts the <em>tree</em> called <code>print</code>. Any <em>enabled</em> services associated with this <em>tree</em> are brought up</p>
+<pre><code>66 tree start print
+</code></pre>
+<p>Stops the <em>tree</em> called <code>print</code>. Any running services will be stopped and unsupervised</p>
+<pre><code>66 tree free print
+</code></pre>
+<h3 id="create">Create</h3>
+<p>This subcommand creates a <em>tree</em> that doesn&#8217;t exist and potentially configures it based on the options used.</p>
+<h4 id="interface-1">Interface</h4>
+<pre><code>tree create [ -h ] [ -o depends=:requiredby=:... ] *tree*
+</code></pre>
+<p>After creation <em>tree</em> do not contain any services. You need to <a href="#associated-service-to-a-tree">associate</a> services within <em>tree</em> with the <a href="66-enable.html">66 enable</a> command.</p>
+<p>This command handles <a href="66.html#handling-dependencies">interdependencies</a>.</p>
+<h4 id="options-1">Options</h4>
+<ul>
+<li><p><strong>-h</strong>: prints this help.</p></li>
+<li><p><strong>-o</strong>: list of options separated by colons.</p></li>
+</ul>
+<p>valid fields for <code>-o</code> options are:</p>
+<ul>
+<li><strong>depends=</strong>: comma separated list of dependencies for <em>tree</em> or <code>none</code>. If the name of the <em>tree</em> passed as dependencies doesn&#8217;t exist, it will be automatically created.</li>
+<li><strong>requiredby=</strong>: comma separated list of trees required-by <em>tree</em> or none. If the name of the <em>tree</em> passed as required-by dependencies doesn&#8217;t exist, it will be automatically created.</li>
+<li><strong>groups=</strong>: add <em>tree</em> to the specified groups. Accepted group are <code>boot</code>, <code>admin</code>, <code>user</code> and <code>none</code> —see <a href="#groups-behavior">Groups behavior</a>.</li>
+<li><strong>allow=</strong>: comma separated list of account to allow at <em>tree</em>. Account must be valid on the system. <strong>name account is expected</strong> not the corresponding <code>UID</code> of the account. The term <code>user</code> is also accepted to significate that all user neither root of the system can use <em>tree</em>.</li>
+<li><strong>deny=</strong>: comma separated list of account to deny at <em>tree</em>. Account must be valid on the system. <strong>name account is expected</strong> not the corresponding <code>UID</code> of the account. The term <code>user</code> is also accepted to significate that all user neither root of the system can use <em>tree</em>.</li>
+<li><strong>clone=</strong>: make a clone of <em>tree</em>. This create an exact copy of the configuration of the <em>tree</em>, with the exception that no services are associated with the cloned <em>tree</em>. The name of the clone <strong>must not</strong> already exists int the system.</li>
+<li><strong>noseed</strong>: do not use seed file to build the <em>tree</em>. Even if a seed file exists, ignore it and create tree only with options passed or <a href="#basic-creation-configuration">basic creation configuration</a>.</li>
+<li><strong>enable</strong>: activate the tree at the next boot.</li>
+</ul>
+<h4 id="usage-examples-1">Usage examples</h4>
+<p>Creates a tree named <code>treefoo</code></p>
+<pre><code>66 tree create treefoo
+</code></pre>
+<p>Creates, configures and clones a <em>tree</em> named <code>treefoo</code> where the clone of <code>treefoo</code> is named <code>treefoo2</code></p>
+<pre><code>66 tree create -o depends=treebar,treebaz:groups=admin:deny=none:allow=root:clone=treefoo2 treefoo
+</code></pre>
+<h3 id="admin">Admin</h3>
+<p>This command allow to manage configuration of an already existing <em>tree</em>.</p>
+<h4 id="interface-2">Interface</h4>
+<pre><code>tree admin [ -h ] [ -o depends=:requiredby=:... ] tree
+</code></pre>
+<p>If the <em>tree</em> does not exist, it is created and configured based on the options used.</p>
+<p>This command handles <a href="66.html#handling-dependencies">interdependencies</a>.</p>
+<h4 id="options-2">Options</h4>
+<ul>
+<li><p><strong>-h</strong>: prints this help.</p></li>
+<li><p><strong>-o</strong>: list of options separated by colons.</p></li>
+</ul>
+<p>valid fields for <code>-o</code> options are:</p>
+<ul>
+<li><strong>depends=</strong> <em>trees</em>: comma separated list of <em>trees</em> dependencies for <em>tree</em> or <code>none</code>. If the name of the <em>tree</em> passed as dependencies doesn&#8217;t exist, it will be automatically created.</li>
+<li><strong>requiredby=</strong>: comma separated list of <em>trees</em> required-by dependencies for <em>tree</em> or none. If the name of the <em>tree</em> passed as required-by dependencies doesn&#8217;t exist, it will be automatically created.</li>
+<li><strong>groups=</strong> <em>group</em>: add <em>tree</em> to the specified <em>group</em>. Accepted group are <code>boot</code>, <code>admin</code>, <code>user</code> and <code>none</code> —see <a href="#groups-behavior">Groups behavior</a>.</li>
+<li><strong>allow=</strong> <em>user</em>: comma separated list of <em>user</em> account to allow at <em>tree</em>. Account must be valid on the system. <strong>name account is expected</strong> not the corresponding <code>UID</code> of the account. The term <code>user</code> is also accepted to significate that all user neither root of the system can use <em>tree</em>. Any user not explicitly allowed is automatically denied for configuring the given <em>tree</em>.</li>
+<li><strong>deny=</strong> <em>user</em>: comma separated list of <em>user</em> account to deny at <em>tree</em>. Account must be valid on the system. <strong>name account is expected</strong> not the corresponding <code>UID</code> of the account. The term <code>user</code> is also accepted to significate that all user neither root of the system can use <em>tree</em>.</li>
+<li><strong>clone=</strong> <em>name</em>: make a clone <em>name</em> of <em>tree</em>. This create an exact copy of the configuration of the <em>tree</em>, with the exception that no services are associated with the cloned <em>tree</em>. The name of the clone <strong>must not</strong> already exists int the system.</li>
+</ul>
+<h4 id="usage-examples-2">Usage examples</h4>
+<p>Changes the dependencies of <code>treefoo</code> to <code>treebaz</code> where <code>treefoo</code> depended previously of tree <code>treebar</code></p>
+<pre><code>66 tree admin -o depends=treebaz treefoo
+</code></pre>
+<p>Deny all user of <code>treefoo</code></p>
+<pre><code>66 tree admin -o deny=user treefoo
+</code></pre>
+<h3 id="remove">Remove</h3>
+<p>This command remove a <em>tree</em>. This operation <strong>cannot be</strong> undone. Process with caution.</p>
+<h4 id="interface-3">Interface</h4>
+<pre><code>tree remove [ -h ] tree
+</code></pre>
+<p>Services associated with the tree are switched to the <em>tree</em> marked current or to the <code>global</code> in other cases. The state of services remains unchanged during the switch.</p>
+<p>Tree dependencies, including required-by dependencies, are managed. For instance, if <code>treefoo</code> is required-by <code>treebar</code>, the dependencies of <code>treebar</code> are adjusted, removing <code>treefoo</code> as a dependency. This adjustment is done recursively, ensuring all interdependencies are updated. Therefore, the entire tree dependency graph is reconstructed.</p>
+<h4 id="options-3">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h4 id="usage-examples-3">Usage examples</h4>
+<p>Removes <code>treefoo</code> tree
+<code>
+66 tree remove treefoo
+</code></p>
+<h3 id="enable">Enable</h3>
+<p>This command enables a <em>tree</em> for the next boot.</p>
+<h4 id="interface-4">Interface</h4>
+<pre><code>tree enable [ -h ] tree
+</code></pre>
+<p>If the <em>tree</em> does not exist, it is created and configured with <a href="#basic-creation-configuration">basic creation configuration</a>.</p>
+<p>Trees associated to the <code>boot</code> <a href="#groups-behavior">group</a> cannot be enabled.</p>
+<p>This command handles <a href="66.html#handling-dependencies">interdependencies</a>.</p>
+<h4 id="options-4">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h4 id="usage-examples-4">Usage examples</h4>
+<p>Enables <code>treefoo</code> tree</p>
+<pre><code>66 tree enable treefoo
+</code></pre>
+<h3 id="disable">Disable</h3>
+<p>This command is the exact opposite of <code>enable</code> command.</p>
+<h4 id="interface-5">Interface</h4>
+<pre><code>tree disable [ -h ] tree
+</code></pre>
+<p>This command handles <a href="66.html#handling-dependencies">interdependencies</a>.</p>
+<h4 id="options-5">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h4 id="usage-examples-5">Usage examples</h4>
+<p>Disables <code>treefoo</code> tree</p>
+<pre><code>66 tree disable treefoo
+</code></pre>
+<h3 id="current">Current</h3>
+<p>This command a <em>tree</em> as the current one.</p>
+<h4 id="interface-6">Interface</h4>
+<pre><code>66 tree [ -h ] current tree
+</code></pre>
+<p>After marking a <em>tree</em> as current, the <code>66</code> command using the <code>-t</code> reacts to that <em>tree</em> without the need to specify the <code>-t</code> option.</p>
+<h4 id="options-6">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h4 id="usage-examples-6">Usage examples</h4>
+<p>Marks <code>treefoo</code> as current</p>
+<pre><code>66 tree current treefoo
+</code></pre>
+<h3 id="status">Status</h3>
+<p>This command displays information about a <em>tree</em>.</p>
+<h4 id="interface-7">Interface</h4>
+<pre><code>tree status [ -h ] [ -n ] [ -o name,enabled,... ] [ -g ] [ -d depth ] [ -r ] tree
+</code></pre>
+<p>If <em>tree</em> is not specified, the command return information of all trees available of the system.</p>
+<h4 id="options-7">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+<li><strong>-n</strong>: do not display the names of fields. Combining this options with the <code>-o</code> facilitates scripting usage.</li>
+<li><strong>-o</strong>: comma separated list of field to display.</li>
+<li><strong>-g</strong>: displays the contents field as graph allowing to view interdependencies of services.</li>
+<li><strong>-d</strong>: increase the depth view of the contents field recursion. Default value is <code>1</code>. Only have effect with the <code>-g</code> option.</li>
+<li><strong>-r</strong>: reverse the contents field. By default, the order corresponds to a <code>start</code> process.</li>
+</ul>
+<p>valid fields for <code>-o</code> options are:</p>
+<ul>
+<li><strong>name</strong>: displays the name of the tree.</li>
+<li><strong>current</strong>: displays a boolean value of the current state.</li>
+<li><strong>enabled</strong>: displays a boolean value of the enable state.</li>
+<li><strong>depends</strong>: displays the list of tree(s) started before.</li>
+<li><strong>requiredby</strong>: displays the list of tree(s) started after.</li>
+<li><strong>allowed</strong>: displays a list of allowed user to use the tree.</li>
+<li><strong>contents</strong>: displays the list of services associated to tree.</li>
+</ul>
+<h4 id="usage-and-output-examples">Usage and output examples</h4>
+<p>Displays all information of all trees</p>
+<pre><code>66 tree status
+</code></pre>
+<p>Only display the field <code>name</code> and <code>enabled</code> of all trees</p>
+<pre><code>66 tree status -o name,enabled
+</code></pre>
+<p>Only display the field <code>enabled</code> of tree <code>treefoo</code> without displaying the name of the field</p>
+<pre><code>66 tree status -n -o enabled treefoo
+</code></pre>
+<p>In a script you can do</p>
+<pre><code>#!&#47;bin&#47;sh
+
+tree="${1}"
+isenabled=$(66 tree status -no enabled ${tree})
+
+if [ ${isenabled} = "no" ]; then
+   echo ${tree} is not enabled
+else
+   echo ${tree} is enabled
+fi
+</code></pre>
+<p>Displays information of associated services of tree <code>global</code> using graph mode</p>
+<pre><code>66 tree status -g global
+
+Name        : global
+Current     : yes
+Enabled     : yes
+Allowed     : root
+Groups      : admin
+Depends     : \
+              └─None
+required by : \
+              └─session (Enabled)
+Contents    : \
+              ├─dbus-log (pid=719, state=Enabled, type=classic, tree=global)
+              ├─consolekit-log (pid=716, state=Enabled, type=classic, tree=global)
+              ├─networkmanager-log (pid=715, state=Enabled, type=classic, tree=global)
+              ├─sshd-log (pid=722, state=Enabled, type=classic, tree=global)
+              ├─openntpd-log (pid=720, state=Enabled, type=classic, tree=global)
+              ├─dbus (pid=728, state=Enabled, type=classic, tree=global)
+              ├─sshd (pid=730, state=Enabled, type=classic, tree=global)
+              ├─consolekit (pid=745, state=Enabled, type=classic, tree=global)
+              ├─networkmanager (pid=746, state=Enabled, type=classic, tree=global)
+              └─openntpd (pid=736, state=Enabled, type=classic, tree=global)
+</code></pre>
+<p>It also displays information of each associated services of tree <code>global</code> within () parentheses, which are self-explainatory.</p>
+<p>Displays information about the associated services of the global tree in reverse graph mode, representing the process for stop</p>
+<pre><code>66 tree status -g -r global
+
+Name        : global
+Current     : yes
+Enabled     : yes
+Allowed     : root
+Groups      : admin
+Depends     : \
+              └─None
+required by : \
+              └─session (Enabled)
+Contents    : \
+              ├─openntpd (pid=736, state=Enabled, type=classic, tree=global)
+              ├─networkmanager (pid=746, state=Enabled, type=classic, tree=global)
+              ├─consolekit (pid=745, state=Enabled, type=classic, tree=global)
+              ├─sshd (pid=730, state=Enabled, type=classic, tree=global)
+              ├─dbus (pid=728, state=Enabled, type=classic, tree=global)
+              ├─openntpd-log (pid=720, state=Enabled, type=classic, tree=global)
+              ├─sshd-log (pid=722, state=Enabled, type=classic, tree=global)
+              ├─networkmanager-log (pid=715, state=Enabled, type=classic, tree=global)
+              ├─consolekit-log (pid=716, state=Enabled, type=classic, tree=global)
+              └─dbus-log (pid=719, state=Enabled, type=classic, tree=global)
+</code></pre>
+<h3 id="resolve">Resolve</h3>
+<p>This command displays the complete contents of the <a href="66-deeper.html#resolve-files">resolve</a> file of the <em>tree</em>.</p>
+<h4 id="interface-8">Interface</h4>
+<pre><code>66 tree resolve [ -h ] tree
+</code></pre>
+<p>Resolve file are used internally by <code>66</code> to know <em>tree</em> information. This subcommand is purely a debug command used by system administrator or developers.</p>
+<h4 id="options-8">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h4 id="usage-examples-7">Usage examples</h4>
+<p>Displays contents of the <code>treefoo</code> resolve file</p>
+<pre><code>66 tree resolve treefoo
+</code></pre>
+<h3 id="init">Init</h3>
+<p>This command initiate services of a tree to a scandir directory</p>
+<h4 id="interface-9">Interface</h4>
+<pre><code>66 tree init [ -h ] tree
+</code></pre>
+<p>The behavior of this subcommand will depends of the state of the <a href="66-scandir.html">scandir</a>. If the scandir is not running, this command will initiate earlier services of <em>tree</em>, in other case its initiate all <em>enabled</em> services within <em>tree</em>.</p>
+<p>Users, even system administrator, should not need to directly invoke this command. This subcommand is primarily used internally by <code>66 boot</code> command to initiate earlier services of <em>tree</em>. Initiation of services is made automatically at each invocation of <code>66 start</code> or <code>66 tree start</code> command is services was not initiate previously.</p>
+<h4 id="options-9">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h4 id="initialization-process">Initialization process</h4>
+<p>The command will make an exact copy of the <em>enabled</em> service files and directories of the <em>tree</em> inside a <a href="66-scandir.html">scandir</a> directory at <code>/run/66&#47;state&#47;UID</code> where <em>UID</em> is the uid of the current owner of the process. The <a href="66-scandir.html">scandir</a> does not need to be necessarily running. This is useful at boot time to initiate an early service before starting the scandir. Once the <a href="66-scandir.html">scandir</a> starts—see <a href="66-scandir.html">66 scandir start</a> command, the already present services start automatically.</p>
+<h4 id="usage-examples-8">Usage examples</h4>
+<p>Initiates all <em>enabled</em> services of <code>treefoo</code> to a running scandir</p>
+<pre><code>66 tree init treefoo
+</code></pre>
+<h3 id="start">Start</h3>
+<p>This command starts all services <strong>marked enabled</strong> within tree</p>
+<h4 id="interface-10">Interface</h4>
+<pre><code>tree start [ -h ] [ -f ] tree
+</code></pre>
+<p>If <em>tree</em> is not specified, the command manages all <em>enabled</em> services within all <em>enabled</em> trees available of the system.</p>
+<p>This command handles <a href="66.html#handling-dependencies">interdependencies</a>.</p>
+<h4 id="options-10">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+</ul>
+<h4 id="usage-examples-9">Usage examples</h4>
+<p>Starts all services marked enabled of all enabled trees of the system</p>
+<pre><code>66 tree start
+</code></pre>
+<p>Starts all services marked enabled of tree <code>treefoo</code></p>
+<pre><code>66 tree start treefoo
+</code></pre>
+<h3 id="stop">Stop</h3>
+<p>This command stops all <strong>running services</strong> within tree</p>
+<h4 id="interface-11">Interface</h4>
+<pre><code>66 tree stop [ -h ] [ -f ] tree
+</code></pre>
+<p>If <em>tree</em> is not specified, the command manages all services within all <em>enabled</em> trees available of the system.</p>
+<p>This command handles <a href="66.html#handling-dependencies">interdependencies</a>.</p>
+<h4 id="options-11">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+<li><strong>-f</strong>: fork the process and lose the controlling terminal. This option should be used only for a shutdown process.</li>
+</ul>
+<h4 id="usage-examples-10">Usage examples</h4>
+<p>Stops all services from all enabled trees available on the system</p>
+<pre><code>66 tree stop
+</code></pre>
+<p>Stops all services of tree <code>treefoo</code></p>
+<pre><code>66 tree stop treefoo
+</code></pre>
+<h3 id="free">Free</h3>
+<p>This command stops and unsupervise tree.</p>
+<h4 id="interface-12">Interface</h4>
+<pre><code>66 tree free [ -h ] [ -f ] tree
+</code></pre>
+<p>If <em>tree</em> is not specified, the command manages all services within all <em>enabled</em> trees available of the system.</p>
+<p>This command handles <a href="66.html#handling-dependencies">interdependencies</a>.</p>
+<h4 id="options-12">Options</h4>
+<ul>
+<li><strong>-h</strong>: prints this help.</li>
+<li><strong>-f</strong>: fork the process and lose the controlling terminal. This option should be used only for a shutdown process.</li>
+</ul>
+<h4 id="usage-examples-11">Usage examples</h4>
+<p>Stops and unsuperives all services from all enabled trees available on the system</p>
+<pre><code>66 tree stop
+</code></pre>
+<p>Stops and unsupervise all services of tree <code>treefoo</code></p>
+<pre><code>66 tree stop treefoo
+</code></pre>
+<h2 id="basic-creation-configuration">Basic creation configuration</h2>
+<p>By default, <em>tree</em> is created with the following configuration which can be translated to <a href="#seed-files">seed</a> file format:</p>
+<pre><code>depends = none
+requiredby = none
+enable = false
+## Depending on the owner of the current process,
+## it will be the name of the account system.
+allow = root
+current = false
+## Depending on the owner of the current process,
+## it will be *admin* for root or *user* for regular user.
+groups = admin
+</code></pre>
+<h2 id="seed-files">Seed files</h2>
+<p>A <code>seed</code> file can be provided to automatically configure the tree during its creation. This file is expected to be found at <code>/etc/66/seed</code>, <code>/usr/share/66/seed</code> or <code>$HOME&#47;.66/seed</code>, depending of the owner of the process. These locations can also be changed at compile time by passing the <code>--with-sysadmin-seed=</code>, <code>--with-system-seed=</code> and <code>--with-user-seed=</code> options in <code>configure</code>, respectively.</p>
+<p>The <code>seed</code> file name need to correspond to the name of the tree to be configured.</p>
+<p>The following template is self-explained</p>
+<pre><code>## An empty field is not allowed. If the key is define, the value must exist and valid.
+## In other case, simply comment it.
+
+## This file use the two following type format:
+##   Boolean: use false or true. Default false for an absent key.
+##   List: a comma separated string list.
+
+## Type: List
+## Corresponds to e.g. &#39;66 tree admin -o depends=treebar treefoo&#39; or &#39;66 tree create -o depends=treebar treefoo&#39; command
+## You can use the term &#39;none&#39;.
+
+#depends = none
+
+## Type: List
+## Corresponds to e.g. &#39;66 tree admin -o requiredby=treebar treefoo&#39; or &#39;66 tree create -o requiredby=treebar treefoo&#39; command
+## You can use the term &#39;none&#39;
+
+#requiredby = none
+
+## Type: Boolean
+## Corresponds to e.g. &#39;66 tree enable treefoo&#39; command
+
+#enable = false
+
+## Type: List
+## Corresponds to e.g. &#39;66 tree admin -o allow=root treefoo&#39; or &#39;66 tree create -o allow=root treefoo&#39; command
+## If you want to allow any regular account without specifying a particular account name,
+## you can use the term &#39;user&#39;. The account name must be valid on the system.
+
+#allow = root
+
+## Type: List
+## Corresponds to e.g. &#39;66 tree admin -o deny=root treefoo&#39; or &#39;66 tree create -o deny=root treefoo&#39; command
+## If you want to allow any regular account without specifying a particular account name,
+## you can use the term &#39;user&#39;. The account name must be valid on the system.
+
+#deny = user
+
+## Type: Boolean
+## Corresponds to &#39;66 tree current&#39; command
+
+#current = false
+
+## Corresponds to e.g. &#39;66 tree admin -o groups=boot treefoo&#39; or &#39;66 tree create -o groups=boot treefoo&#39; command
+## Can be one of the term: &#39;boot&#39;, &#39;admin&#39;, &#39;user&#39; or &#39;none&#39;.
+## Only one group is allowed.
+
+#groups = admin
+</code></pre>
+<p>This <code>template</code> example of <code>seed</code> file can be found at <a href="https://git.obarun.org/Obarun/66/-/blob/master/contributions/seed/template">contributions&#47;seed</a> directory of the <code>66</code> git project.</p>
+<h2 id="groups-behavior">Groups behavior</h2>
+<p>This feature is in progress. Currently, the only group that has an effect is the <code>boot</code> group. A tree set to the <code>boot</code> group <strong>cannot be</strong> <em>enabled</em>. Trees associated with the <code>boot</code> group are automatically managed by <code>66</code> during boot time. Enabling a <em>tree</em> within the <code>boot</code> group results in services within the <em>tree</em> starting twice, which is likely not the intended behavior.</p>
+<p>The primary purpose and future goal of this feature are to manage <em>tree</em> permissions and provide the ability to handle multiple trees simultaneously. For instance, requesting to <code>start</code> the <code>admin</code> group will initiate all trees within this group.</p>
+<p><strong>(!)</strong> This option and its mechanisms can be subject to change in future releases of <code>66</code>.</p>
+<h2 id="associated-service-to-a-tree">Associated service to a tree</h2>
+<p>Different manner to process can be used to associate a service to a specific <em>tree</em>. You can accomplish this using the following method where <code>foo</code> is the name of the service and <code>treefoo</code> the name of the <em>tree</em>:</p>
+<ul>
+<li>The <code>66 -t treefoo enable foo</code> command will associate <code>foo</code> to <code>treefoo</code>. Every call of this command will switch the service to specified <em>tree</em>, e.g. <code>66 -t global enable foo</code> switch <code>foo</code> to <code>global</code> whatever the previous location of <code>foo</code>.</li>
+<li>If the service <strong>was never parsed</strong> and you launch the command <code>66 -t treefoo start foo</code>, foo will be parsed first and associated to <code>treefoo</code>. In such case, <code>foo</code> is a part of <code>treefoo</code> but not <em>enabled</em>.</li>
+<li>Automatically at parse process setting the <code>InTree=treefoo</code> key through the <a href="66-frontend.html">frontend</a> service file of the service. In such case, at very first use of the service on the system, the service is associated to <code>treefoo</code>.</li>
+</ul>
+</body>
+</html>

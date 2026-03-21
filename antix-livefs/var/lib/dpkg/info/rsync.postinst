@@ -1,0 +1,32 @@
+#!/bin/sh
+set -e
+if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] || [ "$1" = "abort-deconfigure" ] || [ "$1" = "abort-remove" ] ; then
+ if [ -f /sbin/runit ]; then
+  if [ -d /etc/sv ] && [ ! -d "/etc/sv/rsync" ]; then
+    cp -r /usr/share/runit/sv/rsync /etc/sv/
+    echo "Copying to /etc/sv"
+  fi
+ fi
+
+ if [ ! -e /lib/init-diversity ] && [ $(dpkg -l | grep -ic "runit-antix") -eq 1 ] && [ $(ps -p1 | grep -ic "runit") -eq 1 ]; then  
+  #remove /etc/init.d/rsync if it exists since we are using runit
+  if [ -f /etc/init.d/rsync ]; then 
+      mkdir -p /etc/init.d/disabled
+      mv /etc/init.d/rsync /etc/init.d/disabled/rsync
+  fi 
+  if [ ! -h "/etc/service/rsync" ]; then
+    ln -s /etc/sv/rsync/ /etc/service/
+  fi  
+ else
+  if [ -x /etc/init.d/rsync ]; then
+    update-rc.d rsync defaults >/dev/null 2>&1
+		if [ -n "$2" ]; then
+			_dh_action=restart
+		else
+			_dh_action=start
+		fi
+		invoke-rc.d --skip-systemd-native rsync $_dh_action || exit 1
+  fi
+ fi
+
+fi

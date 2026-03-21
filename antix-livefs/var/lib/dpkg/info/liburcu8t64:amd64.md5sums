@@ -1,0 +1,10 @@
+5dc5e46eeb5f99868588066c5d67e7b6  usr/lib/x86_64-linux-gnu/liburcu-bp.so.8.1.0
+074cff12ef94afa14458cd33241e80d4  usr/lib/x86_64-linux-gnu/liburcu-cds.so.8.1.0
+91c1df08a89023ff8ad65db422166063  usr/lib/x86_64-linux-gnu/liburcu-common.so.8.1.0
+6a4e5acddeaf162094de1323df14a111  usr/lib/x86_64-linux-gnu/liburcu-mb.so.8.1.0
+db1ae0ef5bfb78c2ace4f948cfd2d508  usr/lib/x86_64-linux-gnu/liburcu-memb.so.8.1.0
+d8febae4166a29836f6e1135962282b1  usr/lib/x86_64-linux-gnu/liburcu-qsbr.so.8.1.0
+ad0a02a9bef0643ec46e7d2b83b7f658  usr/lib/x86_64-linux-gnu/liburcu.so.8.1.0
+02a89ed2d48d638664985d96aeb93c01  usr/share/doc/liburcu8t64/changelog.Debian.gz
+dd7643338b71315d323e6087c271b750  usr/share/doc/liburcu8t64/changelog.gz
+fff6a5515862ac943b6b540b16139b31  usr/share/doc/liburcu8t64/copyright

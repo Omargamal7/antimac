@@ -1,0 +1,32 @@
+#!/usr/bin/env /lib/runit/invoke-run
+
+# get device from kernel command line, override ./env/SGETTY
+if grep  'console=' /proc/cmdline ; then
+    kconsole=$(grep -o  '\bconsole=[^ ]*' /proc/cmdline)
+    #TODO: only a subset of this parameter is supported: no uart[8250]/brl, no options
+    #full format: see https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html
+    kconsole=${kconsole##*=}  #only the last one matches, the kernel writes there
+    SGETTY=${kconsole%,*}  #discard options if any
+    [ "$SGETTY" = 'null' ] && SGETTY=""    #discard null
+fi
+
+#don't change here, edit ./env/SGETTY instead
+#example: echo ttyS1 > /etc/sv/getty-ttyS0/env/SGETTY
+[ -z "$SGETTY" ] && SGETTY=ttyS0
+
+if ! test -c /dev/"$SGETTY" ; then
+    echo "/dev/$SGETTY not found: stopping getty-ttyS0"
+    exec sv d .
+fi
+if fuser -v /dev/"$SGETTY"  ; then
+    echo "already another process on $SGETTY: stopping getty-ttyS0"
+    exec sv d .
+fi
+
+exec 1>&2
+
+if [ -e /sbin/fgetty ]; then
+    exec chpst -P fgetty /dev/"$SGETTY"
+else
+    exec /sbin/getty -L "$SGETTY" 9600 vt100
+fi

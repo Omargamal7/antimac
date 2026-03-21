@@ -1,0 +1,9 @@
+## [STARTWARN]
+## DO NOT MODIFY THIS FILE, IT OVERWRITTEN AT UPGRADE TIME.
+## Uses '66 configure scandir@root:svscan@root' command instead.
+## Or make a copy of this file at /etc/66/conf/scandir@root/version/scandir@root:svscan@root/0.8.1/scandir@root:svscan@root and modify it.
+## [ENDWARN]
+Args66=!-v3 -l /run/66/
+ArgsScandirStart=!start -d3 
+ArgsScandirStop=!stop
+

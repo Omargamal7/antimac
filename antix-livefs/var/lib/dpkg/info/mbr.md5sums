@@ -1,0 +1,9 @@
+463afaad407fba961e0e1b0661c28d46  usr/sbin/install-mbr
+99d22964209b1c46c7ba37572b118c8c  usr/share/doc/mbr/AUTHORS
+0f22dd75d81764fda525540f0a4f943a  usr/share/doc/mbr/NEWS.Debian.gz
+649a0c94c5d33e7fd88425ee63fcd575  usr/share/doc/mbr/NEWS.gz
+146c9802a533616630faaabae02499cb  usr/share/doc/mbr/README-1st.Debian
+1b1571a33f8f6012be53f280411b1849  usr/share/doc/mbr/README.gz
+d3fda2254c3826eaca1ccbb314e7d31c  usr/share/doc/mbr/changelog.gz
+1a1806cad96719769fec0338c91562f8  usr/share/doc/mbr/copyright
+5b73ee51a3a6b9ef5ebd698f92617229  usr/share/man/man8/install-mbr.8.gz

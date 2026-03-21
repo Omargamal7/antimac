@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: deeper understanding</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="deeper-understanding">Deeper understanding</h1>
+<p>This documentation explains the internal structure of <code>66</code> on the system and the roles of the different directories and file components.</p>
+<p><strong>Never manually changes</strong> any directories or files within the <code>66</code> ecosystem, as this is the best way to break it.</p>
+<h2 id="system_dir">%%system_dir%%</h2>
+<p>This directory is specified at compile time by using the <code>--with-system-dir=</code> option to <code>.&#47;configure</code>.</p>
+<p>This directory stores trees and services configuration files. You should see this following structure</p>
+<pre><code>%%system_dir%%
+└── system
+    ├── .resolve
+    │   ├── service
+    │   │    ├── services -&#62; %%system_dir%%&#47;system&#47;service&#47;svc&#47;&#60;service&#62;
+    │   │    └── services -&#62; %%system_dir%%&#47;system&#47;service&#47;svc&#47;&#60;service&#62;
+    │   ├── Master
+    │   ├── &#60;tree&#62; resolve file
+    │   └── &#60;tree&#62; resolve file
+    └── service
+        └── svc
+            ├── &#60;service&#62;
+            │   ├── .resolve
+            │   │   └── &#60;service&#62; resolve file
+            │   ├── state
+            │   │   └── status file
+            │   ├── file
+            │   └── file     
+            ├── &#60;services&#62;
+            │   ├── .resolve
+            │   │   └── &#60;service&#62; resolve file
+            │   ├── state
+            │   │   └── status file
+            │   ├── file
+            │   └── file    
+            └── &#60;service&#62;
+                ├── .resolve
+                │   └── &#60;service&#62; resolve file
+                ├── state
+                │   └── status file
+                ├── file
+                └── file
+</code></pre>
+<p>The exact same structure is also available for regular users at the <code>${HOME}&#47;.66</code> directory.</p>
+<p>The <code>%%system_dir%%&#47;system&#47;.resolve</code> directory contains resolve files for trees. Each tree have its own resolve file, while the <a href="#master-resolve-file">Master</a> resolve file contains information about all trees available on the system.</p>
+<p>The <code>%%system_dir%%&#47;system&#47;.resolve&#47;service</code> directory consists of symlinks that point to resolve files for each service. These symlinks enable <code>66</code> to quickly access the resolve files for individual services, facilitating the construction of the complete graph of services interdependences.</p>
+<p>The <code>%%system_dir%%&#47;system&#47;service&#47;svc</code> directory includes service directories, each housing the results of the <a href="66-parse.html">parse</a> process, as well as internal directories and files essential for <code>66</code>.</p>
+<h3 id="system_dirsystem.resolve">%%system_dir%%&#47;system&#47;.resolve&#47;</h3>
+<p>The content of the resolve file for a tree, such as <code>global</code>, can be viewed using the <a href="66-tree.html#resolve">66 tree resolve</a> command in the following manner</p>
+<pre><code>66 tree resolve global
+</code></pre>
+<p>This displays information in a self-explanatory manner</p>
+<pre><code>name        : global
+depends     : None
+requiredby  : session
+allow       : 0
+groups      : admin
+contents    : consolekit consolekit-log dbus dbus-log networkmanager networkmanager-log
+ndepends    : 0
+nrequiredby : 1
+nallow      : 1
+ngroups     : 1
+ncontents   : 6
+</code></pre>
+<p>This information is utilized by <code>66</code> to fulfill the user-requested commands. It contains precisely what is necessary and nothing more.</p>
+<p>For instance, in a command like <code>66 tree admin -o depends=security global</code>, the <code>security</code> tree name is appended to the <code>depends</code> field, incrementing the <code>ndepends</code> count by one.</p>
+<p>Essentially, trees are just resolve files - keeping it simple, straightforward, and easy.</p>
+<h4 id="master-resolve-file">Master resolve file</h4>
+<p>The <code>Master</code> resolve file holds significant importance as it contains information about all trees. You can access its contents using the <code>66 tree resolve Master</code> command, which presents information in a self-explanatory format</p>
+<pre><code>name        : Master
+allow       : root
+enabled     : global session
+current     : global
+contents    : global session boot
+nallow      : 1
+nenabled    : 2
+ncontents   : 3
+</code></pre>
+<p>The <code>Master</code> resolve file isn&#8217;t accessible for direct user use. Attempting to execute commands like <code>66 tree enable Master</code> will result in an error.</p>
+<p>This file serves <code>66</code> in rapidly accessing an overview of trees on the system. When a user triggers a <code>66 tree disable session</code> command, it updates the <code>enabled</code> and <code>nenabled</code> fields to reflect the current state of the tree.</p>
+<h3 id="system_dirsystemservicesvcservice">%%system_dir%%&#47;system&#47;service&#47;svc&#47;&#60;service&#62;</h3>
+<p>Every service possesses its individual directory. At its core, this directory houses the outcome of the <a href="66-parse.html">parse</a> process, heavily reliant on the corresponding <a href="66-frontend.html">frontend</a> file. Yet, all service directories invariably include the <code>.resolve</code> and <code>state</code> subdirectories.</p>
+<h4 id="system_dirsystemservicesvcservice.resolve">%%system_dir%%&#47;system&#47;service&#47;svc&#47;&#60;service&#62;&#47;.resolve</h4>
+<p>This directory stores the resolve file for each service, mirroring how <code>%%system_dir%%&#47;system&#47;.resolve&#47;</code> houses the resolve file for a tree. Running <code>66 resolve \&#60;service\&#62;</code> showcases the content of this file, presenting information similar to the following</p>
+<pre><code>name             : openntpd
+description      : ntpd daemon
+version          : 0.2.1
+type             : 0
+notify           : 0
+maxdeath         : 5
+earlier          : 0
+hiercopy         : None
+intree           : None
+ownerstr         : 0
+owner            : 0
+treename         : global
+user             : root
+inns             : None
+enabled          : 1
+home             : &#47;var&#47;lib&#47;66&#47;
+frontend         : &#47;etc&#47;66&#47;service&#47;openntpd
+servicedir       : &#47;var&#47;lib&#47;66&#47;system&#47;service&#47;svc&#47;openntpd
+depends          : sshd openntpd-log
+requiredby       : None
+optsdeps         : None
+contents         : None
+ndepends         : 2
+nrequiredby      : 0
+noptsdeps        : 0
+ncontents        : 0
+run              : #!&#47;usr&#47;bin&#47;execlineb -P
+fdmove 1 0
+s6-fdholder-retrieve &#47;run&#47;66&#47;scandir&#47;0&#47;fdholder&#47;s "pipe:66-w-openntpd-log"
+fdswap 0 1
+.&#47;run.user
+
+run_user         : #!&#47;usr&#47;bin&#47;execlineb -P
+fdmove -c 2 1
+execl-envfile -v4 &#47;etc&#47;66&#47;conf&#47;openntpd&#47;version
+
+    execl-toc -d &#47;var&#47;empty&#47;openntpd
+    execl-toc -d ${socket_dir}
+    execl-cmdline -s { ntpd ${cmd_args} }
+
+
+run_build        : auto
+run_shebang      : None
+run_runas        : None
+finish           : #!&#47;usr&#47;bin&#47;execlineb -S0
+fdmove 1 0
+s6-fdholder-retrieve &#47;run&#47;66&#47;scandir&#47;0&#47;fdholder&#47;s "pipe:66-w-openntpd-log"
+fdswap 0 1
+.&#47;finish.user $@
+
+finish_user      : #!&#47;usr&#47;bin&#47;execlineb -P
+fdmove -c 2 1
+execl-envfile -v4 &#47;etc&#47;66&#47;conf&#47;openntpd&#47;version
+ s6-rmrf ${socket_dir}&#47;${socket_name}
+
+finish_build     : auto
+finish_shebang   : None
+finish_runas     : None
+timeoutkill      : 0
+timeoutfinish    : 0
+timeoutup        : 0
+timeoutdown      : 0
+down             : 0
+downsignal       : 0
+livedir          : &#47;run&#47;66&#47;
+status           : &#47;var&#47;lib&#47;66&#47;system&#47;.resolve&#47;service&#47;openntpd&#47;state&#47;status
+servicedir       : &#47;run&#47;66&#47;state&#47;0&#47;openntpd
+scandir          : &#47;run&#47;66&#47;scandir&#47;0&#47;openntpd
+statedir         : &#47;run&#47;66&#47;state&#47;0&#47;openntpd&#47;state
+eventdir         : &#47;run&#47;66&#47;state&#47;0&#47;openntpd&#47;event
+notifdir         : &#47;run&#47;66&#47;state&#47;0&#47;openntpd&#47;notif
+supervisedir     : &#47;run&#47;66&#47;state&#47;0&#47;openntpd&#47;supervise
+fdholderdir      : &#47;run&#47;66&#47;scandir&#47;0&#47;fdholder
+oneshotddir      : &#47;run&#47;66&#47;scandir&#47;0&#47;oneshotd
+logname          : openntpd-log
+logdestination   : &#47;var&#47;log&#47;66&#47;openntpd
+logbackup        : 3
+logmaxsize       : 1000000
+logtimestamp     : 3
+logwant          : 1
+logrun           : #!&#47;usr&#47;bin&#47;execlineb -P
+s6-fdholder-retrieve &#47;run&#47;66&#47;scandir&#47;0&#47;fdholder&#47;s "pipe:66-r-openntpd-log"
+.&#47;run.user
+
+logrun_user      : #!&#47;usr&#47;bin&#47;execlineb -P
+fdmove -c 2 1
+s6-setuidgid s6log
+s6-log -d3 n3 s1000000 &#47;var&#47;log&#47;66&#47;openntpd
+
+logrun_build     : None
+logrun_shebang   : None
+logrun_runas     : s6log
+logtimeoutkill   : 0
+logtimeoutfinish : 0
+env              :
+cmd_args=!-d
+
+# conf_file=!&#47;etc&#47;ntpd.conf
+
+socket_dir=!&#47;run&#47;openntpd
+
+
+socket_name=!openntpd.sock
+
+
+envdir           : &#47;etc&#47;66&#47;conf&#47;openntpd
+env_overwrite    : 0
+configure        : None
+directories      : None
+files            : None
+infiles          : None
+ndirectories     : 0
+nfiles           : 0
+ninfiles         : 0
+</code></pre>
+<p>The <code>66 status &#60;service&#62;</code> command provides a subset of these information. Too much detail might be overwhelming, so it simplifies the output for ease of use.</p>
+<p>Some precision is needed here:</p>
+<ul>
+<li><p>The intree field corresponds to the <code>InTree</code> field in the <a href="66-frontend.html">frontend</a> file, while <code>treename</code> indicates the current associated tree of the service. Changing the tree with <code>66 -t &#60;tree&#62; enable &#60;service&#62;</code> modifies <code>treename</code>, leaving <code>intree</code> unchanged.</p></li>
+<li><p>The <code>inns</code> field indicates whether the service is a part of a <code>module</code>.</p></li>
+<li><p>The <code>run</code> and <code>finish</code> field contains the content of the <code>%%system_dir%%&#47;system&#47;svc&#47;service&#47;svc&#47;&#60;service&#62;&#47;run</code> and <code>%%system_dir%%&#47;system&#47;svc&#47;service&#47;svc&#47;&#60;service&#62;&#47;finish</code> file respectively.</p></li>
+<li><p>Meanwhile, <code>run_user</code>, and <code>finish_user</code> fields are derived from the <a href="66-frontend.html#section-start">[Start]</a> and <a href="66-frontend.html#section-stop">[Stop]</a> sections in the frontend file. Specifically, <code>run_user</code> corresponds to <code>Execute</code> in the <a href="66-frontend.html#section-start">[Start]</a> section, and the others function similarly but for the <a href="66-frontend.html#section-stop">[Stop]</a> section.</p></li>
+<li><p>Other fields like <code>ownerstr</code>, <code>home</code>, <code>frontend</code>, <code>servicedir</code>, <code>livedir</code>, <code>status</code>, <code>servicedir</code>, <code>scandir</code>, <code>statedir</code>, <code>eventdir</code>, <code>notifdir</code>, <code>supervisedir</code>, <code>fdholderdir</code>, <code>oneshotddir</code>, <code>logname</code>, <code>logwant</code> and <code>env_overwrite</code> are used internally for <code>66</code>&#8217;s operations.</p></li>
+</ul>
+<h4 id="system_dirsystemservicesvcservicestatus">%%system_dir%%&#47;system&#47;service&#47;svc&#47;&#60;service&#62;&#47;status</h4>
+<p>This directory houses a <em>binary</em> file named <code>status</code>, which <code>66</code> uses to track the service&#8217;s current operational status. Running <code>66 state &#60;service&#62;</code> displays output similar to the following</p>
+<pre><code>toinit          : 0
+toreload        : 0
+torestart       : 0
+tounsupervise   : 0
+toparse         : 0
+isparsed        : 1
+issupervised    : 1
+isup            : 1
+</code></pre>
+<p>For instance, when executing <code>66 free &#60;service&#62;</code>, the <code>tounsupervise</code> field switches to <code>1</code> at the process start and back to <code>0</code> at the end. Additionally, <code>isup</code> and <code>issupervised</code> also become <code>0</code>.</p>
+<h2 id="skel">/etc/66</h2>
+<p>This directory is specified at compile time by using the <code>--with-skeleton=</code> option to <code>.&#47;configure</code>.</p>
+<p>It holds various configuration files utilized by <code>66</code>.</p>
+<p>User may want to manage some subdirectories with the exception of the <code>/etc/66/conf</code> below.</p>
+<h3 id="service_admconf">/etc/66/conf</h3>
+<p>This directory is specified at compile time by using the <code>--with-sysadmin-service-conf=</code> option to <code>.&#47;configure</code>.</p>
+<p>This directory stores the configuration file of a service, which is the outcome of the <a href="66-frontend.html#section-environment">[Environment]</a> section parsed from the <a href="66-frontend.html">frontend</a> file.</p>
+<p>The <code>66 configure &#60;service&#62;</code> command handles this directory. It&#8217;s advised for users, including system administrators, to avoid direct interaction with these directories and utilize the <a href="66-configure.html">configure</a> command instead.</p>
+<p>Its subdirectories contain versioned files per service and are self-explanatory.</p>
+<h3 id="environment_adm">/etc/66/environment</h3>
+<p>This directory is specified at compile time by using the <code>--with-sysadmin-environment=DIR</code> option to <code>.&#47;configure</code>.</p>
+<p>This directory serves as a location for system administrators to provide default environment variables used by a <a href="66-scandir.html">scandir</a> at runtime and propagated to services handled by the scandir.</p>
+<p>See the <a href="66-scandir.html#environment">Environment</a> explanation for further information about the behavior, the syntax and the limitations.</p>
+<h3 id="seed_adm">/etc/66/seed</h3>
+<p>This directory is specified at compile time by using the <code>--with-sysadmin-seed=</code> option to <code>.&#47;configure</code>.</p>
+<p>This directory is managed by the user and stores <a href="66-tree.html#seed-files">seed</a> files, used, for example, by the <a href="66-tree.html">tree</a> command. If a <a href="66-tree.html#seed-files">seed</a> file exists both in this directory and at <code>/usr/share/66/service</code>, the one in this directory takes precedence.</p>
+<p>It&#8217;s crucial for system administrators to avoid altering this directory or its subdirectories, ensuring users can manage it without losing their changes.</p>
+<h3 id="service_adm">/etc/66/service</h3>
+<p>This directory is specified at compile time by using the <code>--with-sysadmin-service=</code> option to <code>.&#47;configure</code>.</p>
+<p>This directory is designated for users to store <a href="66-frontend.html">frontend</a> files. If a <a href="66-frontend.html">frontend</a> file for a service exists both in this directory and at <code>/usr/share/66/service</code>, the file in this directory takes precedence.</p>
+<p>It&#8217;s crucial for system administrators to avoid altering this directory or its subdirectories, ensuring users can manage it without losing their changes.</p>
+<h2 id="service_system">/usr/share/66/service</h2>
+<p>This directory is specified at compile time by using the <code>--with-system-service=</code> option to <code>.&#47;configure</code>.</p>
+<p>This directory is reserved for system administrators to install <a href="66-frontend.html">frontend</a> file, often through package manager. Any modifications made by users may be overwritten during system updates.</p>
+<h2 id="script_system">/usr/share/66/script</h2>
+<p>This directory is specified at compile time by using the <code>--with-system-script=</code> option to <code>.&#47;configure</code>.</p>
+<p>This directory serves as a location for system administrators to install additional scripts required by <a href="66-frontend.html">frontend</a> files or those related to the <code>module</code> service type. It&#8217;s a secure area for administrators to manage scripts effectively.</p>
+<h2 id="seed_system">/usr/share/66/seed</h2>
+<p>This directory is specified at compile time by using the <code>--with-system-seed=</code> option to <code>.&#47;configure</code>.</p>
+<p>this directory is intended for system administrators to install <a href="66-tree.html#seed-files">seed</a> files. User modifications in this directory may be lost during system updates.</p>
+<h2 id="livedir">/run/66</h2>
+<p>This directory is specified at compile time by using the <code>--livedir=</code> option to <code>.&#47;configure</code>. It also can be specified on-the-fly with the <a href="66.html">66 -l</a> option.</p>
+<p>This should be within a writable and executable filesystem, likely a RAM filesystem, mounted with <code>exec</code> and <code>rw</code> mount flag.</p>
+<p>This directory and its subdirectories are managed by <code>66</code>. Users, including system administrators, should avoid directly interacting with these directories.</p>
+<p>It create at <a href="66-scandir.html#start">66 scandir create</a> invocation if it doesn&#8217;t yet.</p>
+<h3 id="livedirlog">/run/66&#47;log</h3>
+<p>This directory houses log files, usually one per service. It&#8217;s commonly used for services initiated before a rewritable <code>&#47;var&#47;log</code> directory becomes available.</p>
+<h3 id="livedirlog0">/run/66&#47;log&#47;0</h3>
+<p>This directory stores logs generated by <code>scandir-log</code> service, which is internally created by <code>66</code>. During the boot, the <a href="66-boot.html#skeleton-files">rc.init</a> skeleton file performs actions and captures output using <code>scandir-log</code>.  It might also contain <code>uncaught-log</code> entries from services lacking their own logger, making it valuable for debugging purposes.</p>
+<h3 id="livedirscandir">/run/66&#47;scandir</h3>
+<p>This directory is managed through the <a href="66-scandir.html">scandir</a> comand. Users, including system administrators, should avoid directly interacting with these directories.</p>
+<h4 id="livedirscandiruid">/run/66&#47;scandir&#47;UID</h4>
+<p>Given <code>66</code> can run with root or regular account privileges, this directory contains subdirectories. Each account possesses its own scandir specified by its number. For example, <code>/run/66&#47;scandir&#47;0</code> is owned by root, while <code>/run/66&#47;scandir&#47;1000</code> typically belongs to the first regular account created on the system.</p>
+<p>This directory consists of service symlinks that point to its corresponding <code>/run/66&#47;state&#47;UID&#47;&#60;service&#62;</code> directory.</p>
+<p><em>note</em>: The <code>66 scandir create -B</code> invocation create the directory <code>/run/66&#47;scandir&#47;UID&#47;container</code> containing a named file <em>halt</em>. See <a href="66-boot.html">boot</a> for further information.</p>
+<h3 id="livedirstate">/run/66&#47;state</h3>
+<p>This directory is managed internally by <code>66</code> and contains directories and files needed for the run time of services. Users, including system administrators, should avoid directly interacting with these directories.</p>
+<h3 id="livedirstateuid">/run/66&#47;state&#47;UID</h3>
+<p>As <code>66</code> can be executed with root or regular account privilegies, this directory contains subdirectories. Each account has its own <code>state</code> specified by its number. For intance, <code>/run/66&#47;state&#47;0</code> is owned by root, whereas <code>/run/66&#47;state&#47;1000</code> is typically owned by the first regular account created on the system.</p>
+<p>For instance, the <code>/run/66&#47;state&#47;0&#47;&#60;service&#62;</code> contains a verbatim copy of the <code>%%system_dir%%&#47;system&#47;service&#47;svc&#47;&#60;service&#62;</code> for each root service.</p>
+<p>Invocating the <code>66 free &#60;service&#62;</code> remove the corresponding <code>/run/66&#47;state&#47;0&#47;&#60;service&#62;</code> directory.</p>
+<p>At <a href="66-start.html">start</a> command executed will created the corresponding <code>/run/66&#47;state&#47;0&#47;&#60;service&#62;</code> if it doesn&#8217;t exist yet.</p>
+<h2 id="system_log">/var/log/66</h2>
+<p>This directory is specified at compile time by using the <code>--with-system-log=</code> option to <code>.&#47;configure</code>.</p>
+<p>This directory is automatically managed by <code>66</code>. Users, including system administrators, should avoid directly interacting with these directories.</p>
+<p>Each service, if a logger is associated, has its own subdirectory likely <code>/var/log/66&#47;66&#47;&#60;service&#62;</code>.</p>
+<p>User can control the rotation of the log file with:</p>
+<ul>
+<li><p>the <code>Backup</code> field at the <a href="66-frontend.html#section-logger">[Logger]</a> section of the <a href="66-frontend.html">frontend</a> file.</p></li>
+<li><p>invocating <code>66 reload -P &#60;service&#62;</code> or <code>66 signal -aP &#60;service&#62;</code> command.</p></li>
+</ul>
+<h2 id="resolve-files">Resolve files</h2>
+<p><em>Resolve</em> files are essentially <a href="http://cr.yp.to/cdb.html">CDB</a> databases. They are independent of extra libraries, running daemons, or third-party programs. These files are lightweight and efficient to read and write. However, the downside is the inability to upgrade a field without rewriting the entire database whenever modifications are made to any fields.</p>
+<p>The size of the database varies based on its contents and typically ranges between 4-7 kilobytes.</p>
+</body>
+</html>

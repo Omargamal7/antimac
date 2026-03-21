@@ -1,0 +1,2 @@
+/etc/runit/override-sysv.d/seatd.block
+/etc/sv/seatd/run

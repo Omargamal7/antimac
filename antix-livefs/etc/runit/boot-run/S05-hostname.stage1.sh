@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/hostname.stage1.sh

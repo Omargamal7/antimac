@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: reboot</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="reboot">reboot</h1>
+<p>This command triggers the reboot procedure.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>reboot [ -h ] [ -a ] [ -f|F ] [ -m message ] [ -t time ] [ -W ] when
+</code></pre>
+<p>This command triggers the reboot procedure immediately if <em>when</em> is omitted.</p>
+<p>The <em>when</em> provided <strong>must be</strong> on these formats:</p>
+<ul>
+<li><em>now</em>: triggers the reboot sequence immediately. This is the default</li>
+<li><em>mins</em> or <em>+mins</em> : relative time; triggers the reboot sequence after <em>mins</em> minutes.</li>
+<li><em>hh:mm</em> : absolute time; triggers the reboot sequence when the time <em>hh:mm</em> occurs. If that time has passed for the current day, it will wait for the next day. <em>hh</em> can have 1 or 2 digits; <em>mm</em> <strong>must have</strong> 2 digits.</li>
+</ul>
+<h2 id="options">Options</h2>
+<ul>
+<li><strong>-h</strong>: print this help.</li>
+<li><strong>-a</strong>: use access control. The reboot sequence will only be launched if one of the users listed in <code>&#47;etc&#47;66&#47;shutdown.allow</code> is currently logged in (as tracked by utmp). <code>&#47;etc&#47;66&#47;shutdown.allow</code> is a text file which accepts one user per line. Lines starting with # are commented out.</li>
+<li><strong>-f</strong>: do not trigger a clean shutdown procedure; it will just sync the filesystems then tell the kernel to immediately reboot. This should be the last step in the lifetime of the machine.</li>
+<li><strong>-F</strong>: same as <code>-f</code> but do not sync the filesystems.</li>
+<li><strong>-m</strong> <em>message</em>: replace the default message by message. message is broadcast to all logged in users (as tracked by utmp).</li>
+<li><strong>-t</strong> <em>time</em>: have a grace time period of <em>time</em> seconds between the <code>SIGTERM</code> and the <code>SIGKILL</code> at the end of the reboot sequence when it is time to kill all processes (allows processes to receive <code>SIGTERM</code> to exit cleanly). The default is <code>3</code> seconds.</li>
+<li><strong>-W</strong>: do not send a wall message to users.</li>
+</ul>
+<h2 id="usage-examples">Usage examples</h2>
+<p>reboots the system.</p>
+<pre><code>66 reboot
+</code></pre>
+<p>reboots a broken system</p>
+<pre><code>66 reboot -f
+</code></pre>
+<p>reboots the system after 10 minutes</p>
+<pre><code>66 reboot 10
+</code></pre>
+<p>Sends an &#8220;system will be rebooted in 10 minutes&#8221; to connected account and reboot the system after 10 minutes</p>
+<pre><code>66 reboot -m "system will be rebooted in 10 minutes" 10
+</code></pre>
+</body>
+</html>

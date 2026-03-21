@@ -1,0 +1,3 @@
+/etc/bash_completion
+/etc/bash_completion.d/000_bash_completion_compat.bash
+/etc/profile.d/bash_completion.sh

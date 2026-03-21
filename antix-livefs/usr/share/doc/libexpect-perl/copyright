@@ -1,0 +1,29 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Expect
+Source: https://metacpan.org/dist/Expect
+
+Files: *
+Copyright: 2010 Austin Schutz <tex@habit.com>
+           2010 Roland Giersig <RGiersig@cpan.org>
+           2017 Dave Jacoby <jacoby@cpan.org>
+License: Artistic or GPL-1+
+
+Files: debian/*
+Copyright: 2000-2010 Joergen Haegg <jh@debian.org>
+           2022, Damyan Ivanov <dmn@debian.org>
+License: Artistic or GPL-1+
+
+License: Artistic
+ This program is free software; you can redistribute it and/or modify it
+ under the terms of the Artistic License.
+ .
+ On Debian systems, the full text of the Artistic license can be found in
+ `/usr/share/common-licenses/Artistic'.
+
+License: GPL-1+
+ This pprogram is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License version 1 or
+ later as published by the Free Software Foundation.
+ .
+ On Debian systems, the full text of the GNU General Public License
+ version 1 can be found in `/usr/share/common-licenses/GPL-1'.

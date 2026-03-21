@@ -1,0 +1,7 @@
+#!/bin/sh -euC
+
+if [ "$1" = 163 ] ; then
+    echo "runsv: ERROR in ${PWD}: another getty already on tty3"
+    exec sv d .
+fi
+exec utmpset -w tty3

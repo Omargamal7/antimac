@@ -1,0 +1,14 @@
+execline
+--------
+
+Binaries are installed in /usr/lib/execline/bin. So if you want to write
+execline scripts, please extend your PATH with /usr/lib/execline/bin before
+using them.
+
+Please see the reason at <https://bugs.debian.org/906250>.
+
+However for convenience, a script is provided as /usr/bin/execlineb,
+which adds /usr/lib/execline/bin/ to PATH when invoked. So you can use
+/usr/bin/execlineb as shebang for your scripts.
+
+ -- Shengjing Zhu <zhsj@debian.org>  Sun, 13 Oct 2019 17:45:16 +0800

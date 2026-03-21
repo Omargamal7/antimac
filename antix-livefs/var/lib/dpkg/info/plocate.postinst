@@ -1,0 +1,53 @@
+#! /bin/sh
+
+set -e
+
+GROUP="plocate"
+
+if [ "$1" = "configure" ]; then
+    update-alternatives --install /usr/bin/locate locate /usr/bin/plocate 90 \
+	--slave /usr/share/man/man1/locate.1.gz locate.1.gz /usr/share/man/man1/plocate.1.gz \
+	--slave /usr/bin/updatedb updatedb /usr/sbin/updatedb.plocate \
+        --slave /usr/share/man/man8/updatedb.8.gz updatedb.8.gz /usr/share/man/man8/updatedb.plocate.8.gz
+
+    if ! getent group "$GROUP" > /dev/null 2>&1 ; then
+    	addgroup --system "$GROUP"
+    fi
+
+    if ! dpkg-statoverride --list /usr/bin/plocate >/dev/null 2>&1; then
+    	dpkg-statoverride --update --add root "$GROUP" 2755 /usr/bin/plocate 
+    fi
+fi
+
+
+# Automatically added by dh_installsystemd/13.20
+if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] || [ "$1" = "abort-deconfigure" ] || [ "$1" = "abort-remove" ] ; then
+	# The following line should be removed in trixie or trixie+1
+	deb-systemd-helper unmask 'plocate-updatedb.timer' >/dev/null || true
+
+	# was-enabled defaults to true, so new installations run enable.
+	if deb-systemd-helper --quiet was-enabled 'plocate-updatedb.timer'; then
+		# Enables the unit on first installation, creates new
+		# symlinks on upgrades if the unit file has changed.
+		deb-systemd-helper enable 'plocate-updatedb.timer' >/dev/null || true
+	else
+		# Update the statefile to add new symlinks (if any), which need to be
+		# cleaned up on purge. Also remove old symlinks.
+		deb-systemd-helper update-state 'plocate-updatedb.timer' >/dev/null || true
+	fi
+fi
+# End automatically added section
+# Automatically added by dh_installsystemd/13.20
+if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] || [ "$1" = "abort-deconfigure" ] || [ "$1" = "abort-remove" ] ; then
+	if [ -d /run/systemd/system ]; then
+		systemctl --system daemon-reload >/dev/null || true
+		if [ -n "$2" ]; then
+			_dh_action=restart
+		else
+			_dh_action=start
+		fi
+		deb-systemd-invoke $_dh_action 'plocate-updatedb.service' 'plocate-updatedb.timer' >/dev/null || true
+	fi
+fi
+# End automatically added section
+

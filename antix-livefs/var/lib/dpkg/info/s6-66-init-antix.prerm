@@ -1,0 +1,24 @@
+#! /bin/sh
+#
+# s6-66-init-diversity prerm
+#
+
+set -e
+
+case "$1" in
+		remove|purge)
+			# Exit with error code if s6-66 is detected as PID 1
+			if [ $(ps -p1 | grep -ic "s6-svscan") -eq 1 ] && [ -e /run/66 ]; then
+				echo "s6-66 has been detected as the running init - stopping here"
+				exit 1
+			fi
+		;;	
+		
+		*) : 
+		;;
+esac
+
+
+
+
+exit 0

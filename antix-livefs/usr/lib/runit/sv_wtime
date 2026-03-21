@@ -1,0 +1,41 @@
+#!/bin/sh
+# Copyright: 2022 Lorenzo Puliti <plorenzo@disroot.org>
+# License: BSD-3-clause
+
+# sv_wtime checkbin <service>   1=bin file empty || bin path does not exist
+# sv_wtime test <service>           1=no recorded wtime || binary has been upgraded
+# sv_wtime update <service>
+#WARNING retcode 0=noop 1=action needed
+
+if [ $# -ne 2 ]; then
+	echo "sv_wtime: wrong syntax"  && exit 0
+fi
+
+runitsvdir=$CPSV_DEST
+test -n "$runitsvdir" || runitsvdir=/etc/sv
+service="${2}"
+binf="$runitsvdir/$service/.meta/bin"
+wtimef="$runitsvdir/$service/.meta/wtime"
+test -r "$binf" || exit 0 #can't do anything without this
+binpath="$(cat $binf)"
+
+case ${1} in
+   checkbin)
+	test -n "$binpath" || exit 1
+	test -e "$binpath" || exit 1
+	exit 0
+	;;
+   test)
+	bintime="$(stat -c %W $binpath)" || exit 0
+	test -r "$wtimef" || exit 1
+	svtime="$(cat $wtimef)"
+	[ "$bintime" -gt "$svtime" ] && exit 1
+	exit 0
+	;;
+   update)
+	bintime="$(stat -c %W $binpath)" || exit 0
+	echo "$bintime" > "$wtimef"
+	;;
+	*)
+	;;
+esac

@@ -1,0 +1,37 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Restore ip6tables rules"
+Depends = ( mount-rw )
+User = ( root )
+StdOut = s6log:%%livedir%%/log/local-ip6tables
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp local-ip6tables -1 /dev/console restore ip6tables configuration }
+    if -nt {
+
+        execl-toc -e ${ScriptConf}
+        ip6tables-restore ${ScriptConf}
+
+    }
+    66-yeller -fcdp local-ip6tables -1 /dev/console crashed!
+)
+
+[Stop]
+Execute =
+(
+    if { 66-yeller -cdp local-ip6tables -1 /dev/console flush ip6tables configuration }
+    if -nt {
+
+        execl-toc -x ${ScriptFile}
+        ${ScriptFile}
+
+    }
+    66-yeller -fcdp local-ip6tables -1 /dev/console crashed!
+)
+
+[Environment]
+ScriptConf=!/etc/iptables/ip6tables.rules
+ScriptFile=!/usr/lib/iptables/scripts/ip6tables-flush

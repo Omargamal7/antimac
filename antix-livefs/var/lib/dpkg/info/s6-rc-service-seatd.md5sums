@@ -1,0 +1,12 @@
+59bfe01c0a3f4a436a5db3e1f5bc84c1  usr/share/doc/s6-rc-service-seatd/changelog.gz
+8b92f1a9bc3cfba785bbd0a84605146a  usr/share/doc/s6-rc-service-seatd/copyright
+850357ee4d8c1908382381bcfbb43ad2  usr/share/s6-rc/config/seatd.conf
+9e4bfa765e0250de5a7b2bbf24219013  usr/share/s6-rc/services/seatd-log/consumer-for
+6d7fce9fee471194aa8b5b6e47267f03  usr/share/s6-rc/services/seatd-log/notification-fd
+57c40608427396c89754802acc73a04b  usr/share/s6-rc/services/seatd-log/pipeline-name
+0e3290b6a5a05304a29f28fcec8aad00  usr/share/s6-rc/services/seatd-log/run
+42c13bdd7f61c06ac59c1aaca9c0f07a  usr/share/s6-rc/services/seatd-log/type
+d41d8cd98f00b204e9800998ecf8427e  usr/share/s6-rc/services/seatd-srv/dependencies.d/udevadm
+b40bdec1303dd7d115dcce480298b90b  usr/share/s6-rc/services/seatd-srv/producer-for
+09f2d352fb2b90fb99dd595d920071eb  usr/share/s6-rc/services/seatd-srv/run
+42c13bdd7f61c06ac59c1aaca9c0f07a  usr/share/s6-rc/services/seatd-srv/type

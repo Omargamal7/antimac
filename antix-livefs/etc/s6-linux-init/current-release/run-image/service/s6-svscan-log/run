@@ -1,0 +1,5 @@
+#!/usr/bin/execlineb -P
+
+/usr/lib/execline/bin/fdmove -c 1 2
+/usr/lib/execline/bin/redirfd -rnb 0 fifo
+/usr/bin/s6-log -bpd3 -- 1 t /run/uncaught-logs

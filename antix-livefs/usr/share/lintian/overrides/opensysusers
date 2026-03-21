@@ -1,0 +1,9 @@
+# this is an alternative implementation on systemd sysusers and
+# sysusers unit is already shipped with systemd
+opensysusers: missing-systemd-service-for-init.d-rcS-script opensysusers [etc/init.d/opensysusers]
+# Creating sysusers.d is intentional
+opensysusers: package-contains-empty-directory [usr/lib/sysusers.d/]
+# The manpage is provided by the systemd package
+opensysusers: no-manual-page [usr/bin/systemd-sysusers]
+# DEP17 M18 not recognized by lintian
+opensysusers: diversion-for-unknown-file bin/systemd-sysusers [preinst:*]

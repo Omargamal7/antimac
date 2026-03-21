@@ -1,0 +1,7 @@
+2113039826aa9da7be2dc6f3c6487092  usr/lib/s6-66/halt
+73a9fee286d18bc98be457166208aac6  usr/lib/s6-66/init
+1369fcef78e8546fd994b1760f488350  usr/lib/s6-66/poweroff
+0a6442bdbd20be2666d0b4fdda2652fb  usr/lib/s6-66/reboot
+73a9fee286d18bc98be457166208aac6  usr/lib/s6-66/s6-66-init
+f964de92fdbf34c6617b33e5d34d3207  usr/share/doc/s6-66-init-antix/changelog.gz
+8b92f1a9bc3cfba785bbd0a84605146a  usr/share/doc/s6-66-init-antix/copyright

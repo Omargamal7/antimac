@@ -1,0 +1,136 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: b43-fwcutter
+Source: http://linuxwireless.org/en/users/Drivers/b43
+Disclaimer:
+ This package is not part of the GNU/Linux Debian distribution. It is
+ provided in the contrib archive area as a convenience to Debian users.
+ The contents of this source package are freely licensed under the
+ BSD-2-Clause license, but it's purpose is to download and extract
+ sourceless proprietary firmware blobs, making the package unfit for main.
+
+Files: *
+Copyright: 2005-2011 Martin Langer <martin-langer@gmx.de>
+           2005-2014 Michael Buesch <m@bues.ch>
+           2005-2011 Alex Beregszaszi <alex@fsn.hu>
+License: BSD-2-Clause
+
+Files: debian/*
+Copyright: 2006-2010 Rene Engelhard <rene@debian.org>
+           2011-2012 Fabrizio Regalli <fabreg@fabreg.it>
+           2013-2016 Daniel Echeverry <epsilon77@gmail.com>
+           © 2019-2020 Andreas Beckmann <anbe@debian.org>
+License: BSD-2-Clause
+
+Files: debian/*.metainfo.xml
+Copyright: 2024 Petter Reinholdtsen <pere@debian.org>
+License: MIT
+
+Files: debian/po/cs.po
+Copyright: 2013 Michal Simunek <michal.simunek@gmail.com>
+License: BSD-2-Clause
+
+Files: debian/po/da.po
+Copyright: 2013 Michal Simunek <michal.simunek@gmail.com>
+License: BSD-2-Clause
+
+Files: debian/po/de.po
+Copyright: 2006 Rene Engelhard
+ 2011 Fabrizio Regalli
+ 2013 Daniel Echeverry
+ 2013 Chris Leick <c.leick@vollbio.de>
+License: BSD-2-Clause
+
+Files: debian/po/es.po
+Copyright: 2013 Daniel Echeverry <epsilon77@gmail.com>
+ 2020 Camaleón <noelamac@gmail.com>
+License: BSD-2-Clause
+
+Files: debian/po/fr.po
+Copyright: 2013 Julien Patriarca <leatherface@debian.org>
+License: BSD-2-Clause
+
+Files: debian/po/id.po
+Copyright: 2013 Mahyuddin Susanto <udienz@gmail.com>
+License: BSD-2-Clause
+
+Files: debian/po/it.po
+Copyright: 2013 Beatrice Torracca <beatricet@libero.it>
+License: BSD-2-Clause
+
+Files: debian/po/ja.po
+Copyright: 2013 victory <victory.deb@gmail.com>
+License: BSD-2-Clause
+
+Files: debian/po/nl.po
+Copyright: 2014 Frans Spiesschaert <Frans.Spiesschaert@yucom.be>
+License: BSD-2-Clause
+
+Files: debian/po/pl.po
+Copyright: 2013 Michał Kułach <michal.kulach@gmail.com>
+License: BSD-2-Clause
+
+Files: debian/po/pt_BR.po
+Copyright: 2022 Paulo Henrique de Lima Santana (phls) <phls@debian.org>
+License: BSD-2-Clause
+
+Files: debian/po/pt.po
+Copyright: 2013 Pedro Ribeiro <p.m42.ribeiro@gmail.com>
+License: BSD-2-Clause
+
+Files: debian/po/ru.po
+Copyright: 2013 Yuri Kozlov <yuray@komyakino.ru>
+License: BSD-2-Clause
+
+Files: debian/po/sv.po
+Copyright: 2013 Martin Bagge <brother@bsnet.se>
+License: BSD-2-Clause
+
+License: BSD-2-Clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+  1. Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above
+  copyright notice, this list of conditions and the following
+  disclaimer in the documentation and/or other materials provided
+  with the distribution.
+ .
+ THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE CONTRIBUTORS BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Files: md5.c md5.h
+Copyright: 1993 Colin Plumb
+License: public-domain
+ This code implements the MD5 message-digest algorithm.
+ The algorithm is due to Ron Rivest. This code was
+ written by Colin Plumb in 1993, no copyright is claimed.
+ This code is in the public domain; do with it what you wish.
+
+License: MIT
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ .
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.

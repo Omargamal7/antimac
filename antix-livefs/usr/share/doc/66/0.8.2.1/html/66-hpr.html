@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: 66-hpr</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="66-hpr">66-hpr</h1>
+<p>Triggers the software shutdown procedure. Performs an immediate hardware shutdown with the <strong>‑f</strong> option. It is normally invoked by <code>66 halt</code>, <code>66 poweroff</code> or <code>66 reboot</code> command. This program is a modified copy of <a href="https://skarnet.org/software/s6-linux-init/s6-linux-init-hpr.html">s6-linux-init-hpr</a>.</p>
+<p>This program is primarily used internally by <code>66</code>. User may prefer to use <code>66 halt</code>, <code>66 poweroff</code> or <code>66 reboot</code> instead.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>66-hpr [ -H ] [ -l live ] [ -b banner ] [ -f ] [ -h | -p | -r ] [ -n ] [ -d | -w ] [ -W ]
+</code></pre>
+<ul>
+<li><p>If the <strong>-f</strong> option is passed the system is stopped or rebooted immediately without properly cleaning up.</p></li>
+<li><p>Else the machine&#8217;s shutdown procedure is started.</p></li>
+<li><p>The command exits 0; the shutdown procedure happens asynchronously.</p></li>
+</ul>
+<p>This is the traditional sysvinit interface for the <code>halt</code>, <code>poweroff</code> and <code>reboot</code> programs. <em>66‑hpr</em> must always be called with either <strong>‑h</strong>, <strong>‑p</strong> or <strong>‑r</strong>.</p>
+<h2 id="options">Options</h2>
+<ul>
+<li><p><strong>-H</strong>: prints this help.</p></li>
+<li><p><strong>-l</strong> <em>live</em>: changes the supervision directory of <em>service</em> to <em>live</em>. By default this will be <code>/run/66</code>. The default can also be changed at compile time by passing the <code>--livedir=live</code> option to <code>.&#47;configure</code>. An existing absolute path is expected and should be within a writable and executable filesystem - likely a RAM filesystem—see <a href="66-scandir.html">66 scandir</a>.</p></li>
+<li><p><strong>-b</strong> <em>banner</em>: Text to display before executing the shutdown process. Defaults to:</p></li>
+</ul>
+<pre><code>*** WARNING ***
+The system is going down NOW!
+</code></pre>
+<ul>
+<li><p><strong>-f</strong>: force. The command will not trigger a clean shutdown procedure; it will only sync the filesystems then tell the kernel to immediately <code>halt</code>, <code>poweroff</code> and <code>reboot</code>. This should be the last step in the lifetime cycle of the machine.</p></li>
+<li><p><strong>-h</strong>: halt. The system will be shut down but the power will remain connected.</p></li>
+<li><p><strong>-p</strong>: poweroff. Like halt but the power will also be turned off.</p></li>
+<li><p><strong>-r</strong>: reboot. The system will initialize a warm boot without disconnecting power.</p></li>
+<li><p><strong>-n</strong>: Do not call <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sync.html">sync()</a> before the hardware shutdown. The default is to sync, just in case. This option is only relevant when combined with <strong>-f</strong>; without it, it has no effect.</p></li>
+<li><p><strong>-d</strong>: Do not write a wtmp shutdown entry—see <a href="https://en.wikipedia.org/wiki/Utmp">utmp,wtmp and btmp</a>.</p></li>
+<li><p><strong>-w</strong>: Only write a wtmp shutdown entry; does not actually shut down the system.</p></li>
+<li><p><strong>-W</strong>: Do not send a <em>wall</em> message to users before shutting down the system. Some other implementations of the <code>halt</code>, <code>poweroff</code> and <code>reboot</code> commands use the <code>‑‑no‑wall</code> long option to achieve this.</p></li>
+</ul>
+</body>
+</html>

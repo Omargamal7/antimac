@@ -1,0 +1,4 @@
+type = scripted
+command = /bin/sh /etc/dinit.d/scripts/hostname.sh
+restart = false
+waits-for = pseudofs

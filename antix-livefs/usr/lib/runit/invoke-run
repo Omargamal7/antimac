@@ -1,0 +1,85 @@
+#!/bin/sh -eu
+
+usage () {
+	cat << EOF >&2
+Program /lib/runit/invoke-run must only be used as interpreter for
+run scripts with full path.
+
+Please, refer to documentation in manual page invoke-run(5). If error
+persist, file bug report aganist 'runit' Debian package.
+EOF
+}
+
+if [ $# = 0 ] ; then
+	usage
+	exit 1
+fi
+
+#sane runit service directory?
+if [ ! -x "${PWD}"/run ]; then
+	echo "invoke-run: error: ${PWD}/run does not exists or not executable"
+	usage
+	exit 1
+fi
+
+if [ -f "/etc/sv/${PWD##*/}/.meta/installed" ] ; then
+# uninstalled, but not purged. See #929693 and commit [4c485b] in dh-runit repository.
+	if ! [ -f "/usr/share/runit/meta/${PWD##*/}/installed" ] ; then
+		if ! [ -d "/usr/share/runit/sv/${PWD##*/}" ]; then
+			echo "invoke-run: ${PWD##*/} binary not installed"
+			sv down "${PWD##*/}"
+			exit 0
+		fi
+	fi
+fi
+
+if [ -r "${PWD}/.meta/bin" ] ; then
+	if [ ! -e "$(cat ${PWD}/.meta/bin)" ]; then
+		echo "invoke-run: ${PWD##*/} binary not installed"
+		sv down "${PWD##*/}"
+	else
+		stat -c %W "$(cat ${PWD}/.meta/bin)" > "${PWD}/.meta/wtime"
+	fi
+fi
+
+if [ -r "/etc/default/${PWD##*/}" ] ; then
+	# export all assigned variables, allow references to
+	# undefined variables.
+	set -a +u
+	. "/etc/default/${PWD##*/}"
+	set +a -u
+fi
+
+if [ -x "/etc/init.d/${PWD##*/}" ] ; then
+	# Stopping some services (e.g display manager) is disruptive
+	# and must be done only manually by user.
+	if [ -f "/usr/share/runit/meta/${PWD##*/}/noreplace" ] || \
+	    [ -f "${PWD}/.meta/noreplace" ] ; then
+		if "/etc/init.d/${PWD##*/}" status --force-sysv >/dev/null 2>&1 ; then
+			sv down "${PWD##*/}"
+			exit 0
+		fi
+	fi
+	if [ ! -h "/etc/init.d/${PWD##*/}" ] && [ ! -h /sbin/start-stop-daemon ]; then
+	# don't stop the script if it's a symlink: it's likely to /usr/bin/sv/
+		"/etc/init.d/${PWD##*/}" stop --force-sysv >/dev/null
+	fi
+fi
+
+XCHPST=""
+if [ -x /usr/bin/xchpst ]; then
+    #if [ -r "${PWD}/xchopts" ] && [ ! -e "${PWD}/.xchopts" ] ; then
+    if [ -r "${PWD}/xchopts" ] ; then
+       export XCHPST="xchpst --file ${PWD}/xchopts"
+    fi
+fi
+
+if [ -e /etc/runit/verbose ]; then
+        echo "invoke-run: starting ${PWD##*/}"
+fi
+
+if [ -d "${PWD}/env" ] ; then
+	exec chpst -e "${PWD}/env" -- /bin/sh "${PWD}"/run
+else
+	exec /bin/sh "${PWD}"/run
+fi

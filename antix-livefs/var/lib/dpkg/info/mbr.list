@@ -1,0 +1,17 @@
+/.
+/usr
+/usr/sbin
+/usr/sbin/install-mbr
+/usr/share
+/usr/share/doc
+/usr/share/doc/mbr
+/usr/share/doc/mbr/AUTHORS
+/usr/share/doc/mbr/NEWS.Debian.gz
+/usr/share/doc/mbr/NEWS.gz
+/usr/share/doc/mbr/README-1st.Debian
+/usr/share/doc/mbr/README.gz
+/usr/share/doc/mbr/changelog.gz
+/usr/share/doc/mbr/copyright
+/usr/share/man
+/usr/share/man/man8
+/usr/share/man/man8/install-mbr.8.gz

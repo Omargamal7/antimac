@@ -1,0 +1,23 @@
+[Main]
+Type = classic
+Version = 0.0.2
+Description = "dbus session daemon for @I user"
+User = ( user )
+MaxDeath = 3
+Notify = 4
+TimeoutStart = 3000
+
+[Start]
+Execute = (
+     execl-toc -S ${Socket}
+     execl-cmdline -s {  dbus-daemon ${Args} }
+)
+
+[Stop]
+Execute = (
+     s6-rmrf ${Socket}
+)
+
+[Environment]
+Args=!--session --print-pid=4 --nofork --nopidfile --address=unix:path=${Socket}
+Socket=!@R/bus

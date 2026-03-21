@@ -1,0 +1,15 @@
+/.
+/usr
+/usr/bin
+/usr/bin/efisecdb
+/usr/bin/efivar
+/usr/share
+/usr/share/doc
+/usr/share/doc/efivar
+/usr/share/doc/efivar/changelog.Debian.amd64.gz
+/usr/share/doc/efivar/changelog.Debian.gz
+/usr/share/doc/efivar/copyright
+/usr/share/man
+/usr/share/man/man1
+/usr/share/man/man1/efisecdb.1.gz
+/usr/share/man/man1/efivar.1.gz

@@ -1,0 +1,23 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Import ZFS pools by cache file"
+User = ( root )
+Depends = ( udevd )
+StdOut = s6log:%%livedir%%/log/devices-zfs-import-cache
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp devices-zfs-import-cache -1 /dev/console import zfs cache }
+    if -nt {
+
+        execl-cmdline -s { zpool import -c ${ConfFile} ${Args} }
+
+    }
+    66-yeller -fcdp devices-zfs-import-cache -1 /dev/console crashed!
+)
+
+[Environment]
+Args=!-aN
+ConfFile=!/etc/zfs/zpool.cache

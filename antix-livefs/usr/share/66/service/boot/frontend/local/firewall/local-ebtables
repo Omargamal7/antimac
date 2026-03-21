@@ -1,0 +1,36 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Restore ebtables rules"
+Depends = ( mount-rw )
+User = ( root )
+StdOut = s6log:%%livedir%%/log/local-ebtables
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp local-ebtables -1 /dev/console restore ebtables configuration }
+    if -nt {
+
+        execl-toc -e ${ScriptConf}
+        ebtables-restore ${ScriptConf}
+
+    }
+    66-yeller -fcdp local-ebtables -1 /dev/console crashed!
+)
+
+[Stop]
+Execute =
+(
+    if { 66-yeller -cdp local-ebtables -1 /dev/console flush ebtables configuration }
+    if -nt {
+
+        ebtables-restore
+
+    }
+    66-yeller -fcdp local-ebtables -1 /dev/console crashed!
+)
+
+[Environment]
+ScriptConf=!/etc/ebtables.conf
+

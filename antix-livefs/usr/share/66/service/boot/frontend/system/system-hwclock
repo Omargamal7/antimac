@@ -1,0 +1,45 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Configure the hardware clock"
+User = ( root )
+Depends = ( mount-branch )
+StdOut = s6log:%%livedir%%/log/system-hwclock
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp system-hwclock -1 /dev/console set hardware clock }
+    if -nt {
+
+        execl-envfile ${ConfFile}
+        pipeline -d { echo ${HARDWARECLOCK} }
+        pipeline { tr A-Z a-z }
+        forstdin -- clock
+        importas -iu clock clock
+        hwclock --systz --${clock} --noadjfile
+
+    }
+    66-yeller -fcdp system-hwclock -1 /dev/console crashed!
+)
+
+[Stop]
+Execute=
+(
+    if { 66-yeller -cdp system-hwclock -1 /dev/console set hardware clock }
+    if -nt {
+
+        execl-envfile ${ConfFile}
+        pipeline -d { echo ${HARDWARECLOCK} }
+        pipeline { tr A-Z a-z }
+        forstdin -- clock
+        importas -iu clock clock
+        hwclock --systohc --${clock}
+
+    }
+    66-yeller -fcdp system-hwclock -1 /dev/console crashed!
+
+)
+
+[Environment]
+ConfFile=!%%bootconf%%

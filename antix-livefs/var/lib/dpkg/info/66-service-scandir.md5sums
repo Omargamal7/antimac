@@ -1,0 +1,7 @@
+d41d8cd98f00b204e9800998ecf8427e  usr/share/66/service/scandir/activated/svscan@@M
+bc1efde145b9728a0387358972477597  usr/share/66/service/scandir/configure/configure
+3a4d324cc151107b76640902f7ce84ae  usr/share/66/service/scandir/frontend/setenv@
+b48e483f7887d94815f355882a0d1379  usr/share/66/service/scandir/frontend/svscan@
+0eb577c16c05f2eb68faf84659bb9ab4  usr/share/66/service/scandir/scandir@
+a27940bc7a5ed9bea7f9fc0494d53217  usr/share/doc/66-service-scandir/changelog.Debian.gz
+bb58eeb16b90672aec89eaefb7675c1b  usr/share/doc/66-service-scandir/copyright

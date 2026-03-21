@@ -1,0 +1,16 @@
+/.
+/usr
+/usr/bin
+/usr/bin/zsync
+/usr/bin/zsyncmake
+/usr/share
+/usr/share/doc
+/usr/share/doc/zsync
+/usr/share/doc/zsync/NEWS.gz
+/usr/share/doc/zsync/README.gz
+/usr/share/doc/zsync/changelog.Debian.gz
+/usr/share/doc/zsync/copyright
+/usr/share/man
+/usr/share/man/man1
+/usr/share/man/man1/zsync.1.gz
+/usr/share/man/man1/zsyncmake.1.gz

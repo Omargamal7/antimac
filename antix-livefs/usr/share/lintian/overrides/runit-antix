@@ -1,0 +1,21 @@
+# echo is used to warn that the script is not meant to be executed, but sourced
+# see #943397 message #10
+unusual-interpreter
+# executable are under /lib/runit/
+# init, runlevel and shutdown are also shipped as compatibility symlinks under /sbin
+# by runit-init package
+runit: spare-manual-page [usr/share/man/man8/invoke-run.8.gz]
+# this is on purpose: not executable=disabled by default
+runit: script-not-executable [etc/runit/rc.shutdown]
+# i'ts a directory for services shipped by other packages;
+# also runit's cpsv need this, even if empty
+runit: package-contains-empty-directory [usr/share/runit/sv/]
+# False positive: we build with -O2 and hardening=+all so fortify is enabled, see dpkg-buildflags(1)
+# it can also be told by inspecting build logs, when there is '-D_FORTIFY_SOURCE=2 -g -O2'
+runit: hardening-no-fortify-functions [usr/bin/chpst]
+runit: hardening-no-fortify-functions [usr/bin/runsv]
+runit: hardening-no-fortify-functions [usr/bin/runsvdir]
+runit: hardening-no-fortify-functions [usr/bin/sv]
+runit: hardening-no-fortify-functions [usr/bin/svlogd]
+runit: hardening-no-fortify-functions [usr/sbin/runit]
+runit: hardening-no-fortify-functions [usr/sbin/utmpset]

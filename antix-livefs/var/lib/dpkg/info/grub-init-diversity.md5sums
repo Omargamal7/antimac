@@ -1,0 +1,14 @@
+e25bf41bedecad5b6363ad0bfe8b02c5  usr/share/doc/grub-init-diversity/changelog.gz
+8584689d7b5ecf7a00786344a8b85e36  usr/share/doc/grub-init-diversity/copyright
+52932eda73674a1e13dac34ac2fa825a  usr/share/grub-init-diversity/etc/default/grub
+033e1905144dec9fd7d73b4d223f20cd  usr/share/grub-init-diversity/etc/grub.d/00_header
+fe5f9d6282150de338d13b2867af0390  usr/share/grub-init-diversity/etc/grub.d/05_debian_theme
+c4f2655d5ff26342d023f8b71b47ea68  usr/share/grub-init-diversity/etc/grub.d/10_linux
+cba6542978060c4c95b45b5485c232db  usr/share/grub-init-diversity/etc/grub.d/20_linux_xen
+e587a1aeb0bea83f6d6a2960bbe8991b  usr/share/grub-init-diversity/etc/grub.d/20_memtest86+
+e071d24e35e554a6e6446068f59715f6  usr/share/grub-init-diversity/etc/grub.d/25_bli
+9e7e433ed21c635b0d102a06da4ae5e2  usr/share/grub-init-diversity/etc/grub.d/30_os-prober
+2d918e14d15f40c01398a7534702870d  usr/share/grub-init-diversity/etc/grub.d/30_uefi-firmware
+babe7de352fe18de5a238569cf4b8a11  usr/share/grub-init-diversity/etc/grub.d/40_custom
+1d876baff8ca3841aa6ba057e881a2e4  usr/share/grub-init-diversity/etc/grub.d/41_custom
+be58f42dfe74feb6eeb98c6a843c743f  usr/share/grub-init-diversity/etc/grub.d/README

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66-tools Suite: 66-ns</title>
+</head>
+<body>
+<p><a href="index.html">66-tools</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="66-ns">66-ns</h1>
+<p><em>66-ns</em>(namespace) setup a namespace and execs a program inside it.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>    66-ns [ -h ] [ -z ] [ -v verbosity ] [ -d notif ] [ -o ns_options,... ] [ -e element:type:options:,... ] [ -r rule ] prog
+</code></pre>
+<p><em>66-ns</em> sets up a <a href="https://man7.org/linux/man-pages/man7/namespaces.7.html">namespace</a>(sandbox) according to the options passed at the command line or&#47;and by a rule file. <em>66-ns</em> allows to have a fine grain of the namespace configuration and permit to limit the exposure of the system from <em>prog</em> processes. This tool can be used to start a service inside a namespace or directly from a terminal.</p>
+<p>The host file system is mounted recursively by default such as if you don&#8217;t pass any options to <em>66-ns</em> the result is a strict copy of the host.</p>
+<p>With a good configuration—see <a href="#Usage%20examples">Usage examples</a>, it allows to survey a daemon which forks itself, thus multi-processes which fork themselves.</p>
+<p><em>66-ns</em> can only by launched as root user.</p>
+<h2 id="exit-codes">Exit codes</h2>
+<ul>
+<li><em>0</em> success</li>
+<li><em>100</em> wrong usage</li>
+<li><em>111</em> system call failed
+or</li>
+<li>exit status code of prog</li>
+</ul>
+<h2 id="options">Options</h2>
+<ul>
+<li><p><strong>-h</strong> : prints this help.</p></li>
+<li><p><strong>-z</strong> : enable color. If <em>66-ns</em> is not launched from a terminal, the color is automatically disabled and the option has no effect.</p></li>
+<li><p><strong>-v</strong> <em>verbosity</em>: increases&#47;decreases the verbosity of the command.</p>
+<ul>
+<li><em>0</em>: only print error messages.</li>
+<li><em>1</em>: also, print informative messages. This is the default.</li>
+<li><em>2</em>: also, print warning messages.</li>
+<li><em>3</em>: also, print tracing messages.</li>
+<li><em>4</em>: also, print function name and line code of the messages.</li>
+<li><em>5</em>: also, display the sequence of the current process function by function.</li>
+</ul></li>
+<li><p><strong>-d</strong> <em>notif</em> : notify readiness on file descriptor <em>notif</em>. If <em>66-ns</em> is launched from a terminal, the option has no effect. The notification happens right before the launch of <em>prog</em>. This guarantees you that the namespace is completely configured and ready to use. This notification <strong>does not</strong> guarantee you that <em>prog</em> was started successfully. This is important to keep in mind mostly when you use <em>66-ns</em> for a service supervision.</p></li>
+<li><p><strong>-o</strong> ns_options: comma separated list of namespace options—see <a href="#Namespace%20options">Namespace options</a>.</p></li>
+<li><p><strong>-e</strong> <em>element</em> : comma separated list of elements <em>element</em> to handle—see <a href="#Element%20options">Element options</a>. This options can be passed multiple times. This option precede the same <em>element</em> found at a rule file. <em>element</em> can be a directory, a file, a fifo, a symlink, a socket, a character special file or a block special file. The location of the <em>element</em> <strong>must</strong> be an absolute path.</p></li>
+<li><p><strong>-r</strong> <em>rule</em> : name of the rule file <em>rule</em> to apply—see <a href="#Rule%20file">Rule file</a>. This option can be passed multiple times.</p></li>
+</ul>
+<h2 id="namespace-options">Namespace options</h2>
+<p>The <strong>-o</strong> option can be:</p>
+<ul>
+<li><p><strong>flag=</strong> <em>flag</em> : where <em>flag</em> can be <em>private</em>, <em>slave</em>, <em>unbindable</em> and <em>shared</em> which corresponds to <code>MS_PRIVATE</code>, <code>MS_SLAVE</code>, <code>MS_UNBINDABLE</code> or <code>MS_SHARED</code> respectively—see <a href="https://man7.org/linux/man-pages/man2/mount.2.html">mount(2)</a>. The special term <em>all</em> can also be passed to set all <em>flag</em> in one pass. If this option is not specified, <code>MS_SHARED</code> will be the default. This flag only controls the <strong>final</strong> mount point propagation of the file system of the namespace.</p></li>
+<li><p><strong>unshare=</strong> <em>flag</em> : where <em>flag</em> can be <em>pid</em>, <em>net</em>, <em>ipc</em>, <em>uts</em> or <em>cgroup</em> which corresponds to <code>CLONE_NEWPID</code>, <code>CLONE_NEWNET</code>, <code>CLONE_NEWIPC</code>, <code>CLONE_NEWIPC</code>, <code>CLONE_NEWUTS</code>, <code>CLONE_NEWCGROUP</code> respectively—see <a href="https://man7.org/linux/man-pages/man2/unshare.2.html">unshare(2)</a>. The special term <em>all</em> can also be passed to set all <em>flag</em> in one pass. Also, The <code>CLONE_NEWNS</code> flag is implied by default.</p></li>
+<li><p><strong>nonewprivileges</strong> : this ensures that the <em>prog</em> and all its children can never gain new privileges through execve(). So, the <em>prog</em> and its children can never elevate privileges by e.g setuid, setgid bits or filesystem capabilities.</p></li>
+<li><p><strong>hostname=</strong> <em>hostname</em> : set the hostname namespace with <em>hostname</em>. This implies the <em>unshare=uts</em> option automatically.</p></li>
+</ul>
+<h2 id="element-options">Element options</h2>
+<p>An <em>element</em> is set by a series of options separated by colon. The first option <strong>must be</strong> the name of the <em>element</em> to handle and <strong>must be</strong> an absolute path. Other options have no order of preference. let&#8217;s see an example before going forward:</p>
+<pre><code>    66-ns -e &#47;etc:options=ro -e &#47;etc&#47;resolv.conf:type=clone:options=rw -e &#47;dev:type=tmpfs:options=nosuid,strictatime,noexec,mode=755,size=4m,nr_inodes=64k -e &#47;proc:type=proc -e &#47;sys:type=recursive:options=ro sh -i
+</code></pre>
+<p>Options can be:</p>
+<ul>
+<li><p><strong>element name</strong> : name of the element to handle. This option is <em>mandatory</em>. Again, this option <strong>must be</strong> set first and <strong>must be</strong> an absolute path.</p></li>
+<li><p><strong>target=</strong> <em>target</em> : target of the <em>element</em> inside the namespace. If not set, the <em>target</em> is the same as the <em>element</em> path. <em>target</em> <strong>must be</strong> an absolute path.</p></li>
+<li><p><strong>type=</strong> <em>type</em> : where <em>type</em> can be <em>tmpfs</em>, <em>hidden</em>, <em>recursive</em>, <em>clone</em>, <em>proc</em>, <em>dev</em> or <em>sys</em>—see <a href="#Type%20specifications">Type specification</a>. If <strong>type=</strong> is not set, the <code>MS_BIND</code>(bind) kernel flag is implied by default.</p></li>
+<li><p><strong>options=</strong> <em>options</em> : comma separated list of filesystem-independent mount options—see <a href="https://man7.org/linux/man-pages/man8/mount.8.html">mount(8)</a>. Note that the <code>remount</code> and <code>move</code> mount option is ignored.</p></li>
+<li><p><strong>create</strong> <em>yes|no</em> : boolean argument. If <em>no</em> and the target of the <em>element</em> doesn&#8217;t exist, <em>66-ns</em> stops the process and exit 111. If <em>yes</em> and the target of the <em>element</em> doesn&#8217;t exist, <em>66-ns</em> tries to create it. If the creation of the target of the <em>element</em> fails, it exits 111. Default <em>yes</em>.</p></li>
+<li><p><strong>ignore</strong> <em>yes|no</em> : boolean argument. If <em>yes</em> and <em>element</em> doesn&#8217;t exist, ignore the <em>element</em> and continue to setup the namespace. If <em>no</em> and <em>element</em> doesn&#8217;t exist, it exits 111. Default <em>no</em>.</p></li>
+</ul>
+<h3 id="type-specifications">Type specifications</h3>
+<ul>
+<li><p><strong>tmpfs</strong> : mount <em>element</em> as type tmpfs . it ignores the <em>MS_bind</em>(bind) and <em>MS_REC</em>(rbind) kernel flags past at <strong>options=</strong> option. If <em>element</em> inside the namespace is already a mount point, it <strong>unmount</strong> first recursively the mount point. <em>prog</em> cannot see any files or directories beyond <em>element</em>.</p></li>
+<li><p><strong>hidden</strong> : <em>element</em> will be made inaccessible for processes inside the namespace along with everything below them in the file system hierarchy. If <em>element</em> inside the namespace is already a mount point, it <strong>unmount</strong> first recursively the mount point. The final <em>element</em> will be mounted read-only. The <code>MS_BIND</code>(bind), <code>MS_RDONLY</code>(ro), <code>MS_NOSUID</code>(nosuid) and <code>MS_NODEV</code>(nodev) kernel flags is automatically added at the mount() command.  It&#8217;s not possible to nest other <em>element</em> inside it. For example, setting <em>&#47;etc</em> as <em>element</em> as <em>type=hidden</em> blocks a request to <em>&#47;etc&#47;resolv.conf</em> as <em>element</em> to handle.</p></li>
+<li><p><strong>recursive</strong> : if <em>element</em> inside the namespace is already a mount point, it <strong>unmount</strong> first recursively the mount point and mount it with the options passed at <strong>options=</strong>. The <code>MS_BIND</code>(bind) and <code>MS_REC</code>(rbind) kernel flags is automatically added at the mount() command.</p></li>
+<li><p><strong>clone</strong> : it tries to clone the <em>element</em> inside the namespace. For example if <em>element</em> is a symlink, it tries to create that symlink inside the namespace. It&#8217;s <strong>not possible</strong> to use this type if element is a mount point. The purpose of this <em>type</em> option is to create the <em>element</em> inside the namespace regarless if the <em>element</em> is a directory, a file, a fifo, a symlink, a socket, a character special file, or a block special file. The option <strong>options=</strong> is completely <strong>ignored</strong>.</p></li>
+<li><p><strong>proc</strong> : mounts a new proc virtual file system inside the namespace instead of bind mount it from the host. If <em>element</em> inside the namespace is already a mount point, it <strong>unmount</strong> first recursively the mount point. This <em>type</em> can only by used for an <em>element</em> pointing to &#8220;&#47;proc&#8221;. For example setting:</p>
+<pre><code>    66-ns -e &#47;dev:type=proc sh -i
+</code></pre>
+<p>produce an error whereas:</p>
+<pre><code>    66-ns -e &#47;proc:type=proc dhcpcd
+</code></pre>
+<p>setup a new proc virtual file system. It mounts the &#8220;&#47;proc&#8221; mount point with the <code>MS_NOSUID</code>(nosuid), <code>MS_NODEV</code>(nodev) and <code>MS_NOEXEC</code>(noexec) kernel flag. The <strong>options=</strong> options are completely ignored.</p></li>
+<li><p><strong>dev</strong> : mounts a new dev virtual file system inside the namespace instead of bind mount it from host. If <em>element</em> inside the namespace is already a mount point, it <strong>unmount</strong> first recursively the mount point. This <em>type</em> can only by used for an <em>element</em> pointing to &#8220;&#47;dev&#8221;. It mounts the &#8220;&#47;dev&#8221; mount point with <code>MS_NOSUID</code>(nosuid), <code>MS_STRICTATIME</code>(strictatime), <code>MS_NOEXEC</code>(noexec) and <code>MS_REC</code>(rbind) kernel flag and mode=755 mount option. The <strong>options=</strong> options is completely ignored. It <strong>only</strong> mounts the &#8220;&#47;dev&#8221; mountpoint. That means that every sub-mount e.g. &#8220;&#47;dev&#47;pts&#8221; is not be handled.</p></li>
+<li><p><strong>sys</strong> : mounts a new sys virtual file system inside the namespace instead of bind mount it from the host. If <em>element</em> inside the namespace is already a mount point, it <strong>unmount</strong> first recursively the mount point. This <em>type</em> can only by used for an <em>element</em> pointing to &#8220;&#47;sys&#8221;. It mounts the &#8220;&#47;sys&#8221; mount point with <code>MS_NOSUID</code>(nosuid), <code>MS_STRICTATIME</code>(strictatime), <code>MS_NOEXEC</code>(noexec). The <strong>options=</strong> options is completely ignored. It <strong>only</strong> mounts the &#8220;&#47;sys&#8221; mountpoint. That means that every sub-mount e.g. &#8220;&#47;sys&#47;kernel&#47;config&#8221; is not be handled.</p></li>
+</ul>
+<h2 id="rule-file">Rule file</h2>
+<p>It can be really tedious, repetitive and unreadable to setup a namespace uniquely with the <strong>-e</strong> option e.g:</p>
+<pre><code>    66-ns -e &#47;dev:type=tmpfs:options=nosuid,strictatime,noexec,mode=755,size=4m,nr_inodes=64k -e &#47;dev&#47;pts:options=rw: -e &#47;dev&#47;shm:options=rw -e &#47;dev&#47;hugepages:options=rw -e &#47;dev&#47;mqueue:options=rw -e &#47;dev&#47;ptmx:type=clone sh -i
+</code></pre>
+<p>The rule file solves this.</p>
+<h3 id="general-rule-file-syntax">General rule file syntax</h3>
+<p>The rule file has the format INI. To reduce the complexity of the parse process, comments are <strong>not</strong> allowed where empty an line exists. You can set the rule file name as you want as long as the name is suffixed with <strong>.rule</strong>.</p>
+<h3 id="rule-file-invocation">Rule file invocation</h3>
+<p>The invocation of a rule file can be done by relative, absolute path or directly by its name. In case of direct name invocation, the file need to be place at /usr/share/66/script/ns directory. The default path can be changed at compile time by passing the <code>--with-ns-rule=DIR</code> at <code>.&#47;configure</code>.</p>
+<h3 id="rule-file-syntax">Rule file syntax</h3>
+<p>The file is made of <em>sections</em> which can contain one or more <code>key value</code> pairs where the <em>key</em> name corresponds to the <em>element</em> option name and value to the option itself.
+The name of the section corresponds to the <em>element</em> name to handle.</p>
+<p>The <code>examples&#47;rule</code> subdirectory of the <em>66-tools</em> package contains a set of rules, which is actually a working, valid set for setup a namespace.</p>
+<p>A special section named <code>[include]</code> allows to include another rule file in that rule file e.g.:</p>
+<pre><code>[include]
+system-strict.rule
+&#47;usr&#47;lib&#47;66&#47;script&#47;ns&#47;private-dev.rule
+
+[&#47;etc&#47;resolv.conf]
+options=rw
+</code></pre>
+<p>Each rule name set at <code>[include]</code> section is parsed and applied in conjunction to the definition of the <code>&#47;etc&#47;resolv.conf</code> <em>element</em>.</p>
+<h3 id="translation-format-between-rule-file-and--e-option">Translation format between rule file and -e option</h3>
+<p>For example, this command line invocation:</p>
+<pre><code>    66-ns -e &#47;dev:type=tmpfs:options=nosuid,strictatime,noexec,mode=755,size=4m,nr_inodes=64k -e &#47;dev&#47;pts:options=rw: -e &#47;dev&#47;shm:options=rw -e &#47;dev&#47;hugepages:options=rw -e &#47;dev&#47;mqueue:options=rw -e &#47;dev&#47;ptmx:type=clone sh -i
+</code></pre>
+<p>can be made by the following invocation:</p>
+<pre><code>    66-ns -r dev-example.rule sh -i
+</code></pre>
+<p>where dev-example.rule contain:</p>
+<pre><code>[&#47;dev]
+type=tmpfs
+options=nosuid,strictatime,noexec,mode=755,size=4m,nr_inodes=64k
+
+[&#47;dev&#47;pts]
+options=rw
+
+[&#47;dev&#47;shm]
+options=rw
+
+[&#47;dev&#47;hugepages]
+options=rw
+
+[&#47;dev&#47;mqueue]
+options=rw
+
+[&#47;dev&#47;ptmx]
+type=clone
+</code></pre>
+<h2 id="usage-examples">Usage examples</h2>
+<p>Mounts <code>&#47;</code> as read-only file system:</p>
+<pre><code>    66-ns -e &#47;:options=ro sh -i
+</code></pre>
+<p>Mounts <code>&#47;</code> as read-only except <code>&#47;dev</code> which is recursively mounted read-write:</p>
+<pre><code>    66-ns -e &#47;:options=ro -e &#47;dev:type=recursive sh -i
+</code></pre>
+<p>Avoid access to the <code>&#47;usr&#47;lib&#47;modules</code> directory:</p>
+<pre><code>    66-ns -e &#47;usr&#47;lib&#47;modules:type=hidden sh -i
+</code></pre>
+<p><em>Prog</em> cannot gain new privileges, mounts a new &#8220;&#47;proc&#8221; virtual file system and makes <code>&#47;etc</code> read-only:</p>
+<pre><code>    66-ns -o nonewprivileges, -e &#47;proc:type=proc -e &#47;etc:options=ro sh -i
+</code></pre>
+<p>Mount <code>&#47;etc</code> with <code>tmpfs</code> type and give access uniquely to &#47;etc&#47;resolv.conf file and &#47;etc&#47;ssh directory which is read-only:</p>
+<pre><code>    66-ns -e &#47;etc:type=tmpfs -e &#47;etc&#47;resolv.conf:type=clone &#47;etc&#47;ssh:options=bind,ro sh -i
+</code></pre>
+<p>Invoke a rule file:</p>
+<pre><code>    66-ns -e -r myrule sh -i
+</code></pre>
+<p>Invoke <em>66-ns</em> inside a frontend file to keep the control of dhcpcd which forks itself:</p>
+<pre><code>[main]
+@type = longrun
+@version = 0.1.1
+@description = "Keep control on dhcpcd daemon which forks itself"
+@user = ( root )
+@options = ( log )
+
+[start]
+@execute = ( 66-ns -o unshare=pid dhcpcd )
+</code></pre>
+<p>Hide the all processes from the host and run a trivial PID1 inside the namespace(66-ns will be the PID1 and sh the PID2):</p>
+<pre><code>    66-ns -o unshare=pid -e &#47;proc:type=proc sh -i
+</code></pre>
+</body>
+</html>

@@ -1,0 +1,12 @@
+/etc/default/runit-antix
+/etc/runit/1
+/etc/runit/2
+/etc/runit/3
+/etc/runit/ctrlaltdel
+/etc/runit/override-sysv.d/runit-default
+/etc/runit/rc.shutdown
+/etc/runit/runsvdir/single/sulogin/run
+/etc/sv/svlogd/README
+/etc/sv/svlogd/example-conf
+/etc/sv/svlogd/example-log.config
+/etc/sv/svlogd/run

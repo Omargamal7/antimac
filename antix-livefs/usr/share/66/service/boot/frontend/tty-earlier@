@@ -1,0 +1,13 @@
+[Main]
+Type = classic
+Version = %%version%%
+Description = "Launch earlier @I"
+User = ( root )
+Options = ( !log )
+Flags = ( earlier )
+
+[Start]
+Execute = ( execl-cmdline -s { agetty ${Args} @I } )
+
+[Environment]
+Args=!-J 38400

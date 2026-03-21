@@ -1,0 +1,29 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Mount ZFS datasets"
+Depends = ( udevd )
+OptsDepends = ( devices-zfs-import-scan devices-zfs-import-cache )
+User = ( root )
+StdOut = s6log:%%livedir%%/log/devices-zfs
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp devices-zfs -1 /dev/console activate zfs volumes }
+    ifelse { blkid -c /dev/null --match-token=TYPE="zfs_member" }
+        { ifelse -n { 66-which -q zfs }
+            { if { 66-yeller -cdp device-zfs -1 /dev/console No zfs program available, check your configuration! } exit 0 }
+        if -nt {
+           if { execl-cmdline -s { zfs mount ${ArgsMount} } }
+        execl-cmdline -s { zfs share ${ArgsShare} }
+        }
+        66-yeller -fcdp devices-zfs -1 /dev/console crashed! }
+
+    66-yeller -cdp device-zfs -1 /dev/console no zfs volumes available!!
+
+)
+
+[Environment]
+ArgsMount=!-a -l
+ArgsShare=!-a

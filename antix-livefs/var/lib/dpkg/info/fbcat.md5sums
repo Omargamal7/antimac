@@ -1,0 +1,9 @@
+5becd9acec7058ca51dac6691dd4cb9a  usr/bin/fbcat
+70115eec39554adb62ea91adcd77b407  usr/bin/fbgrab
+5721e8990f0cb1a99116ba8545a6f2e5  usr/share/bug/fbcat
+69404c0fc41a3e0c6ba5a4276dbd3abc  usr/share/doc/fbcat/changelog.Debian.gz
+321b6b4feb6754641d2b726e3a386e10  usr/share/doc/fbcat/changelog.gz
+2e5e9f0c11196b2946ade0c75f8dec62  usr/share/doc/fbcat/copyright
+061965edf939b08738ca7ec75ba24a25  usr/share/doc/fbcat/tested.txt
+ab1b9461be3640198d2194dc3fc00ff1  usr/share/man/man1/fbcat.1.gz
+c3fdbcdde5b9ce77e6a108e06377aa37  usr/share/man/man1/fbgrab.1.gz

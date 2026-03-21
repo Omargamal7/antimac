@@ -1,0 +1,36 @@
+#!/bin/sh
+##Copyright: Cloux <cloux@rote.ch>
+##License: CC0/Public Domain
+##Comment: adapted from https://github.com/cloux/runit-base
+exec 2>&1
+
+# Get service name (the upper directory name)
+UPDIR=$(dirname $PWD)
+SERVICE=${UPDIR##*/}
+RUNITLOG=/var/log/runit
+LOGDIR=$RUNITLOG/$SERVICE
+BUFFER=2048
+LOGUSER=_runit-log
+
+#Read conf file
+if [ -r ./conf ]; then
+    . ./conf
+fi
+if [ -r /etc/sv/svlogd/conf ] && [ ! -r ./conf ]; then
+      . /etc/sv/svlogd/conf
+fi
+
+[ ! -d "$LOGDIR" ] && install -m 750 -o $LOGUSER -g adm -d "$LOGDIR"
+if [ ! -e "$LOGDIR/.pkg"  ] && [ -e "$UPDIR/.meta/pkg" ]; then
+	cp "$UPDIR/.meta/pkg" "$LOGDIR/.pkg"
+fi
+
+# manage svlogd config file
+if [ -f "$PWD"/log.config ]; then
+  install -Tm 0644 -o $LOGUSER "$PWD"/log.config "$LOGDIR"/config
+fi
+if [ -f /etc/sv/svlogd/log.config ] && [ ! -f "$PWD"/log.config ]; then
+  install -Tm 0644 -o $LOGUSER /etc/sv/svlogd/log.config "$LOGDIR"/config
+fi
+
+exec chpst -u ${LOGUSER} svlogd -tt -b $BUFFER "$LOGDIR"

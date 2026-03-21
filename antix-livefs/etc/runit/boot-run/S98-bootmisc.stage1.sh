@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/bootmisc.stage1.sh

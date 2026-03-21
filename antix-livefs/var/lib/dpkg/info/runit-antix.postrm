@@ -1,0 +1,40 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "purge" ] ; then
+	if [ -h /etc/runit/runsvdir/current ]; then
+                rm /etc/runit/runsvdir/current
+	fi
+	if [ -h /etc/runit/runsvdir/previous ]; then
+		rm /etc/runit/runsvdir/previous
+	fi
+	if [ -h /usr/share/runit/sv.current ]; then
+		rm /usr/share/runit/sv.current
+	fi
+	if [ -h /usr/share/runit/sv.src ]; then
+		rm /usr/share/runit/sv.src
+	fi
+	if  rmdir /usr/share/runit/sv.now 2>/dev/null ; then
+		rmdir --ignore-fail-on-non-empty /usr/share/runit
+	fi
+fi
+
+# Automatically added by dh_installdeb/13.11.4
+dpkg-maintscript-helper rm_conffile /etc/sv/default-syslog/finish 2.1.2-60\~ -- "$@"
+dpkg-maintscript-helper rm_conffile /etc/default/runit 2.1.2-60\~ -- "$@"
+# End automatically added section
+
+
+#fallback for runit-helper already removed
+if [ "$1" = "purge" ] ; then
+	if [ -z "${DPKG_ROOT:-}" ] && [ ! -x /lib/runit-helper/runit-helper ] ; then
+		rm -f  /etc/runit/runsvdir/default/default-syslog
+		rm -rf /etc/sv/default-syslog/supervise
+		rm -rf /etc/sv/default-syslog
+	fi
+fi
+# we switched from runit-log to _runit-log in 2.1.2-36, but it still nice for old installation
+# to remove the old user in purge, even if the package no longer provides it (since 2.1.2-54exp1)
+if [ -x /lib/sysuser-helper/sysuser-helper ] ; then
+	CONF_HOME=/nonexistent CONF_PACKAGE=runit CONF_USERNAME=runit-log /lib/sysuser-helper/sysuser-helper postrm "$@"
+fi

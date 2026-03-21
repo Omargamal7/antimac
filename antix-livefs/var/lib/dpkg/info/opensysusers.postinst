@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -e
+
+if [ configure = "$1" ] && [ -n "$2" ] && dpkg --compare-versions "$2" lt 0.7.3-4.1~; then
+    # We are upgrading from an earlier version that used to divert
+    # systemd-sysusers. Since this version Conflicts: systemd-sysusers, there
+    # should not be any divertees left during postinst and we may safely remove
+    # all remaining diversions. If anything is left behind, --rename will fail.
+    dpkg-divert --remove --rename /usr/bin/systemd-sysusers
+    dpkg-divert --remove --rename /bin/systemd-sysusers
+fi
+
+# Automatically added by dh_installinit/13.24.2
+if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] || [ "$1" = "abort-deconfigure" ] || [ "$1" = "abort-remove" ] ; then
+	if [ -x "/etc/init.d/opensysusers" ]; then
+		update-rc.d opensysusers defaults >/dev/null || exit 1
+	fi
+fi
+# End automatically added section
+
+
+exit 0

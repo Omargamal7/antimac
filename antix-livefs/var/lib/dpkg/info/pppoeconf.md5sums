@@ -1,0 +1,17 @@
+f83fc9f98a683f24625942bb16685736  usr/sbin/pppoeconf
+713792165b26f3ee579662d8bf922a91  usr/share/applications/pppoeconf.desktop
+3af4d073a42fecf56b132d05673e47df  usr/share/doc/pppoeconf/README.Debian
+6a925d1b878d27872dccbe9f81efc694  usr/share/doc/pppoeconf/changelog.gz
+0145d9df37d813d0cc9176d69ab3482f  usr/share/doc/pppoeconf/copyright
+8eff027e05b40efb6dbdd2eeb740e6f8  usr/share/locale/de/LC_MESSAGES/pppoeconf.mo
+d90a81810fbcb463548e503c92bdb6f8  usr/share/locale/es/LC_MESSAGES/pppoeconf.mo
+dd1babf606bf2f55c1c45b38a5a96fad  usr/share/locale/fr/LC_MESSAGES/pppoeconf.mo
+f4f3a05292ad5092937fad32bd277ef7  usr/share/locale/it/LC_MESSAGES/pppoeconf.mo
+a45ee322ceab5ba64a90b78afb8e2563  usr/share/locale/ja/LC_MESSAGES/pppoeconf.mo
+69e682d1d57e8ab6cba3c7e2c5afca1a  usr/share/locale/pt_BR/LC_MESSAGES/pppoeconf.mo
+5b6b168da2406ce4067102e5fc9c79c8  usr/share/locale/pt_PT/LC_MESSAGES/pppoeconf.mo
+ff747eee82fb5f0b467d84fee7ce04c3  usr/share/locale/ru/LC_MESSAGES/pppoeconf.mo
+20084eda67e6f66eaca4bb03d5dd60b1  usr/share/locale/sl/LC_MESSAGES/pppoeconf.mo
+9ec8ff8185ce667e36e882d40d817d25  usr/share/locale/zh_TW/LC_MESSAGES/pppoeconf.mo
+527d7330d582b74ac475a05e06a30fa5  usr/share/man/man8/pppoeconf.8.gz
+2ed80605ee800feea96ec13c9fd719c2  usr/share/pixmaps/pppoeconf.png

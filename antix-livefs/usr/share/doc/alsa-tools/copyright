@@ -1,0 +1,144 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: alsa-tools
+Upstream-Contact: Jarsolav Kysela <perex@suse.cz>
+Source: https://ftp.alsa-project.org/files/pub/lib/
+Comment: This package was debianized by Wichert Akkerman 7 Jun 1998.
+         Masato Taruishi took over on 17 Oct 1999.
+         Since September 2002 it has been maintained by the participants in
+         the pkg-alsa project at alioth.debian.org.
+
+Files: *
+Copyright: 1998-2025 Jarsolav Kysela <perex@suse.cz> and others
+License: GPL-2
+
+Files: as10k1/*
+Copyright: Daniel Bertrand <d.bertrand@ieee.ca>
+           Jaroslav Kysela <perex@suse.cz>
+License: GPL-2+
+
+Files: echomixer/*
+Copyright: 2003 Giuliano Pochini <pochini@shiny.it>
+License: GPL-2
+
+Files: envy24control/*
+Copyright: 2000 Jaroslav Kysela <perex@suse.cz>
+           2003 Søren Wedel Nielsen
+                Dirk Kalis <dirk.kalis@t-online.de>   
+           2025 Andreas Persson <andreasp56@outlook.com>
+License: GPL-2+
+
+Files: hdajackretask/* hdajacksensetest/*
+Copyright: 2011 David Henningsson <david.henningsson@canonical.com>
+License: GPL-2+
+
+Files: hda-verb/*
+Copyright: 2008 Takashi Iwai <tiwai@suse.de>
+License: GPL-2+
+
+Files: hdspconf/* hdsploader/* hdspmixer/*
+Copyright: 2003 Thomas Charbonnel <thomas@undata.org>
+License: GPL-2+
+
+Files: hwmixvolume/*
+Copyright: 2009-2010 Clemens Ladisch
+License: ISC
+
+Files: ld10k1/* qlo10k1/*
+Copyright: Peter Zubaj <pzad@pobox.sk>
+           Mikael Magnusson <mikma@users.sourceforge.net>
+License: GPL-2+
+
+Files: mixartloader/* pcxhrloader/*
+Copyright: 2003-2004 Digigram <alsa@digigram.com>
+License: GPL-2+
+
+Files: rmedigicontrol/*
+Copyright: 2003 Robert Vetter <postmaster@robertvetter.com>
+           2003 by Martin Langer <martin-langer@gmx.de>
+License: GPL-2+
+
+Files: sb16_csp/*
+Copyright: 2000 Uros Bizjak <uros@kss-loka.si>
+License: GPL-2+
+
+Files: seq/sbiload/*
+Copyright: Uros Bizjak <uros@kss-loka.si>
+           Steve Ratcliffe
+           Jaroslav Kysela
+License: GPL-2+
+
+Files: sscape_ctl/*
+Copyright: 2003 Chris Rankin
+License: GPL-2+
+
+Files: usx2yloader/* us428control/* vxloader/*
+Copyright: 2003 Karsten Wiese <annabellesgarden@yahoo.de>
+License: GPL-2+
+
+Files: debian/*
+Copyright: 1998-1999 Wichert Akkerman
+           1999-2002 Masato Taruishi
+           2002-2024 Debian ALSA Maintainers
+License: GPL-2+
+
+Files: debian/*metainfo.xml
+Copyright: 2021 Debian ALSA Maintainers
+License: CC0-1.0
+
+License: CC0-1.0
+ To the extent possible under law, the person who associated CC0 with
+ alsa-tools has waived all copyright and related or neighboring rights
+ to alsa-tools.
+ .
+ The complete text of the Creative Commons CC0 1.0 Universal license can
+ be found in /usr/share/common-licenses/CC0-1.0.
+
+License: GPL-2
+ This program is free software; you may redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License.
+ .
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the
+ Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ MA 02110-1301, USA.
+ .
+ On Debian systems, the complete text of the GNU General Public License
+ can be found in /usr/share/common-licenses/GPL-2
+
+License: GPL-2+
+ This program is free software; you may redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the
+ Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ MA 02110-1301, USA.
+ .
+ On Debian systems, the complete text of the GNU General Public License
+ can be found in /usr/share/common-licenses/GPL-2
+
+License: ISC
+ Permission to use, copy, modify, and/or distribute this software for any
+ purpose with or without fee is hereby granted, provided that the above
+ copyright notice and this permission notice appear in all copies.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+ REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+ AND FITNESS.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+ INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ PERFORMANCE OF THIS SOFTWARE.

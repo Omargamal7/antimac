@@ -1,0 +1,29 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Set font and keymap for tty"
+User = ( root )
+Depends = ( udevadm )
+StdOut = s6log:%%livedir%%/log/system-fontnkey
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp system-fontnkey -1 /dev/console setup font and keymap for tty }
+    if -nt {
+        execl-envfile ${ConfFile}
+        if { kbd_mode -u }
+        background
+        {
+            forbacktickx index { seq 12 }
+            importas -u -D "" index index
+            sh -c "setfont ${FONT_MAP:+-m $FONT_MAP} ${FONT_UNIMAP:+-u $FONT_UNIMAP} ${FONT} -C /dev/tty${index}"
+        }
+        loadkeys -q -u ${KEYMAP}
+
+    }
+    66-yeller -fcdp system-fontnkey -1 /dev/console crashed!
+)
+
+[Environment]
+ConfFile=!%%bootconf%%

@@ -1,0 +1,55 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: pypdf
+Upstream-Contact: https://github.com/py-pdf/pypdf/issues
+Source: https://github.com/py-pdf/pypdf
+
+Files: *
+Copyright: Copyright (C) 2022 Martin Thoma <info@martin-thoma.de>,
+ Copyright (C) 2014 Steve Witham <switham_github@mac-guyver.com>,
+ Copyright (C) 2013-2018 Matthew Stamy <mstamy2@gmail.com>,
+ Copyright (C) 2007 Ashish Kulkarni <kulkarni.ashish@gmail.com>,
+ Copyright (C) 2006-2008 Mathieu Fenniak <biziqe@mathieu.fenniak.net>
+ Copyright (C) 2006 - 2023, Mathieu Fenniak and pypdf contributors
+License: BSD-3-clause
+
+Files: pypdf/_encryption.py
+Copyright: Copyright (c) 2022, exiledkingcc
+License: BSD-3-clause
+
+Files: pypdf/_crypt_providers/*
+Copyright: Copyright (c) 2023, exiledkingcc
+License: BSD-3-clause
+
+Files: pypdf/generic/_viewerpref.py
+Copyright: Copyright (c) 2023, Pubpub-ZZ
+License: BSD-3-clause
+
+Files: debian/*
+Copyright: Copyright (C) 2014- Laszlo Boszormenyi (GCS) <gcs@debian.org>
+ 2023 Daniel Kahn Gillmor <dkg@fifthhorseman.net>
+License: BSD-3-clause
+
+License: BSD-3-clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ .
+   1. Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+ .
+   2. Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+ .
+   3. The name of the author may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

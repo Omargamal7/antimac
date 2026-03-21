@@ -1,0 +1,28 @@
+This package was debianized by Bdale Garbee <bdale@gag.com>
+Stephen Moraco <stephen@debian.org> now helps maintain this package
+
+It was written specifically for Debian GNU/Linux.
+
+Authors: 	
+
+	Perl Hacking		Bill Geddes <geddes@debian.org>
+	Docs and Packaging	Bdale Garbee <bdale@debian.org>
+	Miscellaneous Tasks	Rogério Brito <rbrito@ime.usp.br>
+
+Copyright:
+
+	Copyright (c) 1999-2005 by Bill Geddes, Bdale Garbee and Stephen Moraco
+	Copyright (c) 2005, 2006, 2009 by Bdale Garbee and Rogério Brito
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+A copy of the GNU General Public License is available on Debian-based 
+systems as /usr/share/common-licenses/GPL-2.

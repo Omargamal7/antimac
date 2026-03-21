@@ -1,0 +1,19 @@
+#!/bin/sh
+# As per Debian bug #1037190.
+# Copyright 2023 Andreas Beckmann <anbe@debian.org>
+set -e
+if dpkg --compare-versions "$2" lt-nl "1:10.0.1-2~"; then
+	# Cleanup leftovers from dhcpcd 1:3.* in Wheezy.
+	# Can be removed after Trixie is released.
+	update-alternatives --remove dhcpcd /sbin/dhcpcd3
+	if [ -d /etc/dhcpc ]; then
+		test ! -h /etc/dhcpc/resolv.conf || rm -fv /etc/dhcpc/resolv.conf
+		rmdir --ignore-fail-on-non-empty /etc/dhcpc
+	fi
+fi
+# Automatically added by dh_installinit/13.24.2
+if [ "$1" = "install" ] && [ -n "$2" ] && [ -e "/etc/init.d/dhcpcd" ] ; then
+	chmod +x "/etc/init.d/dhcpcd" >/dev/null || true
+fi
+# End automatically added section
+

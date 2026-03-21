@@ -1,0 +1,5 @@
+4e4ddbfa1aa6b1725186b3d023f5aa01  usr/share/doc/runit-service-dhcpcd/changelog.gz
+8b92f1a9bc3cfba785bbd0a84605146a  usr/share/doc/runit-service-dhcpcd/copyright
+a102c29c42bb863d6369600fa7be32bb  usr/share/runit/sv/dhcpcd/finish
+aa58218b96300c9000b266fdabbea5b0  usr/share/runit/sv/dhcpcd/log/run
+e0dc5ea51eef25d2294dd50cf85d2484  usr/share/runit/sv/dhcpcd/run

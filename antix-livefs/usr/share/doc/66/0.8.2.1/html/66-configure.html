@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66 Suite: configure</title>
+</head>
+<body>
+<p><a href="index.html">66</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="configure">configure</h1>
+<p>Handles an environment file and variable of a service depending on the options passed.</p>
+<h2 id="interface">Interface</h2>
+<pre><code>configure [ -h ] [ -c version ] [ -s version ] [ -V|L ] [ -r key=value ] [ -i src,dst ] [ -e editor ] service
+</code></pre>
+<p>This command allows to handle the <a href="66-service-configuration-file.html">configuration</a> file of <em>service</em> found by default at <code>/etc/66/conf&#47;&#60;service&#62;</code>. Depending of the options passed, you can displays the contents of the file, see the current version used, edits the configuration file and so on.</p>
+<p>The edition of the <a href="66-service-configuration-file.html">configuration</a> file is the <strong>default</strong> option if neither option is passed.</p>
+<h2 id="options">Options</h2>
+<ul>
+<li><p><strong>-h</strong>: prints this help.</p></li>
+<li><p><strong>-c</strong> <em>version</em>: makes <em>version</em> as the current one to use by default. If the service is already running, you need to restart the <em>service</em> to apply the change by the command e.g. <code>66 restart foo</code>.</p></li>
+<li><p><strong>-s</strong> <em>version</em>: specifies the version to handles with the options <strong>-V</strong>, <strong>-L</strong>, <strong>-r</strong> and <strong>-e</strong> instead of using the current one.</p></li>
+<li><p><strong>-V</strong>: lists available versioned configuration directories of the <em>service</em>. The term <code>current</code> is used to specific the current version in use as follow:</p>
+<pre><code>0.2.0
+0.1.4 current
+</code></pre></li>
+<li><p><strong>-r</strong> <em>key=value</em>: override an existing <code>key=value</code> pair with the given one. The <code>key=value</code> needs to be single quoted in case of multiple arguments.This option can be specified multiple times.</p></li>
+<li><p><strong>-L</strong>: lists defined environment variables for the <em>service</em>. It do the same for all files found at the configuration directory.</p></li>
+<li><p><strong>-i</strong> <em>src,dst</em>: imports configuration file from <em>src</em> version to <em>dst</em> version. For instance, <code>0.3.1</code> is the <em>src</em> and <code>0.7.0</code> is the <em>dest</em>. The <em>src</em> version and <em>dst</em> version need to be separated by a comma without space before and after it. It <strong>do not import</strong> the configuration written by the parse process but only deal with extra configuration files written by the sysadmin.</p></li>
+<li><p><strong>-e</strong> <em>editor</em>: edit the configuration file with <em>editor</em>. If you don&#8217;t specify this option, it try to found the <code>EDITOR</code> variable from the environment variable. Note: the upstream file (meaning the one prefixed with a dot) is <strong>never</strong> touched. A copy of the upstream file is copied (if it doesn&#8217;t exist yet) and the <em>configure</em> command  modifies that file.(see <a href="66-service-configuration-file.html">Service configuration file</a> for further information).</p></li>
+</ul>
+<h2 id="usage-examples">Usage examples</h2>
+<p>Lists the defined environment variable of the service <code>foo</code></p>
+<pre><code>66 configure -L foo
+</code></pre>
+<p>Change the value of the <code>CMD_ARGS</code> variable for the service <code>nginx</code></p>
+<pre><code>66 configure -r CMD_ARGS=&#39;-c &#47;etc&#47;nginx&#47;nginx.conf -g "daemon off;"&#39; nginx
+</code></pre>
+<p>Import the configuration file from the 0.1.6 version to the 0.1.7 version of the service <code>foo</code></p>
+<pre><code>66 configure -i 0.1.6,0.1.7 foo
+</code></pre>
+<p>Get the list of version available for the service <code>foo</code></p>
+<pre><code>66 configure -V foo
+</code></pre>
+<p>Edit the configuration file of the service <code>foo</code> using the <code>nano</code> editor</p>
+<pre><code>sudo 66 configure -e nano foo
+</code></pre>
+<p>See the the defined environment variable of the service <code>foo</code> from the <code>0.1.6</code> version</p>
+<pre><code>66 configure -s 0.1.6 -L foo
+</code></pre>
+<p>List the defined environment variables of the service <code>barz</code> of the module <code>foo@foobar</code></p>
+<pre><code>66 configure -L foo@foobar:barz
+</code></pre>
+<h2 id="notes">Notes</h2>
+<p>Removing a <em>key</em> from the environment variable during the execution time of the service can be handled by using an exclamation mark <code>!</code> at the begin of the value:</p>
+<pre><code>66 configure -r &#39;CMD_ARGS=!-c &#47;etc&#47;nginx&#47;nginx.conf -g "daemon off;"&#39; nginx
+</code></pre>
+<p>It this case the <code>CMD_ARGS</code> variable is not define at the environment variable of the service.</p>
+</body>
+</html>

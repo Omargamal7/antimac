@@ -1,0 +1,3 @@
+#!/usr/bin/execlineb -P
+importas -D2 VERBOSITY VERBOSITY
+/usr/libexec/66-execute -v${VERBOSITY} stop boot@system:canopy $@

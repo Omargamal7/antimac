@@ -1,0 +1,4 @@
+# Triggers added by dh_installinitramfs/13.24.1
+activate-noawait update-initramfs
+# Triggers added by dh_makeshlibs/13.24.1
+activate-noawait ldconfig

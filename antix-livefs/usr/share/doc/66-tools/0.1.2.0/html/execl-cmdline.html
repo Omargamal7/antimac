@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="author" content="Eric Vidal <eric@obarun.org>" />
+<title>The 66-tools Suite: execl-cmdline</title>
+</head>
+<body>
+<p><a href="index.html">66-tools</a></p>
+<p><a href="https://web.obarun.org/software">Software</a></p>
+<p><a href="https://web.obarun.org">obarun.org</a></p>
+<h1 id="execl-cmdline">execl-cmdline</h1>
+<p>This command parses a command line into an <a href="https://skarnet.org/software/execline">execline</a> script. </p>
+<h2 id="interface">Interface</h2>
+<p>As <a href="https://www.skarnet.org/software/execline/execlineb.html">execlineb</a> script:</p>
+<pre><code>    execl-cmdline -s { command }
+</code></pre>
+<ul>
+<li><p>It reads the command and removes all whitespace or <code>no word</code> before executing. </p></li>
+<li><p>It exits with the exit code of the command</p></li>
+</ul>
+<h2 id="options">Options</h2>
+<ul>
+<li><strong>-s</strong> : splits a command considered by execline scripting language as one word into separate words. </li>
+</ul>
+<h2 id="note-and-usage-examples">Note and usage examples</h2>
+<p><em>execl-cmdline</em> should be used at the end of <em>execline</em> scripts. If you want to run another program after the call of execl-cmdline you would need to use an <a href="https://skarnet.org/software/execline/if.html">if</a> command, <a href="https://skarnet.org/software/execline/foreground.html">foreground</a>, <a href="https://skarnet.org/software/execline/background.html">background</a> or the likes.</p>
+<p>The following command:</p>
+<pre><code>    execl-cmdline { &#47;usr&#47;bin&#47;ntpd -d "" -S }
+</code></pre>
+<p>will result in:</p>
+<pre><code>    &#47;usr&#47;bin&#47;ntpd "-d" "-S"
+</code></pre>
+<p>This command:</p>
+<pre><code>    execl-cmdline -s { &#47;usr&#47;bin&#47;ntpd "-d -S" }
+</code></pre>
+<p>will result in:</p>
+<pre><code>    &#47;usr&#47;bin&#47;ntpd "-d" "-S"
+</code></pre>
+<p>To run another program after the call of <em>execl-cmdline</em> program:</p>
+<pre><code>    foreground { execl-cmdline { &#47;usr&#47;bin&#47;ntpd -d "" -S } }
+</code></pre>
+</body>
+</html>

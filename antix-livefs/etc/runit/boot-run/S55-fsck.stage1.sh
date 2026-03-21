@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/fsck.stage1.sh

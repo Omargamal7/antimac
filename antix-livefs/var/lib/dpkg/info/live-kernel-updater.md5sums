@@ -1,0 +1,6 @@
+ba846a7e3265d13846fe6e72d6d39190  usr/local/bin/live-kernel-updater
+0d87ab64f87f26a6344e6157bfe731d5  usr/share/applications/live-kernel-updater.desktop
+6597de343acb69d9d3cc6850a0aff083  usr/share/doc/live-kernel-updater/changelog.gz
+11cddf1c03b1c5cf4cf802e0c31ef6e7  usr/share/doc/live-kernel-updater/copyright
+41e01025f7c3ae952a98c5c0db06470c  usr/share/man/man1/live-kernel-updater.1.gz
+b363fecba692d48f8dabc83cb46f50ee  usr/share/pixmaps/live-usb-kernel-updater.png

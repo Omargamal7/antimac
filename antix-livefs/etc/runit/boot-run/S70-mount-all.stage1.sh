@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/mount-all.stage1.sh

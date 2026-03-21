@@ -1,0 +1,25 @@
+[Main]
+Type = classic
+Version = %%version%%
+Description = "Launch udevd daemon"
+User = ( root )
+Notify = 3
+Depends=( mount-branch modules-kernel )
+StdOut = s6log:%%livedir%%/log/udevd
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp udevd -1 /dev/console start udevd }
+    background -d
+    {
+        fdmove 1 3
+        loopwhilex -x 0
+        if { sleep 1 }
+        if { udevadm control --start-exec-queue }
+        66-echo
+    }
+    unexport !
+    fdclose 3
+    udevd -D
+)

@@ -1,0 +1,7 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+
+Files: *
+Copyright: 1998-2016 Rob Browning <rlb@defaultvalue.org>
+License: GPL
+ lockfile-progs is covered under the terms of the GNU Public License.
+ See /usr/share/common-licenses/GPL for more details.

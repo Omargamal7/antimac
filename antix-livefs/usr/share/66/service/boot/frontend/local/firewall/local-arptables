@@ -1,0 +1,35 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Restore arptables rules"
+Depends = ( mount-rw )
+User = ( root )
+StdOut = s6log:%%livedir%%/log/local-arptables
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp local-arptables -1 /dev/console restore arptables configuration }
+    if -nt {
+
+        execl-toc -e ${ScriptConf}
+        arptables-restore ${ScriptConf}
+
+    }
+    66-yeller -fcdp local-arptables -1 /dev/console crashed!
+)
+
+[Stop]
+Execute =
+(
+    if { 66-yeller -cdp local-arptables -1 /dev/console flush arptables configuration }
+    if -nt {
+
+        arptables-restore
+
+    }
+    66-yeller -fcdp local-arptables -1 /dev/console crashed!
+)
+
+[Environment]
+ScriptConf=!/etc/arptables.conf

@@ -1,0 +1,7 @@
+5d51fb5ee4377df6c8b445c5e52750f6  usr/lib/sysvinit/halt
+0eabf60e78805f42dbe5ce5a08cded5a  usr/lib/sysvinit/init
+5f7a755beb14f39110341d3ac6bd5616  usr/lib/sysvinit/initreq.h
+29566e254593dfc0d692c752a9cd43f2  usr/lib/sysvinit/inittab
+1094589d27d9aff0098357ce1b7941c6  usr/lib/sysvinit/runlevel
+f0e13825ef4817ef72e26a525688470c  usr/lib/sysvinit/shutdown
+ae955b93107f289f2cd739eb0ca0f384  usr/share/doc/sysvinit-init-antix/copyright

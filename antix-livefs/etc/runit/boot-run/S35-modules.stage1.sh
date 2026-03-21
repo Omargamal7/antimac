@@ -1,0 +1,1 @@
+/usr/share/runit/scripts/modules.stage1.sh

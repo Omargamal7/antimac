@@ -1,0 +1,35 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Restore nftables rules"
+Depends = ( mount-rw )
+User = ( root )
+StdOut = s6log:%%livedir%%/log/local-nftables
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp local-nftables -1 /dev/console restore nftables configuration }
+    if -nt {
+
+        execl-toc -e ${ScriptConf}
+        nft -f ${ScriptConf}
+
+    }
+    66-yeller -fcdp local-nftables -1 /dev/console crashed!
+)
+
+[Stop]
+Execute =
+(
+    if { 66-yeller -cdp local-nftables -1 /dev/console flush nftables configuration }
+    if -nt {
+
+        nft flush ruleset
+
+    }
+    66-yeller -fcdp local-nftables -1 /dev/console crashed!
+)
+
+[Environment]
+ScriptConf=!/etc/nftables.conf

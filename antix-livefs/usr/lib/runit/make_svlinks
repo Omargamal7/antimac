@@ -1,0 +1,50 @@
+#!/bin/sh
+
+# kept only for backward compat, this will be removed in future
+# make_svlinks is called by runit-helper <=2.15.0  and >=2.14.0
+
+#svrundir=$CPSV_DIR
+#test -n "$svrundir" || svrundir=/etc/sv
+
+# either a valid basename or allsv
+service="${1}"
+
+exec /usr/bin/cpsv p "$service"
+
+#case $service in
+#   allsv)
+#	allsv=1
+#	;;
+#   *)
+#	if [ ! -d "$svrundir/$service" ]; then
+#		echo "make_svlinks: warning: $service directory not found "
+#		exit 0 # do not break dpkg maintscripts flow, see #935939: one can use dpkg.cfg.d/excludes and have runit #installed
+#	fi
+#	;;
+#esac
+#
+#make_supervise_links () {
+#	if [ ! -h "$svrundir/$service/supervise" ] && [ ! -d "$svrundir/$service/supervise" ]; then
+#		ln -s /run/runit/supervise/"$service" "$svrundir/$service/supervise"
+#	fi
+#	if [ -e "/usr/share/runit/meta/$service/finish" ] && [ ! -e "$svrundir/$service/finish" ]; then
+#		ln -s /lib/runit/finish-exec "$svrundir/$service/finish"
+#	fi
+#	if [ -d "$svrundir/$service/log" ]; then
+#		if [ ! -h "$svrundir/$service/log/supervise" ] && [ ! -d "$svrundir/$service/log/supervise" ]; then
+#			ln -s /run/runit/supervise/"$service".log "$svrundir/$service"/log/supervise
+#		fi
+#		if [ -e "/usr/share/runit/meta/$service/logscript" ] && [ ! -e "$svrundir/$service/log/run" ]; then
+#			ln -s /etc/sv/svlogd/run "$svrundir/$service/log/run"
+#		fi
+#	fi
+#}
+
+#if [ -z $allsv ]; then
+#	make_supervise_links
+#else
+#	for path in $svrundir/* ; do
+#		service=$(basename "$path")
+#		make_supervise_links
+#	done
+#fi

@@ -1,0 +1,2 @@
+libudev 1 libeudev1 (>= 252:3.2.14)
+udeb: libudev 1 libeudev1-udeb (>= 252:3.2.14)

@@ -1,0 +1,19 @@
+#!/bin/sh
+# preinst script for dinit-service-boot-module
+
+
+# This should be removed on package versions >> 0.1.7
+for oldscript in \
+	/etc/dinit.d/scripts/binfmt    \
+	/etc/dinit.d/scripts/cgroups    \
+	/etc/dinit.d/scripts/cleanup    \
+	/etc/dinit.d/scripts/hostname    \
+	/etc/dinit.d/scripts/networking    \
+	/etc/dinit.d/scripts/pseudofs    \
+	/etc/dinit.d/scripts/recovery    \
+	/etc/dinit.d/scripts/urandom    \
+	/etc/dinit.d/scripts/welcome
+do
+	rm -rf $oldscript
+done
+

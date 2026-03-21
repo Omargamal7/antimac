@@ -1,0 +1,45 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Populate /dev directory"
+User = ( root )
+Depends = ( mount-dev )
+StdOut = s6log:%%livedir%%/log/populate-dev
+
+[Start]
+Execute =
+(
+    if { 66-yeller -cdp populate-dev -1 /dev/console mount /dev/hugepages and /dev/mqueue directories }
+    if -nt {
+
+        foreground {
+            if -t { grep -Fq hugetlbfs /proc/filesystems }
+            execl-toc -tX -m /dev/hugepages -o noatime,nodev,noexec,nosuid -t hugetlbfs -d hugepages
+        }
+
+        foreground {
+            if -t { grep -Fq mqueue /proc/filesystems }
+            execl-toc -tX -m /dev/mqueue -o noatime,nodev,noexec,nosuid -t mqueue -d mqueue
+        }
+
+    }
+    66-yeller -fcdp populate-dev -1 /dev/console crashed!
+)
+
+[Stop]
+Execute=
+(
+    if { 66-yeller -cdp populate-dev -1 /dev/console unmount /dev/hugepages and /dev/mqueue directories }
+    if -nt {
+
+        forx -p dir {
+            /dev/hugepages /dev/mqueue
+        }
+        importas -ui dir dir
+        foreground {
+            execl-toc -tD -m ${dir} umount -l ${dir}
+        }
+
+    }
+    66-yeller -fcdp populate-dev -1 /dev/console crashed!
+)

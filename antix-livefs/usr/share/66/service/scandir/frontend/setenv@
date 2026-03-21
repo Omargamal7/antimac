@@ -1,0 +1,62 @@
+[Main]
+Type = oneshot
+Version = %%version%%
+Description = "Set well-know variables for @I user"
+User = ( root )
+
+[Start]
+RunAs = @I
+Execute =
+(
+    execl-subuidgid
+    backtick -n HOME { homeof @I }
+    importas -u HOME HOME
+
+    execl-toc -v3 -d %%environment_path%%
+
+    redirfd -w 1 %%environment_path%%/.svscan@@I
+
+    ## GENERAL VARIABLES
+
+    if { 66-echo -- HOME=${HOME} }
+    if { 66-echo -- LOGNAME=@I }
+    if { 66-echo -- USER=@I }
+
+    foreground {
+        importas PATH PATH
+        66-echo -- PATH=${PATH}
+    }
+    foreground {
+        backtick -D /usr/bin/sh -E shell {
+            pipeline { getent passwd ${UID} }
+            cut -d: -f7
+        }
+        66-echo -- SHELL=${shell}
+    }
+    foreground
+    {
+        backtick -E x
+        {
+            sh -c "d=0 ; while true ; do \
+            if [ ! -e "/tmp/.X$d-lock" -o -S "/tmp/.X11-unix/X$d" ]; then \
+                66-echo -- $d ; \
+                break ; \
+            fi ; \
+            d=$(($d + 1)) ; \
+            done ;"
+        }
+        66-echo -- DISPLAY=:${x}
+    }
+    ## DBUS
+
+    if { 66-echo -- DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${UID}/bus }
+
+    ## XDG variables
+
+    if { 66-echo -- XDG_RUNTIME_DIR=/run/user/${UID} }
+    if { 66-echo -- XDG_CACHE_HOME=${HOME}/.cache }
+    if { 66-echo -- XDG_CONFIG_HOME=${HOME}/.config }
+    if { 66-echo -- XDG_DATA_HOME=${HOME}/.local/share }
+    if { 66-echo -- XDG_DATA_DIRS=${HOME}/.local/share:/usr/local/share:/usr/share }
+    66-echo -- XDG_SESSION_CLASS=user
+)
