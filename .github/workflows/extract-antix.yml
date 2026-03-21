@@ -1,0 +1,73 @@
+name: Extract antiX ISO
+
+on:
+  workflow_dispatch:
+    inputs:
+      iso_url:
+        description: Direct URL to the antiX ISO
+        required: true
+        default: https://altushost-bul.dl.sourceforge.net/project/antix-linux/Testing/antiX-26/antiX-26-rc1_x64-core.iso?viasf=1
+      output_dir:
+        description: Directory inside the repo for extracted files
+        required: true
+        default: antix-extracted
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install extraction tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xorriso
+
+      - name: Validate inputs
+        env:
+          OUTPUT_DIR: ${{ inputs.output_dir }}
+        run: |
+          case "$OUTPUT_DIR" in
+            ""|"."|"/"|.git|.github|*".."*)
+              echo "Refusing unsafe output_dir: $OUTPUT_DIR" >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Download ISO
+        env:
+          ISO_URL: ${{ inputs.iso_url }}
+        run: |
+          curl -L --fail --retry 3 "$ISO_URL" -o /tmp/antix.iso
+
+      - name: Extract ISO
+        env:
+          OUTPUT_DIR: ${{ inputs.output_dir }}
+        run: |
+          rm -rf "$OUTPUT_DIR"
+          mkdir -p "$OUTPUT_DIR"
+          xorriso -osirrox on -indev /tmp/antix.iso -extract / "$OUTPUT_DIR"
+
+      - name: Commit extracted tree
+        env:
+          OUTPUT_DIR: ${{ inputs.output_dir }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- "$OUTPUT_DIR"
+
+          if git diff --cached --quiet; then
+            echo "No extracted changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Extract antiX ISO into $OUTPUT_DIR"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
