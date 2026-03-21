@@ -25,11 +25,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          lfs: true
 
       - name: Install extraction tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y xorriso
+          sudo apt-get install -y git-lfs xorriso
+          git lfs install --local
 
       - name: Validate inputs
         env:
@@ -56,13 +58,27 @@ jobs:
           mkdir -p "$OUTPUT_DIR"
           xorriso -osirrox on -indev /tmp/antix.iso -extract / "$OUTPUT_DIR"
 
+      - name: Track large extracted files with Git LFS
+        env:
+          OUTPUT_DIR: ${{ inputs.output_dir }}
+        run: |
+          found=0
+          while IFS= read -r -d '' file; do
+            git lfs track "$file"
+            found=1
+          done < <(find "$OUTPUT_DIR" -type f -size +95M -print0)
+
+          if [ "$found" -eq 1 ] && [ -f .gitattributes ]; then
+            git add .gitattributes
+          fi
+
       - name: Commit extracted tree
         env:
           OUTPUT_DIR: ${{ inputs.output_dir }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A -- "$OUTPUT_DIR"
+          git add -A
 
           if git diff --cached --quiet; then
             echo "No extracted changes to commit."
