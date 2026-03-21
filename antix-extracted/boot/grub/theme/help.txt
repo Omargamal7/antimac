@@ -1,0 +1,29 @@
+                     Help for booting antiX-26 Live via UEFI
+
+The demo user password is "demo".  The root password is "root".  
+For help, go to one of these forums and make sure you say you are trying to boot antiX-26 via
+UEFI:  http://forum.mepiscommunity.org/ or http://antix.freeforums.org/. 
+Or, send an email to: liveboot@mxlinux.org
+
+antiX-26 Customize Boot (text menus)
+    Allows you to set the language, timezone, and a lot of other things with
+    text menus early in the boot process. If you select the save option, a
+    custom entry will be created/updated with your selected options.
+
+There are several useful boot entries under ">>> Advanced Options for antiX-26 <<<"
+
+antiX-26 Failsafe
+    If you are having trouble booting or getting to X-Windows (the GUI) then try
+    using this entry.
+
+antiX-26 Create Bootchart
+    Creates a /var/log/bootchart.tgz file that can be converted to an image
+    using the pybootchartgui program.  The image will show timing and diagnostic
+    information about the boot process.
+
+The other entries let you set the console resolution during the EARLY part of
+the boot process. Normally, the resolution will be set to the maximum unless
+the "video=WWWWxHHHH" cheat is used.
+
+Hints: Use the "menus" cheat to customize your system using text menus.
+       Use "bootsave" to save the boot parameters you have entered manually.
