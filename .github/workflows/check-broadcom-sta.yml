@@ -1,0 +1,153 @@
+name: Check Broadcom STA in live filesystem
+
+on:
+  workflow_dispatch:
+    inputs:
+      linuxfs_path:
+        description: Path to the extracted squashfs file in the repo
+        required: true
+        default: antix-extracted/antiX/linuxfs
+      report_path:
+        description: Path inside the repo for the inspection report
+        required: true
+        default: reports/broadcom-sta-check.txt
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Install squashfs tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y squashfs-tools
+
+      - name: Validate inputs and inspect linuxfs
+        id: inspect
+        env:
+          LINUXFS_PATH: ${{ inputs.linuxfs_path }}
+          REPORT_PATH: ${{ inputs.report_path }}
+        run: |
+          case "$LINUXFS_PATH" in
+            ""|"."|"/"|.git|.github|*".."*)
+              echo "Refusing unsafe linuxfs_path: $LINUXFS_PATH" >&2
+              exit 1
+              ;;
+          esac
+
+          case "$REPORT_PATH" in
+            ""|"."|"/"|.git|.github|*".."*)
+              echo "Refusing unsafe report_path: $REPORT_PATH" >&2
+              exit 1
+              ;;
+          esac
+
+          if [ ! -f "$LINUXFS_PATH" ]; then
+            echo "linuxfs file not found at $LINUXFS_PATH" >&2
+            exit 1
+          fi
+
+          rm -rf work/livefs
+          mkdir -p work
+          unsquashfs -d work/livefs "$LINUXFS_PATH"
+
+          status_file="work/livefs/var/lib/dpkg/status"
+          kernel_dirs="$(find work/livefs/lib/modules -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort || true)"
+          installed_packages="$(awk '/^Package: /{pkg=$2} /^Status: install ok installed$/{print pkg}' "$status_file" | grep -E '^(broadcom-sta-(common|dkms|source)|dkms|wireless-tools)$' || true)"
+          wl_modules="$(find work/livefs/lib/modules -type f \( -name 'wl.ko' -o -name 'wl.ko.xz' -o -name 'wl.ko.zst' \) -printf '%P\n' | sort || true)"
+          apt_sources="$(grep -R -hE '^[[:space:]]*deb ' work/livefs/etc/apt/sources.list work/livefs/etc/apt/sources.list.d 2>/dev/null || true)"
+
+          package_present=false
+          module_present=false
+          non_free_present=false
+
+          if printf '%s\n' "$installed_packages" | grep -q '^broadcom-sta-'; then
+            package_present=true
+          fi
+
+          if [ -n "$wl_modules" ]; then
+            module_present=true
+          fi
+
+          if printf '%s\n' "$apt_sources" | grep -Eq '(^| )non-free( |$)|(^| )non-free-firmware( |$)'; then
+            non_free_present=true
+          fi
+
+          mkdir -p "$(dirname "$REPORT_PATH")"
+          {
+            echo "linuxfs_path: $LINUXFS_PATH"
+            echo "report_generated_by: GitHub Actions"
+            echo "package_present: $package_present"
+            echo "module_present: $module_present"
+            echo "non_free_sources_present: $non_free_present"
+            echo
+            echo "kernel_dirs:"
+            if [ -n "$kernel_dirs" ]; then
+              printf '%s\n' "$kernel_dirs"
+            else
+              echo "(none found)"
+            fi
+            echo
+            echo "installed_packages_of_interest:"
+            if [ -n "$installed_packages" ]; then
+              printf '%s\n' "$installed_packages"
+            else
+              echo "(none found)"
+            fi
+            echo
+            echo "wl_modules:"
+            if [ -n "$wl_modules" ]; then
+              printf '%s\n' "$wl_modules"
+            else
+              echo "(none found)"
+            fi
+            echo
+            echo "apt_sources:"
+            if [ -n "$apt_sources" ]; then
+              printf '%s\n' "$apt_sources"
+            else
+              echo "(none found)"
+            fi
+          } > "$REPORT_PATH"
+
+          echo "package_present=$package_present" >> "$GITHUB_OUTPUT"
+          echo "module_present=$module_present" >> "$GITHUB_OUTPUT"
+
+      - name: Upload inspection report
+        uses: actions/upload-artifact@v4
+        with:
+          name: broadcom-sta-report
+          path: ${{ inputs.report_path }}
+
+      - name: Commit inspection report
+        env:
+          REPORT_PATH: ${{ inputs.report_path }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "$REPORT_PATH"
+
+          if git diff --cached --quiet; then
+            echo "No report changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Add broadcom-sta inspection report"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Fail if Broadcom STA is missing
+        run: |
+          if [ "${{ steps.inspect.outputs.package_present }}" != "true" ] && [ "${{ steps.inspect.outputs.module_present }}" != "true" ]; then
+            echo "Broadcom STA does not appear to be present in the live filesystem." >&2
+            exit 1
+          fi
