@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=ICEWM (Tint2)
+Exec=/usr/local/bin/start-icewm-tint2
+Type=Application

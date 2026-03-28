@@ -1,0 +1,3 @@
+#!/bin/sh
+# Default JWM session wrapper.
+exec jwm

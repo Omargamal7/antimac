@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=FLUXBOX (Default)
+Exec=/usr/local/bin/start-fluxbox-default
+Type=Application

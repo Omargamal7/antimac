@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=FLUXBOX (Tint2)
+Exec=/usr/local/bin/start-fluxbox-tint2
+Type=Application

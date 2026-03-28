@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=ICEWM (Default)
+Exec=/usr/local/bin/start-icewm-default
+Type=Application

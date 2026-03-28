@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=JWM (Minimal)
+Exec=/usr/local/bin/start-jwm-minimal
+Type=Application

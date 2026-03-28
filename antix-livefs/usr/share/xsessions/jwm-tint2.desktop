@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=JWM (Tint2)
+Exec=/usr/local/bin/start-jwm-tint2
+Type=Application

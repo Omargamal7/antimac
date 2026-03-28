@@ -1,0 +1,4 @@
+#!/bin/sh
+# Minimal Fluxbox session without slit-managed tray.
+# Use exec so logout/shutdown signals reach Fluxbox directly.
+exec fluxbox -no-slit

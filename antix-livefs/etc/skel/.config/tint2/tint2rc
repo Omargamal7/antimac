@@ -1,0 +1,5 @@
+panel_items = TSC
+panel_size = 100% 30
+panel_position = bottom center horizontal
+taskbar_mode = multi_desktop
+font = sans 9

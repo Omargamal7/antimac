@@ -1,0 +1,53 @@
+antiMac MBA6,2 Build Report
+Date (UTC): 2026-03-28
+Target: MacBook Air 6,2 (Mid 2013)
+Base: antiX (Debian trixie, systemd-free)
+
+1) Hardware/antiX analysis and auto-corrections
+- Thermal/Fan control:
+  - Added mbpfan package for Apple SMC fan control.
+  - pommed installed and enabled for keyboard/backlight hotkeys.
+  - Result: fan management now available for MBA 6,2 without systemd.
+- Trackpad usability:
+  - Added xserver-xorg-input-libinput.
+  - Added /etc/X11/xorg.conf.d/30-mba-trackpad.conf with tap-to-click, natural scrolling, clickfinger.
+- Webcam (FacetimeHD):
+  - Attempted to install firmware-facetimehd-dkms (requested), not present in enabled antiX/Debian repos.
+  - No facetimehd DKMS package available via apt-cache search in this build root.
+  - Left as unresolved dependency due repository/package availability.
+- Networking conflicts:
+  - Added explicit /etc/wpa_supplicant/wpa_supplicant.conf for SSID Mafia.
+  - Added /etc/network/interfaces.d/wlan0 to force ifupdown+wpasupplicant at boot.
+  - ceni autostart removal attempted (update-rc.d -f ceni remove).
+  - Added /etc/default/network-manager-selection marker with DISABLE_CENI/DISABLE_CONNMAN flags.
+- EFI boot optimization:
+  - Staged fallback EFI path in extracted ISO tree as EFI/BOOT/bootx64.efi (from grub core.efi when available).
+
+2) Build environment/chroot notes
+- Host dependencies installed: squashfs-tools xorriso qemu-utils zip parted dosfstools rsync.
+- linuxfs in antix-extracted/antiX/linuxfs is a Git LFS pointer in this repo snapshot, not real squashfs.
+- Therefore used repository's existing antix-livefs tree as working rootfs.
+- Container disallowed bind mounts (/proc, /sys, /dev) and loop/mount operations requiring elevated kernel capabilities.
+
+3) Kernel/driver operations in chroot
+- Installed: linux-image-amd64, linux-headers-amd64, grub-efi-amd64.
+- Installed hardware set: broadcom-sta-dkms, xserver-xorg-video-intel, pommed, alsa-utils, xbacklight, wpasupplicant, tint2.
+- Auto-added package: mbpfan, xserver-xorg-input-libinput.
+- Old 5.10 antiX kernel package removed.
+- broadcom-sta-dkms initially failed while old kernel headers were present; succeeded after old kernel purge.
+
+4) Known chroot limitations encountered
+- /proc and /dev/pts unavailable in this container for chroot package scripts.
+- initramfs generation reported errors due missing /proc and missing /etc/initramfs-tools/scripts directory in rootfs snapshot.
+- Some maintainer scripts emitted runlevel/dbus warnings in non-booted chroot environment.
+
+5) WM variants implemented
+- Added 9 session files under /usr/share/xsessions:
+  Fluxbox (Default/Minimal/Tint2), IceWM (Default/Minimal/Tint2), JWM (Default/Minimal/Tint2)
+- Added wrappers under /usr/local/bin with tint2 mode killing default tray/panel processes then launching tint2.
+- Added /etc/skel/.config/tint2/tint2rc minimal valid config.
+
+6) Artifact status
+- Repacked rootfs output: antix-extracted/antiX/linuxfs (generated from antix-livefs).
+- ISO build: attempted with EFI-capable xorriso command.
+- Persistent installed IMG build: blocked by container restrictions on loop + mount operations.
