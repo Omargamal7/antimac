@@ -320,8 +320,9 @@ apt-get update
 apt-get install -y \
   linux-image-amd64 linux-headers-amd64 grub-efi-amd64 \
   broadcom-sta-dkms xserver-xorg-video-intel pommed alsa-utils \
-  xbacklight kbdlight wpasupplicant tint2 \
+  xbacklight wpasupplicant tint2 \
   xserver-xorg-input-libinput mbpfan
+apt-get install -y kbdlight || true
 apt-get install -y firmware-facetimehd-dkms || true
 apt-get autoremove -y --purge 'linux-image-5.*' || true
 update-rc.d pommed defaults || true
