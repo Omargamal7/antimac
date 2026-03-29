@@ -93,6 +93,9 @@ prepare_rootfs() {
   sudo rm -rf "${SQUASHFS_ROOT}"
   sudo mkdir -p "${SQUASHFS_ROOT}"
   sudo unsquashfs -d "${SQUASHFS_ROOT}" "${LINUXFS_PATH}"
+  if [ -f /etc/resolv.conf ]; then
+    sudo cp /etc/resolv.conf "${SQUASHFS_ROOT}/etc/resolv.conf"
+  fi
 }
 
 write_file() {
