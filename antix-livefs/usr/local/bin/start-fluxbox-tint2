@@ -1,9 +1,0 @@
-#!/bin/sh
-# Fluxbox + Tint2 session.
-# Stop common tray/panel process, then reset/start tint2 before exec'ing Fluxbox.
-pkill -x fbpanel 2>/dev/null || true
-pkill -x tint2 2>/dev/null || true
-command -v tint2 >/dev/null 2>&1 && tint2 &
-# Fail fast if fluxbox is not installed in the current rootfs.
-command -v fluxbox >/dev/null 2>&1 || { echo "fluxbox not found" >&2; exit 1; }
-exec fluxbox -no-slit

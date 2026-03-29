@@ -1,3 +1,0 @@
-#!/bin/sh
-# Default IceWM session wrapper (includes standard IceWM session helpers).
-exec icewm-session

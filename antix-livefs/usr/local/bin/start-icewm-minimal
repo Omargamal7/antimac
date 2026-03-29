@@ -1,3 +1,0 @@
-#!/bin/sh
-# Minimal IceWM session (no full icewm-session startup stack).
-exec icewm

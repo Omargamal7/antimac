@@ -1,9 +1,0 @@
-#!/bin/sh
-# JWM + Tint2 session.
-# Stop existing JWM process and reset/start tint2 if present.
-pkill -x jwm 2>/dev/null || true
-pkill -x tint2 2>/dev/null || true
-command -v tint2 >/dev/null 2>&1 && tint2 &
-# Fail fast if jwm is not installed in the current rootfs.
-command -v jwm >/dev/null 2>&1 || { echo "jwm not found" >&2; exit 1; }
-exec jwm -p

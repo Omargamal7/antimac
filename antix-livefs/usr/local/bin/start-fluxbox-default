@@ -1,4 +1,0 @@
-#!/bin/sh
-# Default Fluxbox session wrapper.
-# Use exec so the WM replaces this shell.
-exec fluxbox

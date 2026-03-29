@@ -1,3 +1,0 @@
-#!/bin/sh
-# Minimal JWM startup using personal profile mode (-p).
-exec jwm -p
